@@ -1,122 +1,169 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState } from "react";
+import Home from "./pages/home"; // Imports the clean travel dashboard you created
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Navigation active state to test your different routes/pages locally
+  const [currentPage, setCurrentPage] = useState("home");
+
+  // Simple conditional page rendering engine based on your project requirements
+  const renderPage = () => {
+    switch (currentPage) {
+      case "home":
+        return <Home />;
+      case "payment":
+        return (
+          <div style={styles.placeholderContainer}>
+            <h2>💳 Payment Page Component</h2>
+            <p>Integrate your payment gateway (Stripe/Razorpay) here.</p>
+            <button
+              style={styles.backBtn}
+              onClick={() => setCurrentPage("home")}
+            >
+              Back to Home
+            </button>
+          </div>
+        );
+      case "confirmation":
+        return (
+          <div style={styles.placeholderContainer}>
+            <h2>🎯 Bus Confirmation Page</h2>
+            <p>This is where your successful checkout image mockup lives!</p>
+            <button
+              style={styles.backBtn}
+              onClick={() => setCurrentPage("home")}
+            >
+              Back to Home
+            </button>
+          </div>
+        );
+      case "bookings":
+        return (
+          <div style={styles.placeholderContainer}>
+            <h2>🧳 My Bookings & History Page</h2>
+            <p>
+              Display your past PNRs (like TRV849201X) and user itineraries
+              here.
+            </p>
+            <button
+              style={styles.backBtn}
+              onClick={() => setCurrentPage("home")}
+            >
+              Back to Home
+            </button>
+          </div>
+        );
+      default:
+        return <Home />;
+    }
+  };
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+      {/* App Testing Menu Layout:
+        Matches your exact design header bar for development routing toggles
+      */}
+      <div style={styles.testingMenu}>
+        <span style={styles.menuLabel}>App Testing Menu:</span>
+        <div style={styles.btnGroup}>
+          <button
+            style={{
+              ...styles.testBtn,
+              ...(currentPage === "home" ? styles.activeBtn : {}),
+            }}
+            onClick={() => setCurrentPage("home")}
+          >
+            Home / Search
+          </button>
+          <button
+            style={{
+              ...styles.testBtn,
+              ...(currentPage === "payment" ? styles.activeBtn : {}),
+            }}
+            onClick={() => setCurrentPage("payment")}
+          >
+            Payment Page
+          </button>
+          <button
+            style={{
+              ...styles.testBtn,
+              ...(currentPage === "confirmation" ? styles.activeBtn : {}),
+            }}
+            onClick={() => setCurrentPage("confirmation")}
+          >
+            Confirmation Page
+          </button>
+          <button
+            style={{
+              ...styles.testBtn,
+              ...(currentPage === "bookings" ? styles.activeBtn : {}),
+            }}
+            onClick={() => setCurrentPage("bookings")}
+          >
+            My Bookings Page
+          </button>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      </div>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      {/* Render Active View Component */}
+      {renderPage()}
     </>
-  )
+  );
 }
 
-export default App
+// --- App Navigation Component Styles ---
+const styles = {
+  testingMenu: {
+    backgroundColor: "#111827", // Pitch dark tracking bar from top frame image
+    padding: "14px 24px",
+    display: "flex",
+    alignItems: "center",
+    gap: "20px",
+    borderBottom: "2px solid #1e293b",
+  },
+  menuLabel: {
+    color: "#ffffff",
+    fontWeight: "bold",
+    fontSize: "15px",
+    fontFamily: "sans-serif",
+  },
+  btnGroup: {
+    display: "flex",
+    gap: "10px",
+  },
+  testBtn: {
+    backgroundColor: "#374151", // Balanced neutral gray slate button layout
+    color: "#9ca3af",
+    border: "none",
+    padding: "8px 16px",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontWeight: "500",
+    fontSize: "13px",
+    transition: "all 0.2s ease",
+  },
+  activeBtn: {
+    backgroundColor: "#0a7d71", // Matches active confirmation teal highlight state
+    color: "#ffffff",
+    fontWeight: "600",
+  },
+  placeholderContainer: {
+    padding: "60px 20px",
+    textAlign: "center",
+    fontFamily: "sans-serif",
+    minHeight: "80vh",
+    backgroundColor: "#f8f9fa",
+    color: "#1e2530",
+  },
+  backBtn: {
+    marginTop: "20px",
+    backgroundColor: "#1e2530",
+    color: "#fff",
+    border: "none",
+    padding: "10px 20px",
+    borderRadius: "4px",
+    cursor: "pointer",
+  },
+};
+
+export default App;
