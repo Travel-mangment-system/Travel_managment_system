@@ -77,9 +77,13 @@ export default function BusDetails() {
     <div className="bus-details-container">
       {/* Route Header Navigation Row */}
       <div className="route-summary-bar">
-        <span>{from || "Mumbai"} → {to || "Pune"}</span>
-        <button className="close-btn" onClick={() => navigate(-1)}>✕</button>
-      </div>
+  <div>
+    <span className="route-text">{from || "Mumbai"} → {to || "Pune"}</span>
+    {/* Use the date variable here! */}
+    {date && <span className="date-text"> | {date}</span>} 
+  </div>
+  <button className="close-btn" onClick={() => navigate(-1)}>✕</button>
+</div>
 
       {/* Tab Controls Menu */}
       <div className="tabs-navigation">
@@ -214,9 +218,29 @@ export default function BusDetails() {
           </div>
           <button 
             className="final-submit-btn"
-            onClick={() => navigate("/booking", { state: { bus, selectedSeats, selectedBoarding, selectedDropping } })}
+            onClick={() => {
+              // 1. Calculate the total price of the selected seats
+              const totalAmount = selectedSeats.reduce((total, seatId) => {
+                const seatInfo = totalSeats.find(s => s.id === seatId);
+                return total + (seatInfo ? seatInfo.price : 0);
+              }, 0);
+
+              // 2. Navigate to the payment page and pass all the data!
+              navigate("/payment", { 
+                state: { 
+                  bus, 
+                  selectedSeats, 
+                  selectedBoarding, 
+                  selectedDropping,
+                  from,
+                  to,
+                  date,
+                  totalAmount
+                } 
+              });
+            }}
           >
-            Continue Booking
+            Continue to Payment
           </button>
         </div>
       )}

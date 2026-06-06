@@ -1,4 +1,4 @@
-import React from "react";
+//import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,7 +11,11 @@ import Home from "./pages/home.jsx";
 import SearchResults from "./pages/SearchResults.jsx";
 import BusDetails from "./pages/BusDetails.jsx";
 import BusBooking from "./pages/BusBooking";
+import Payment from "./pages/Payment.jsx";
+import Confirmation from "./pages/Confirmation.jsx";
+import MyBookings from "./pages/MyBookings.jsx"
 import "./App.css";
+
 
 // The testing menu component now handles its own visibility conditionally
 function AppTestingMenu() {
@@ -103,6 +107,9 @@ export default function App() {
           <Route path="/search" element={<SearchResults />} />
           <Route path="/bus/:id" element={<BusDetails />} />
           <Route path="/booking" element={<BusBooking />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/confirmation" element={<Confirmation />} />
+          <Route path="/my-bookings" element={<MyBookings />} />
         </Routes>
       </div>
     </Router>

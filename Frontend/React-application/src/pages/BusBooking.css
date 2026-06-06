@@ -1,180 +1,91 @@
-.booking-container {
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 0 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8f9fa;
-  min-height: 80vh;
+/* 🚨 FORCE FIX FOR BOARDING/DROPPING SQUISH 🚨 */
+
+.points-selection-view {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 24px !important;
+  width: 100% !important;
+  align-items: flex-start !important;
 }
 
-.booking-layout-split {
-  display: flex;
-  gap: 30px;
-  align-items: flex-start;
-}
-
-.forms-column-wrapper {
-  flex: 2;
-}
-
-.summary-sidebar-wrapper {
-  flex: 1;
-}
-
-.sticky-summary-sidebar {
-  position: sticky;
-  top: 30px;
-}
-
-.section-main-title {
-  font-size: 22px;
-  color: #212529;
-  margin-bottom: 20px;
-  font-weight: 600;
-}
-
-/* Individual Form Panel Cards Layout */
-.passenger-card-form {
-  background: #ffffff;
-  border: 1px solid #dee2e6;
+.points-column {
+  flex: 1 !important;
+  min-width: 0 !important; /* CRITICAL: Prevents columns from overflowing */
+  background: white;
+  border: 1px solid #dee2e6; /* Adds the neat grey outline from your screenshot */
   border-radius: 8px;
   padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
 }
 
-.passenger-card-header h4 {
-  margin: 0 0 15px 0;
-  font-size: 16px;
-  color: #495057;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.points-column h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
 }
 
-.seat-badge {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-weight: bold;
+.point-card {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  gap: 15px !important;
+  padding: 15px 10px !important;
+  border: 1px solid transparent;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
-/* Flexbox input field grid rows */
-.passenger-inputs-row {
-  display: flex;
-  gap: 15px;
+.point-card:hover {
+  background-color: #f8f9fa;
 }
 
-.input-group {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.input-group.name-field { flex: 2; }
-.input-group.age-field { flex: 0 0 90px; }
-.input-group.gender-field { flex: 0 0 130px; }
-
-.input-group label {
-  font-size: 13px;
-  color: #6c757d;
-  margin-bottom: 6px;
-  font-weight: 500;
-}
-
-.input-group input, .input-group select {
-  padding: 10px 12px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  font-size: 14px;
-  color: #212529;
-  outline: none;
-  background-color: #fff;
-  transition: border-color 0.15s ease-in-out;
-}
-
-.input-group input:focus, .input-group select:focus {
-  border-color: #0a7d71;
-}
-
-/* Action Execution Element Styles */
-.payment-proceed-btn {
-  width: 100%;
-  background-color: #0a7d71; /* redBus Theme Accent */
-  color: #ffffff;
-  border: none;
-  padding: 15px;
-  font-size: 16px;
-  font-weight: bold;
+.point-card.checked {
+  background-color: #e8f5e9 !important;
+  border-color: #0a7d71 !important;
   border-radius: 6px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(216, 78, 85, 0.2);
-  transition: background-color 0.2s ease-in-out;
-  margin-top: 10px;
 }
 
-.payment-proceed-btn:hover {
-  background-color: #0a7d71;
+/* CRITICAL FIX: Stops the radio button from shrinking or floating away */
+.point-card input[type="radio"] {
+  flex-shrink: 0 !important; 
+  margin-top: 4px !important;
+  width: 16px !important;
+  height: 16px !important;
 }
 
-/* Sidebar Dashboard UI styling sheets */
-.summary-title {
+/* CRITICAL FIX: Forces text to stay in its lane and wrap properly */
+.point-details {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+  min-width: 0 !important; 
+}
+
+.point-details .time {
   font-size: 16px;
-  color: #495057;
-  margin: 0 0 12px 0;
-  font-weight: 600;
-}
-
-.summary-travel-card, .fare-breakdown-card {
-  background-color: #ffffff;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  padding: 18px;
-  margin-bottom: 25px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-}
-
-.operator-meta h4 { margin: 0 0 4px 0; color: #212529; font-size: 16px;}
-.operator-meta p { margin: 0; color: #6c757d; font-size: 13px; }
-
-.divider-line {
-  border: 0;
-  border-top: 1px solid #e9ecef;
-  margin: 15px 0;
-}
-
-.route-meta-points p {
-  margin: 8px 0;
-  font-size: 14px;
-  color: #495057;
-}
-
-.fare-line {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  color: #495057;
-  margin-bottom: 12px;
-}
-.fare-line:last-of-type { margin-bottom: 0; }
-
-.total-amount-line {
-  font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
   color: #212529;
 }
 
-.no-booking-data {
-  text-align: center;
-  margin: 100px auto;
+.point-details .name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  margin: 4px 0;
+  word-wrap: break-word; /* Forces long text to break instead of squishing */
 }
-.no-booking-data button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 4px;
+
+.point-details .sub {
+  font-size: 12px;
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+/* Stack on small screens */
+@media (max-width: 768px) {
+  .points-selection-view {
+    flex-direction: column !important;
+  }
 }
