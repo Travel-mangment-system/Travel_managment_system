@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 import Home from "./pages/home.jsx";
 import SearchResults from "./pages/SearchResults.jsx";
+import BusDetails from "./pages/BusDetails.jsx";
+import BusBooking from "./pages/BusBooking";
 import "./App.css";
 
 // The testing menu component now handles its own visibility conditionally
@@ -99,6 +101,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<SearchResults />} />
+          <Route path="/bus/:id" element={<BusDetails />} />
+          <Route path="/booking" element={<BusBooking />} />
         </Routes>
       </div>
     </Router>

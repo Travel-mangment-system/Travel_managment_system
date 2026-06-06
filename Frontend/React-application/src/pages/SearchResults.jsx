@@ -165,7 +165,16 @@ export default function SearchResults() {
                 </div>
                 <button
                   style={styles.bookBtn}
-                  onClick={() => alert(`Booking ${bus.operator}`)}
+                  onClick={() =>
+                      navigate(`/bus/${bus.id}`, {
+                        state: {
+                          bus,
+                          from: fromParam,
+                          to: toParam,
+                          date: dateParam,
+                        },
+                      })
+                      }
                 >
                   Select Seats
                 </button>
