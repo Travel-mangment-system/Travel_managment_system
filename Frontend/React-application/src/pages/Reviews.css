@@ -1,0 +1,290 @@
+/* Custom Palette Tokens */
+:root {
+  --primary-bg-dark: #1F2937;       /* Deep Slate Blue */
+  --secondary-bg-light: #FFFFFF;    /* Pure White */
+  --primary-action: #00796B;        /* Dark Teal */
+  --secondary-action: #374151;      /* Deep Charcoal Grey */
+  --highlight-mint: #1DE9B6;        /* Vibrant Mint Green */
+  --accent-text-light: #F3F4F6;     /* Softened Off-White */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.te-reviews-container {
+  min-height: calc(100vh - 75px);
+  display: flex;
+  flex-direction: column;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: var(--secondary-bg-light);
+}
+
+/* 1. Upper Section Layout - Dark Theme */
+.te-reviews-hero {
+  background-color: var(--primary-bg-dark);
+  padding: 5rem 2rem 10rem 2rem; /* Creates bottom spacing so cards can overlap it beautifully */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.te-reviews-badge {
+  background: var(--secondary-action);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--accent-text-light);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--highlight-mint);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.te-reviews-title {
+  color: var(--accent-text-light);
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  max-width: 800px;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+}
+
+.te-mint-text {
+  color: var(--highlight-mint);
+}
+
+.te-reviews-subtitle {
+  font-size: 15px;
+  color: #9CA3AF;
+  max-width: 550px;
+  line-height: 1.6;
+}
+
+/* 2. Lower Section Layout - Light Theme Grid & Overlap */
+.te-reviews-content-section {
+  background-color: var(--secondary-bg-light);
+  width: 100%;
+  padding: 0 2rem 5rem 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.te-carousel-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: -6rem; /* Pulls the white reviews section cards upwards into the slate banner */
+  padding: 0 3rem;
+}
+
+.te-reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* 3. Review Cards Styling */
+.te-review-card {
+  background-color: var(--secondary-bg-light);
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 10px 25px rgba(31, 41, 55, 0.05); /* Soft deep slate tinted drop shadow */
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  min-height: 260px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+}
+
+.te-review-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-action); /* Subtle dark teal border focus on card hover */
+}
+
+.te-card-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.te-profile-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.te-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #F3F4F6;
+}
+
+.te-user-details h3 {
+  font-size: 14px;
+  color: var(--primary-bg-dark);
+  font-weight: 700;
+  margin: 0;
+}
+
+.te-user-details p {
+  font-size: 12px;
+  color: #6B7280;
+  margin: 2px 0 0 0;
+}
+
+.te-time-stamp {
+  font-size: 11px;
+  color: #9CA3AF;
+}
+
+.te-stars-row {
+  margin-bottom: 0.85rem;
+}
+
+.te-star {
+  color: var(--highlight-mint); /* Dynamic mint stars instead of typical amber stars */
+  font-size: 15px;
+  margin-right: 2px;
+}
+
+.te-review-text {
+  font-size: 13.5px;
+  color: var(--secondary-action);
+  line-height: 1.6;
+  flex-grow: 1;
+  margin-bottom: 1.5rem;
+}
+
+/* 4. Interactive Like Section Layout */
+.te-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #F3F4F6;
+  padding-top: 0.85rem;
+}
+
+.te-like-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  color: #9CA3AF;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.te-like-btn:hover {
+  color: var(--primary-action);
+  background-color: #E6F2F1; /* Soft teal background hint on hover click */
+}
+
+.te-heart-icon {
+  font-size: 14px;
+}
+
+.te-like-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--secondary-action);
+}
+
+/* 5. Carousel Side Arrows Configuration */
+.te-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--secondary-bg-light);
+  border: 1px solid #E5E7EB;
+  color: var(--secondary-action);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.te-carousel-arrow:hover {
+  background-color: var(--primary-action);
+  color: var(--secondary-bg-light);
+  border-color: var(--primary-action);
+}
+
+.arrow-left {
+  left: 0.5rem;
+}
+
+.arrow-right {
+  right: 0.5rem;
+}
+
+/* 6. Fully Responsive Grid Breakpoints */
+
+/* Tablet Optimization (Displays 2 Columns) */
+@media (max-width: 1024px) {
+  .te-reviews-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+  .te-review-card:last-child {
+    display: none; /* Balances layout beautifully */
+  }
+}
+
+/* Mobile Viewport Optimization (Displays 1 Clean Fluid Column) */
+@media (max-width: 680px) {
+  .te-reviews-hero {
+    padding: 4rem 1.5rem 8rem 1.5rem;
+  }
+  
+  .te-reviews-title {
+    font-size: 26px;
+  }
+  
+  .te-carousel-wrapper {
+    margin-top: -4rem;
+    padding: 0; /* Drops arrow margins on tight views */
+  }
+  
+  .te-reviews-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .te-review-card:not(:first-child) {
+    display: none; /* Keeps view compact on mobile viewports */
+  }
+  
+  .te-carousel-arrow {
+    display: none; /* Switches smoothly to standard native swipe layout navigation */
+  }
+}

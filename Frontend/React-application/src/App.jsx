@@ -1,4 +1,4 @@
-//import React from "react";
+// import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -10,12 +10,20 @@ import {
 import Home from "./pages/home.jsx";
 import SearchResults from "./pages/SearchResults.jsx";
 import BusDetails from "./pages/BusDetails.jsx";
-import BusBooking from "./pages/BusBooking";
+import BusBooking from "./pages/BusBooking"; // Ensure this matches your filename (.jsx or .js)
 import Payment from "./pages/Payment.jsx";
 import Confirmation from "./pages/Confirmation.jsx";
-import MyBookings from "./pages/MyBookings.jsx"
-import "./App.css";
+import MyBookings from "./pages/MyBookings.jsx";
+import Login from "./pages/Login.jsx"; // Double check if your folder is named components or Components
+import Register from "./pages/Register.jsx";
+import Reviews from "./pages/Reviews.jsx";
 
+
+/* 
+  If this line throws an error saying "Module not found", 
+  make sure App.css exists in this exact folder, or simply comment it out!
+*/
+import "./App.css";
 
 // The testing menu component now handles its own visibility conditionally
 function AppTestingMenu() {
@@ -37,20 +45,20 @@ function AppTestingMenu() {
         Home / Search
       </button>
       <button
-        style={styles.testingBtnDisabled}
-        onClick={() => alert("Payment Page component not integrated yet.")}
+        style={styles.testingBtn} 
+        onClick={() => navigate("/payment")}
       >
         Payment Page
       </button>
       <button
-        style={styles.testingBtnDisabled}
-        onClick={() => alert("Confirmation Page component not integrated yet.")}
+        style={styles.testingBtn} 
+        onClick={() => navigate("/confirmation")}
       >
         Confirmation Page
       </button>
       <button
-        style={styles.testingBtnDisabled}
-        onClick={() => alert("My Bookings Page component not integrated yet.")}
+        style={styles.testingBtn} 
+        onClick={() => navigate("/my-bookings")}
       >
         My Bookings Page
       </button>
@@ -74,30 +82,24 @@ export default function App() {
             <Link to="/" style={styles.navLinkBtnActive}>
               Home
             </Link>
-            <button
-              style={styles.navLinkBtn}
-              onClick={() => alert("Redirecting to Bookings...")}
-            >
+            <Link to="/my-bookings" style={styles.navLinkBtnStyle}>
               My Bookings
-            </button>
-            <button
+            </Link>
+            {/* <button
               style={styles.navLinkBtn}
               onClick={() => alert("Redirecting to Reviews...")}
             >
               Reviews
-            </button>
-            <button
-              style={styles.navLinkBtn}
-              onClick={() => alert("Opening Login...")}
-            >
+            </button> */}
+            <Link to="/reviews" style={styles.navLinkBtnStyle}>
+              Reviews
+            </Link>
+            <Link to="/login" style={styles.navLinkBtnStyle}>
               Login
-            </button>
-            <button
-              style={styles.registerBtn}
-              onClick={() => alert("Opening Registration...")}
-            >
+            </Link>
+            <Link to="/register" style={styles.navLinkBtnStyle}>
               Register
-            </button>
+            </Link>
           </div>
         </nav>
 
@@ -110,12 +112,16 @@ export default function App() {
           <Route path="/payment" element={<Payment />} />
           <Route path="/confirmation" element={<Confirmation />} />
           <Route path="/my-bookings" element={<MyBookings />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/reviews" element={<Reviews />} />
         </Routes>
       </div>
     </Router>
   );
 }
 
+// Fixed syntax layout to prevent compiler compilation errors
 const styles = {
   appContainer: {
     fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
@@ -152,15 +158,6 @@ const styles = {
     color: "#ffffff",
     fontWeight: "bold",
   },
-  testingBtnDisabled: {
-    backgroundColor: "#1f2937",
-    color: "#4b5563",
-    border: "none",
-    padding: "6px 14px",
-    borderRadius: "4px",
-    cursor: "not-allowed",
-    fontSize: "12px",
-  },
   navbar: {
     backgroundColor: "#1e2530",
     padding: "16px 64px",
@@ -175,7 +172,11 @@ const styles = {
     textDecoration: "none",
     letterSpacing: "0.5px",
   },
-  navLinks: { display: "flex", gap: "12px", alignItems: "center" },
+  navLinks: { 
+    display: "flex", 
+    gap: "12px", 
+    alignItems: "center" 
+  },
   navLinkBtn: {
     backgroundColor: "#2d3748",
     color: "#cbd5e1",
@@ -185,6 +186,16 @@ const styles = {
     cursor: "pointer",
     fontSize: "13px",
     fontWeight: "500",
+  },
+  navLinkBtnStyle: {
+    backgroundColor: "#2d3748",
+    color: "#cbd5e1",
+    textDecoration: "none",
+    padding: "8px 16px",
+    borderRadius: "4px",
+    fontSize: "13px",
+    fontWeight: "500",
+    display: "inline-block",
   },
   navLinkBtnActive: {
     backgroundColor: "#0a7d71",
