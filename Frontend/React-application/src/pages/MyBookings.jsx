@@ -1,38 +1,42 @@
-import { useState } from 'react';
+import { useState } from "react";
+// 1. Import Link from react-router-dom
+import { Link } from "react-router-dom";
 
 export default function MyBookings() {
-  const [activeTab, setActiveTab] = useState('upcoming');
+  const [activeTab, setActiveTab] = useState("upcoming");
 
   return (
     <div className="page-container">
       <nav className="navbar">
         <div className="brand">TravelSys</div>
         <div className="nav-links">
-          <a href="#home">Home</a>
-          <a href="#bookings" className="active-link">My Bookings</a>
+          <Link to="/">Home</Link>
+          <a href="#bookings" className="active-link">
+            My Bookings
+          </a>
         </div>
       </nav>
 
       <div className="content-wrapper pt-large">
         <h1 className="page-title">My Bookings</h1>
-        
+
         <div className="tabs">
-          <button 
-            onClick={() => setActiveTab('upcoming')}
-            className={activeTab === 'upcoming' ? 'tab active-tab' : 'tab'}
+          <button
+            onClick={() => setActiveTab("upcoming")}
+            className={activeTab === "upcoming" ? "tab active-tab" : "tab"}
           >
             Upcoming Trips
           </button>
-          <button 
-            onClick={() => setActiveTab('past')}
-            className={activeTab === 'past' ? 'tab active-tab' : 'tab'}
+          <button
+            onClick={() => setActiveTab("past")}
+            className={activeTab === "past" ? "tab active-tab" : "tab"}
           >
             Past Trips
           </button>
         </div>
 
         <div className="booking-list">
-          {activeTab === 'upcoming' && (
+          {activeTab === "upcoming" && (
             <div className="card booking-card">
               <div className="booking-info">
                 <div className="status-row">
@@ -49,7 +53,7 @@ export default function MyBookings() {
             </div>
           )}
 
-          {activeTab === 'past' && (
+          {activeTab === "past" && (
             <div className="card booking-card past-booking">
               <div className="booking-info">
                 <div className="status-row">
