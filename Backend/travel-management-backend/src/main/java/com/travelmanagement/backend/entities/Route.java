@@ -9,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
@@ -26,7 +27,7 @@ import lombok.Setter;
 @Table(name = "routes")
 public class Route {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="route_id")
 	private Long id;
 	@Column(name="start_location",nullable = false,length = 100)
@@ -37,8 +38,8 @@ public class Route {
 	private BigDecimal distanceKm;
 	@Column(name="base_fare",nullable = false)
 	private Double baseFare;
-//	@OneToMany(mappedBy = "route",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-//	private List<Bus>buses;
+	@OneToMany(mappedBy = "route",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	private List<Bus>buses = new ArrayList<>();
 	@OneToMany(mappedBy = "route",cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY)
 	@OrderBy("stopOrder ASC")
 	private List<BusStop> stops = new ArrayList<>();

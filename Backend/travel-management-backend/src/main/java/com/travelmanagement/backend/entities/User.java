@@ -1,5 +1,4 @@
 package com.travelmanagement.backend.entities;
-
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -53,5 +52,5 @@ public class User {
 	{
 		this.createdAt=LocalDateTime.now();
 	}
-	
+
 }
