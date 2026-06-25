@@ -1,4 +1,4 @@
-package com.travelmanagement.backend.entities.bus;
+package com.travelmanagement.backend.entities;
 
 //import org.springframework.data.jpa.repository.query.EqlParser.General_derived_pathContext;
 

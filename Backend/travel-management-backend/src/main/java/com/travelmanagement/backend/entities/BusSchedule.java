@@ -1,4 +1,4 @@
-package com.travelmanagement.backend.entities.bus;
+package com.travelmanagement.backend.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
