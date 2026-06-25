@@ -1,5 +1,6 @@
 package com.travelmanagement.backend.entities;
 
-public class User {
-
+public enum BusStatus {
+	ACTIVE,
+    INACTIVE
 }
