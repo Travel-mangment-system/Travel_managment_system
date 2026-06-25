@@ -16,6 +16,7 @@ public class SeatLock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "lock_id")
     private Long id;
 
     @Column(name = "expires_at")

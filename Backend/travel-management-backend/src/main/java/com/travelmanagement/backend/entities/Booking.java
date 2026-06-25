@@ -1,6 +1,6 @@
 package com.travelmanagement.backend.entities;
 
-import com.travelmanagement.backend.entities.bus.BusSchedule;
+import com.travelmanagement.backend.entities.BusSchedule;
 import com.travelmanagement.backend.entities.BookingStatus;
 import jakarta.persistence.*;
 import lombok.*;
