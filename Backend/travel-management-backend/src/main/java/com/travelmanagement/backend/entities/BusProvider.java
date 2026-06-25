@@ -49,9 +49,10 @@ public class BusProvider {
 	@Column(name = "verification_status")
 	private boolean verified;
 	
-//	@ManyToOne(fetch = FetchType.LAZY )
-//	@JoinColumn(name = "user_id", nullable = false)
-//	private User user;
+	@ManyToOne(fetch = FetchType.LAZY )
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
+	
 	
 	@OneToMany(mappedBy = "busProvider", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Bus> buses;
