@@ -11,6 +11,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
@@ -30,16 +32,24 @@ public class Route {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="route_id")
 	private Long id;
-	@Column(name="start_location",nullable = false,length = 100)
-	private String startLocation;
-	@Column(name="end_location",nullable = false, length = 100)
-	private String endLocation;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="start_city_id", nullable = false)
+	private City startCity;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="end_city_id", nullable = false)
+	private City endCity;
+	
 	@Column(name="distance_km",nullable = false,precision = 8, scale = 2)
 	private BigDecimal distanceKm;
+	
 	@Column(name="base_fare",nullable = false)
 	private Double baseFare;
+	
 	@OneToMany(mappedBy = "route",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private List<Bus>buses = new ArrayList<>();
+	
 	@OneToMany(mappedBy = "route",cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY)
 	@OrderBy("stopOrder ASC")
 	private List<BusStop> stops = new ArrayList<>();
