@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.travelmanagement.backend.dtos.RegisterRequestDTO;
-import com.travelmanagement.backend.sevices.AuthService;
+import com.travelmanagement.backend.services.AuthService;
 
 import lombok.RequiredArgsConstructor;
 
