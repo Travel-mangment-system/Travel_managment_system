@@ -15,15 +15,16 @@ public class TravelManagementBackendApplication {
 	}
 	
 	@Bean
-	ModelMapper modelMapper()
-	{
-		ModelMapper mapper=new ModelMapper();
-		//configure mapper - to transfer the matching props (name + data type)
+	ModelMapper modelMapper() {
+		ModelMapper mapper = new ModelMapper();
+		
+		// Changed to LOOSE strategy to handle travel DTO transformations without strict mismatches
 		mapper.getConfiguration()
-		.setMatchingStrategy(MatchingStrategies.STRICT)
-		//configure mapper - not to transfer nulls from src -> dest
-		.setPropertyCondition(Conditions.isNotNull());
-		return mapper;//Method rets configured ModelMapper bean to SC
+			.setMatchingStrategy(MatchingStrategies.LOOSE)
+			// Prevents overwriting valid database defaults with null fields during updates
+			.setPropertyCondition(Conditions.isNotNull());
+			
+		return mapper; // Returns the configured instance to the Spring Container
 	}
 	
 
