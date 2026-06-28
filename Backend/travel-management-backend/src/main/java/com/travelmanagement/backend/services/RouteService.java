@@ -1,4 +1,4 @@
-package com.travelmanagement.backend.sevices;
+package com.travelmanagement.backend.services;
 
 import com.travelmanagement.backend.dtos.RouteDto.RouteRequest;
 import com.travelmanagement.backend.dtos.RouteDto.RouteResponse;

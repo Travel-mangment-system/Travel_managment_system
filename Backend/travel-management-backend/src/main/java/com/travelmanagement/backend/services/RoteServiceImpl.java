@@ -1,4 +1,4 @@
-package com.travelmanagement.backend.sevices;
+package com.travelmanagement.backend.services;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
