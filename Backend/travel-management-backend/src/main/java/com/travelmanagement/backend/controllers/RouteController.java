@@ -1,5 +1,6 @@
 package com.travelmanagement.backend.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,6 @@ public class RouteController {
 	
 	@PostMapping
 	public ResponseEntity<?> createRoute(@RequestBody RouteRequest request){
-		return ResponseEntity.ok(routeService.createRoute(request));
+		return ResponseEntity.status(HttpStatus.CREATED).body(routeService.createRoute(request));
 	}
 }

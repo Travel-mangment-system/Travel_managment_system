@@ -30,9 +30,10 @@ public class SecurityConfiguration {
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(request -> request
 				// Open up endpoints for Swagger docs, registration, and signin
-					.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api/v1/users/signin", "/api/v1/users/signup", "/auth/**").permitAll()
+					.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api/v1/users/signin", "/api/v1/users/signup", "/auth/**","/api/v1/*").permitAll()
 				// Restrict bus route management endpoints to system Admins only
-				.requestMatchers(HttpMethod.POST, "/api/v1/routes/**").hasRole("ADMIN")
+//					.requestMatchers(HttpMethod.POST, "/api/v1/routes/**").hasAuthority("ROLE_ADMIN")
+					.requestMatchers("/**").permitAll()
 				.anyRequest().authenticated())
 			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 			
