@@ -1,5 +1,5 @@
 package com.travelmanagement.backend.entities;
-
+import com.travelmanagement.backend.entities.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
