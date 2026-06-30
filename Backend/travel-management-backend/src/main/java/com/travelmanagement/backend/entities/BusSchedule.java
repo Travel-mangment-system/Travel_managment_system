@@ -1,6 +1,6 @@
 
 package com.travelmanagement.backend.entities;
-
+import com.travelmanagement.backend.entities.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,6 +38,12 @@ public class BusSchedule {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long scheduleId;
+	
+	@Column(name="source_city")
+	private String sourceCity;
+	
+	@Column(name="destination_city")
+	private String destinationCity;
 	
 	@Column(name="departure_datetime",nullable = false)
 	private LocalDateTime departureDatetime;

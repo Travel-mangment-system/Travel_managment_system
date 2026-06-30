@@ -6,4 +6,6 @@ import com.travelmanagement.backend.entities.Route;
 
 public interface RouteRepository extends JpaRepository<Route, Long> {
 
+	String findByStartCityCityName(Route scheduleRoute);
+
 }
