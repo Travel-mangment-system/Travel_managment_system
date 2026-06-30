@@ -46,9 +46,7 @@ public class Route {
 	
 	@Column(name="base_fare",nullable = false)
 	private Double baseFare;
-	
-	@OneToMany(mappedBy = "route",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	private List<Bus>buses = new ArrayList<>();
+
 	
 	@OneToMany(mappedBy = "route",cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY)
 	@OrderBy("stopOrder ASC")

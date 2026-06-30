@@ -63,9 +63,7 @@ public class Bus {
 	@JoinColumn(name = "provider_id", nullable = false)
 	private BusProvider busProvider;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "route_id", nullable = false)
-    private Route route;
+	
 	
 //	@OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, orphanRemoval = true)
 //	private List<BusSchedule> busSchedules;
