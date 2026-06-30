@@ -23,26 +23,41 @@ public class BusServiceImpl implements BusService {
 
     @Override
     public BusResponseDTO addBus(BusRequestDTO request) {
-        BusProvider provider = providerRepository.findById(request.getProviderId()).orElseThrow();
-        Route route = routeRepository.findById(request.getRouteId()).orElseThrow();
+        // Added clear exception messages to prevent generic NoSuchElementException
+        BusProvider provider = providerRepository.findById(request.getProviderId())
+                .orElseThrow(() -> new RuntimeException("Bus Provider not found with ID: " + request.getProviderId()));
+        
+        Route route = routeRepository.findById(request.getRouteId())
+                .orElseThrow(() -> new RuntimeException("Route not found with ID: " + request.getRouteId()));
 
-        Bus bus = modelMapper.map(request, Bus.class);
+        Bus bus = new Bus();
+        bus.setBusNumber(request.getBusNumber());
+        bus.setBusName(request.getBusName());
+        bus.setBusType(request.getBusType());
+        bus.setTotalSeats(request.getTotalSeats());
         bus.setBusProvider(provider);
         bus.setRoute(route);
         bus.setStatus(BusStatus.ACTIVE);
+        Bus savedBus = busRepository.save(bus);
 
-        return modelMapper.map(busRepository.save(bus), BusResponseDTO.class);
+        return modelMapper.map(savedBus, BusResponseDTO.class);
     }
 
     @Override
     public BusResponseDTO getBusById(Long id) {
-        Bus bus = busRepository.findById(id).orElseThrow();
+        // Added exception message
+        Bus bus = busRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bus not found with ID: " + id));
+        
         return modelMapper.map(bus, BusResponseDTO.class);
     }
 
     @Override
     public BusResponseDTO updateStatus(Long id, BusStatusRequestDTO request) {
-        Bus bus = busRepository.findById(id).orElseThrow();
+        // Added exception message
+        Bus bus = busRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bus not found with ID: " + id));
+        
         bus.setStatus(request.getStatus());
         return modelMapper.map(busRepository.save(bus), BusResponseDTO.class);
     }

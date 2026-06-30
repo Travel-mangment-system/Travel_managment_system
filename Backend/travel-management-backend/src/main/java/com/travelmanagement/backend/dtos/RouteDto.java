@@ -9,7 +9,7 @@ public class RouteDto {
 	public static class RouteRequest{
 		private Long sourceCityId;
 		private Long destinationCityId;
-		private BigDecimal deistaneKm;
+		private BigDecimal distanceKm;
 		private Double baseFare;
 	}
 	

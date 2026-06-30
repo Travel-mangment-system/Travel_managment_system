@@ -30,11 +30,17 @@ public class RoteServiceImpl implements RouteService {
 		Route route = new Route();
 		route.setStartCity(source);
 		route.setEndCity(destination);
-		route.setDistanceKm(request.getDeistaneKm());
+		route.setDistanceKm(request.getDistanceKm());
 		route.setBaseFare(request.getBaseFare());
 		
 		Route savedRoute = routeRepo.save(route);
-		return map.map(savedRoute, RouteResponse.class);
+		RouteResponse routeRes= new RouteResponse();
+		routeRes.setSourceCityName(source.getCityName());
+		routeRes.setDestinationCityName(destination.getCityName());
+		routeRes.setBaseFare(request.getBaseFare());
+		routeRes.setDistanceKm(request.getDistanceKm());
+		routeRes.setId(route.getId());
+		return routeRes;
 	}
 
 }
