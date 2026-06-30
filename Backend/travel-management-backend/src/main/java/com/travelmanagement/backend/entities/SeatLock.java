@@ -36,4 +36,7 @@ public class SeatLock {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+    
+    @Column(name = "lock_reference")
+    private String lockReference;
 }

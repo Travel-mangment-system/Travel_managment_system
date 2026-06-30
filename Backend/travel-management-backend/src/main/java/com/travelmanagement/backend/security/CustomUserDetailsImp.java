@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.travelmanagement.backend.entities.User;
 import com.travelmanagement.backend.entities.UserRole;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -38,7 +37,7 @@ public class CustomUserDetailsImp implements UserDetails {
 
 	// Helper getters to allow your JwtUtils engine to fetch custom claims metrics easily
 	public Long getUserId() {
-		return user.getUserId();
+		return user.getId();
 	}
 
 	public String getUserFullName() {

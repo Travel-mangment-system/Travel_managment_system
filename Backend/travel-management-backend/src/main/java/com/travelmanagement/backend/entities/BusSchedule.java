@@ -1,3 +1,4 @@
+
 package com.travelmanagement.backend.entities;
 
 import java.math.BigDecimal;
@@ -5,7 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.ManyToAny;
-
 
 import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
@@ -37,7 +37,7 @@ public class BusSchedule {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long scheduleId;
 	
 	@Column(name="departure_datetime",nullable = false)
 	private LocalDateTime departureDatetime;

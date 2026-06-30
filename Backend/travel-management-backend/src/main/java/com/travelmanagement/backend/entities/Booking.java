@@ -1,13 +1,12 @@
 package com.travelmanagement.backend.entities;
 
-import com.travelmanagement.backend.entities.BusSchedule;
-import com.travelmanagement.backend.entities.BookingStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "bookings")
@@ -45,4 +44,7 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
     private BusSchedule schedule;
+    
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<BookedSeat> bookedSeats;
 }

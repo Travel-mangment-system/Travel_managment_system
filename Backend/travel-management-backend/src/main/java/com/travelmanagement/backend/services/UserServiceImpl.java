@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.travelmanagement.backend.security.CustomUserDetailsImp;
+import com.travelmanagement.backend.security.JwtUtils;
 import com.travelmanagement.backend.dtos.RegisterRequestDTO;
 import com.travelmanagement.backend.dtos.UserLoginRequestDTO;
 import com.travelmanagement.backend.dtos.UserLoginResponseDTO;
@@ -17,8 +19,6 @@ import com.travelmanagement.backend.dtos.UserProfileResponseDTO;
 import com.travelmanagement.backend.entities.User;
 import com.travelmanagement.backend.entities.UserStatus;
 import com.travelmanagement.backend.repositories.UserRepository;
-import com.travelmanagement.backend.security.CustomUserDetailsImp;
-import com.travelmanagement.backend.security.JwtUtils;
 
 import lombok.RequiredArgsConstructor;
 
