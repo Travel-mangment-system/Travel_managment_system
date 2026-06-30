@@ -69,7 +69,7 @@ public class Bus {
 	
 	@OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<BusSchedule> busSchedules;
-	
+
 //	@OneToMany(mappedBy ="bus", cascade = CascadeType.ALL)
 //	private List<Review> reviews;
 }

@@ -19,9 +19,11 @@ import com.travelmanagement.backend.dtos.ScheduleDto.SeatLayoutResponse;
 import com.travelmanagement.backend.dtos.ScheduleDto.SeatStatus;
 import com.travelmanagement.backend.entities.Bus;
 import com.travelmanagement.backend.entities.BusSchedule;
+import com.travelmanagement.backend.entities.City;
 import com.travelmanagement.backend.entities.Route;
 import com.travelmanagement.backend.entities.ScheduleStatus;
 import com.travelmanagement.backend.repositories.BusRepository;
+import com.travelmanagement.backend.repositories.CityRepository;
 import com.travelmanagement.backend.repositories.RouteRepository;
 import com.travelmanagement.backend.repositories.ScheduleRepository;
 
@@ -35,6 +37,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	private final ScheduleRepository scheduleRepository;
 	private final RouteRepository routeRepository;
 	private final BusRepository busRepository;
+	private final CityRepository cityRepository;
 	private final ModelMapper map;
 	
 	@Override
@@ -61,6 +64,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 		busSchedule.setAvailableSeats(bus.getTotalSeats());
 		busSchedule.setStatus(ScheduleStatus.SCHEDULED);
 		
+		Route scheduleRoute=routeRepository.findById(request.getRouteId()).orElseThrow(()-> new RuntimeException("Route Not Found"));
+		String sourceCity = scheduleRoute.getStartCity().getCityName();
+		String destinationCity = scheduleRoute.getEndCity().getCityName();
+		busSchedule.setSourceCity(sourceCity);
+		busSchedule.setDestinationCity(destinationCity);
 		BusSchedule savedSchedule = scheduleRepository.save(busSchedule);
 		return map.map(savedSchedule,ScheduleResponse.class);
 		// 4. Map the response manually
