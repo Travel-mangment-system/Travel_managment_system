@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -22,10 +21,13 @@ import com.travelmanagement.backend.entities.BusSchedule;
 import com.travelmanagement.backend.entities.City;
 import com.travelmanagement.backend.entities.Route;
 import com.travelmanagement.backend.entities.ScheduleStatus;
+import com.travelmanagement.backend.entities.Booking; // ADDED
+import com.travelmanagement.backend.entities.BookingStatus; // ADDED
 import com.travelmanagement.backend.repositories.BusRepository;
 import com.travelmanagement.backend.repositories.CityRepository;
 import com.travelmanagement.backend.repositories.RouteRepository;
 import com.travelmanagement.backend.repositories.ScheduleRepository;
+import com.travelmanagement.backend.repositories.Booking.BookingRepository; // ADDED
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	private final RouteRepository routeRepository;
 	private final BusRepository busRepository;
 	private final CityRepository cityRepository;
+	private final BookingRepository bookingRepository; // ADDED for refund logic
 	private final ModelMapper map;
 	
 	@Override
@@ -71,10 +74,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 		busSchedule.setDestinationCity(destinationCity);
 		BusSchedule savedSchedule = scheduleRepository.save(busSchedule);
 		return map.map(savedSchedule,ScheduleResponse.class);
-		// 4. Map the response manually
-		
-		
 	}
+
 	@Override
 	public List<ScheduleResponse> searchSchedules(Long sourceId, Long destinationId, LocalDate date)
 	{
@@ -93,7 +94,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		int capacity = schedule.getBus().getTotalSeats();
 		
 		SeatLayoutResponse response = new SeatLayoutResponse();
-		response.setScheduleId(schedule.getId());
+		response.setScheduleId(schedule.getScheduleId()); // Uses your exact field name
 		response.setTotalCapacity(capacity);
 		
 		List<SeatStatus> seatList = new ArrayList<>();
@@ -109,10 +110,38 @@ public class ScheduleServiceImpl implements ScheduleService {
 		return response;
 	}
 	
-//	BusSchedule response = new BusSchedule();
-//	response.setId(savedSchedule.getId());
-//	response.set (bus.getBusName());
-//	
+	// --- NEW LOGIC: CANCEL SCHEDULE AND REFUND PASSENGERS ---
+	@Override
+	public void cancelSchedule(Long scheduleId) {
+		// 1. Fetch the specific schedule
+		BusSchedule schedule = scheduleRepository.findById(scheduleId)
+				.orElseThrow(() -> new RuntimeException("Schedule not found with ID: " + scheduleId));
+
+		// 2. Prevent cancelling trips that have already started
+		if (schedule.getDepartureDatetime().isBefore(LocalDateTime.now())) {
+			throw new RuntimeException("Cannot cancel a schedule that has already departed.");
+		}
+
+		// 3. Mark the schedule as cancelled (Soft Delete)
+		// NOTE: Make sure "CANCELLED" exists in your ScheduleStatus enum!
+		schedule.setStatus(ScheduleStatus.CANCELLED); 
+		scheduleRepository.save(schedule);
+
+		// 4. Find all confirmed bookings for THIS specific schedule
+		List<Booking> activeBookings = bookingRepository
+				.findBySchedule_ScheduleIdAndBookingStatus(scheduleId, BookingStatus.CONFIRMED);
+
+		// 5. Cancel bookings and issue 100% refunds
+		for (Booking booking : activeBookings) {
+			booking.setBookingStatus(BookingStatus.CANCELLED);
 			
-	
+			// Calculate 100% Refund (Provider's fault)
+			BigDecimal refundAmount = booking.getTotalAmount();
+			
+			// TODO: Call your Payment Gateway integration here to process refund
+			// paymentService.processRefund(booking.getPaymentId(), refundAmount);
+			
+			bookingRepository.save(booking);
+		}
+	}
 }

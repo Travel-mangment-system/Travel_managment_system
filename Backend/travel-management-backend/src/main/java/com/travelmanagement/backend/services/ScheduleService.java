@@ -12,4 +12,5 @@ public interface ScheduleService {
 	ScheduleResponse createSchedule(ScheduleRequest request);
 	List<ScheduleResponse> searchSchedules(Long sourceId, Long destinationId, LocalDate date);
     SeatLayoutResponse getSeatLayout(Long scheduleId);
+	void cancelSchedule(Long scheduleId);
 }

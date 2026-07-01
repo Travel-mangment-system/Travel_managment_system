@@ -2,6 +2,7 @@ package com.travelmanagement.backend.controllers;
 import com.travelmanagement.backend.services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @RestController
+//@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 	private final UserService userService;
 	

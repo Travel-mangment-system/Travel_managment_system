@@ -35,6 +35,9 @@ public class BookingApiDtos {
 		private String lockId;
 		private String paymentMethod;
 		private List<PassengerDto> passengers;
+		// Inside BookingRequestDto
+		private Long boardingStopId;
+		private Long dropOffStopId;
 	}
 	@Data
 	public static class BookingResponseDto{

@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.travelmanagement.backend.entities.Booking;
+import com.travelmanagement.backend.entities.BookingStatus;
 import com.travelmanagement.backend.entities.User;
 
 public interface BookingRepository extends JpaRepository<Booking, Long>{
@@ -13,5 +14,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long>{
 
 	List<Booking> findAllByUserId(Long userId);
 
+	List<Booking> findBySchedule_ScheduleIdAndBookingStatus(Long scheduleId, BookingStatus status);
 	
 }

@@ -2,14 +2,23 @@ package com.travelmanagement.backend.services;
 
 import com.travelmanagement.backend.dtos.*;
 import com.travelmanagement.backend.entities.*;
-import com.travelmanagement.backend.entities.bus.*;
 import com.travelmanagement.backend.repositories.BusProviderRepository;
 import com.travelmanagement.backend.repositories.BusRepository;
 import com.travelmanagement.backend.repositories.RouteRepository;
+import com.travelmanagement.backend.repositories.Booking.BookingRepository;
+import com.travelmanagement.backend.repositories.Booking.BusScheduleRepository;
+// Make sure this import matches exactly where your SeatRepository is located!
+import com.travelmanagement.backend.repositories.Booking.SeatRepository; 
+
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -19,6 +28,10 @@ public class BusServiceImpl implements BusService {
     private final BusRepository busRepository;
     private final BusProviderRepository providerRepository;
     private final RouteRepository routeRepository;
+    private final SeatRepository seatRepository; // ADDED: SeatRepository dependency
+    private final BusScheduleRepository busScheduleRepository;
+    private final BookingRepository bookingRepository;
+    
     private final ModelMapper modelMapper;
 
     @Override
@@ -38,7 +51,31 @@ public class BusServiceImpl implements BusService {
         bus.setBusProvider(provider);
         bus.setRoute(route);
         bus.setStatus(BusStatus.ACTIVE);
+        
+        // Save the bus first so we have an ID for the seats to link to
         Bus savedBus = busRepository.save(bus);
+
+        // --- NEW LOGIC: AUTO-GENERATE SEATS ---
+        List<Seat> seatsToSave = new ArrayList<>();
+        
+        for (int i = 1; i <= savedBus.getTotalSeats(); i++) {
+            Seat seat = new Seat();
+            seat.setSeatNumber("S" + i);
+            seat.setBus(savedBus);
+            
+            // Assign SeatType alternating between WINDOW and AISLE
+            if (i % 2 == 0) {
+                seat.setSeatType(SeatType.AISLE);
+            } else {
+                seat.setSeatType(SeatType.WINDOW);
+            }
+            
+            seatsToSave.add(seat);
+        }
+        
+        // Save all seats in one batch query for high performance
+        seatRepository.saveAll(seatsToSave);
+        // --------------------------------------
 
         return modelMapper.map(savedBus, BusResponseDTO.class);
     }
@@ -61,4 +98,44 @@ public class BusServiceImpl implements BusService {
         bus.setStatus(request.getStatus());
         return modelMapper.map(busRepository.save(bus), BusResponseDTO.class);
     }
+
+	@Override
+	public void deleteBus(Long busId) {
+		Bus bus = busRepository.findById(busId)
+                .orElseThrow(() -> new RuntimeException("Bus not found with ID: " + busId));
+        
+        bus.setStatus(BusStatus.INACTIVE);
+        busRepository.save(bus);
+
+        // 2. Find all FUTURE schedules for this bus
+        LocalDateTime now = LocalDateTime.now();
+        List<BusSchedule> futureSchedules = busScheduleRepository.findByBusIdAndDepartureDatetimeAfter(busId, now);
+
+        // 3. Process Cancellations and Refunds
+        for (BusSchedule schedule : futureSchedules) {
+            
+            // Find all confirmed bookings for this schedule
+            List<Booking> activeBookings = bookingRepository
+                    .findBySchedule_ScheduleIdAndBookingStatus(schedule.getScheduleId(), BookingStatus.CONFIRMED);
+
+            for (Booking booking : activeBookings) {
+                // Change status to CANCELLED
+            	System.out.println("DEBUG: Cancelling booking ID: " + booking.getId());
+                booking.setBookingStatus(BookingStatus.CANCELLED);
+                
+                // Calculate 100% Refund (Because it is the provider's fault)
+                BigDecimal refundAmount = booking.getTotalAmount();
+                
+                // TODO: Call your PaymentService here to actually send the money back to the bank
+                // paymentService.processRefund(booking.getPaymentId(), refundAmount);
+                
+                bookingRepository.save(booking);
+                
+                // TODO: Send an Email or SMS to the user letting them know!
+            }
+            schedule.setStatus(ScheduleStatus.CANCELLED);
+            busScheduleRepository.save(schedule);
+        }
+		
+	}
 }
