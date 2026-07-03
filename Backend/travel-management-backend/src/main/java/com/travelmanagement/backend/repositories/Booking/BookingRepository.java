@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.travelmanagement.backend.entities.Booking;
 import com.travelmanagement.backend.entities.BookingStatus;
@@ -15,5 +16,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long>{
 	List<Booking> findAllByUserId(Long userId);
 
 	List<Booking> findBySchedule_ScheduleIdAndBookingStatus(Long scheduleId, BookingStatus status);
+	
+	@Query(value = "SELECT * FROM bookings ORDER BY id DESC LIMIT 1", nativeQuery = true)
+    Optional<Booking> findLatestBooking();
 	
 }
