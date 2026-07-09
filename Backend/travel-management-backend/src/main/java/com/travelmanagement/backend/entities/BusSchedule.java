@@ -37,7 +37,7 @@ public class BusSchedule {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long scheduleId;
 	
 	@Column(name="source_city")
 	private String sourceCity;

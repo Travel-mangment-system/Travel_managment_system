@@ -93,7 +93,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		int capacity = schedule.getBus().getTotalSeats();
 		
 		SeatLayoutResponse response = new SeatLayoutResponse();
-		response.setScheduleId(schedule.getId());
+		response.setScheduleId(schedule.getScheduleId());
 		response.setTotalCapacity(capacity);
 		
 		List<SeatStatus> seatList = new ArrayList<>();
