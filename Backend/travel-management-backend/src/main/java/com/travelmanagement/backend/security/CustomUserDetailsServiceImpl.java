@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.travelmanagement.backend.entities.User;
+
 import com.travelmanagement.backend.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;

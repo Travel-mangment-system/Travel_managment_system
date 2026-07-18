@@ -1,6 +1,7 @@
 package com.travelmanagement.backend.entities;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -38,5 +39,4 @@ public class BusStop {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="route_id",nullable = false)
 	private Route route;
-	
 }

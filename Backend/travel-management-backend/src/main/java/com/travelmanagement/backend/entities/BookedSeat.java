@@ -51,5 +51,14 @@ public class BookedSeat {
 	@JoinColumn(name="seat_id",nullable = false)
 	private Seat seat;
 	
+	// Add these inside your BookedSeat class
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="boarding_stop_id", nullable = false)
+	private BusStop boardingStop;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="drop_off_stop_id", nullable = false)
+	private BusStop dropOffStop;
+	
 
 }

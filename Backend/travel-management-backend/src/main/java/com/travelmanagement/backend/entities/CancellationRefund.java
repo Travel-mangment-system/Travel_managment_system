@@ -3,8 +3,6 @@ package com.travelmanagement.backend.entities;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

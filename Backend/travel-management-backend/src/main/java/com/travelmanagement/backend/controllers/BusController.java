@@ -28,4 +28,13 @@ public class BusController {
     public ResponseEntity<BusResponseDTO> updateStatus(@PathVariable Long id, @RequestBody BusStatusRequestDTO request) {
         return ResponseEntity.ok(busService.updateStatus(id, request));
     }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteBus(@PathVariable Long id) {
+        
+        // Calls the service method we just built with the refund logic
+        busService.deleteBus(id);
+        
+        return ResponseEntity.ok("Bus successfully deactivated and all future bookings have been refunded.");
+    }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,5 +49,13 @@ public class ScheduleController {
     public ResponseEntity<SeatLayoutResponse> getSeatLayout(@PathVariable("id") Long scheduleId) {
         SeatLayoutResponse response = scheduleService.getSeatLayout(scheduleId);
         return ResponseEntity.ok(response);
+    }
+    @DeleteMapping("/{scheduleId}")
+    public ResponseEntity<String> cancelSchedule(@PathVariable Long scheduleId) {
+        
+        // Calls the service method we just built with the 100% refund logic
+        scheduleService.cancelSchedule(scheduleId);
+        
+        return ResponseEntity.ok("Schedule successfully cancelled and all passengers have been refunded 100%.");
     }
 }

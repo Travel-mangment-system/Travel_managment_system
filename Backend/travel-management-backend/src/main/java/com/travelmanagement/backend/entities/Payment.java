@@ -35,11 +35,14 @@ public class Payment {
 	private Long id;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(name="payment_method",nullable = false)
+	@Column(name="payment_method")
 	private PaymentMethod paymentMethod;
 	
-	@Column(name="transaction_id",unique = true,nullable = false)
-	private String transactionId;
+	@Column(name="razorpay_order_id", unique = true, nullable = false)
+    private String razorpayOrderId;
+	
+	@Column(name="razorpay_payment_id", unique = true)
+    private String razorpayPaymentId;
 	
 	@Column(nullable = false,precision = 10,scale = 2)
 	private BigDecimal amount;

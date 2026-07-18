@@ -1,3 +1,4 @@
+
 package com.travelmanagement.backend.entities;
 import com.travelmanagement.backend.entities.*;
 import java.math.BigDecimal;
@@ -5,7 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.ManyToAny;
-
 
 import jakarta.annotation.Generated;
 import jakarta.persistence.Column;

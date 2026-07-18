@@ -2,7 +2,6 @@ package com.travelmanagement.backend.dtos;
 
 import com.travelmanagement.backend.entities.Gender;
 import com.travelmanagement.backend.entities.UserRole;
-
 import lombok.Getter;
 import lombok.Setter;
 
