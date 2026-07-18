@@ -95,6 +95,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		
 		SeatLayoutResponse response = new SeatLayoutResponse();
 		response.setScheduleId(schedule.getScheduleId()); // Uses your exact field name
+
 		response.setTotalCapacity(capacity);
 		
 		List<SeatStatus> seatList = new ArrayList<>();
