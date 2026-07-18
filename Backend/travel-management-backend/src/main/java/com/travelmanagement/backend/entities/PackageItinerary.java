@@ -10,7 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
 public class PackageItinerary {
 	
