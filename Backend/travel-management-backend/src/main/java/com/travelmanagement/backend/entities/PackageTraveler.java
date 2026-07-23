@@ -6,6 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -14,6 +17,7 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 @Entity
+@Table(name="Package_Traveler")
 public class PackageTraveler {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +25,7 @@ public class PackageTraveler {
 	private String fullName;
 	private int age;
 	private String gender;
-	private PackageBooking packageBooking;
-	
+	@ManyToOne
+    @JoinColumn(name = "package_booking_id")
+    private PackageBooking packageBooking;	
 }

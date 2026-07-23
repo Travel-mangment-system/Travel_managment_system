@@ -47,12 +47,11 @@ public class PackageBooking {
 	@Column(name = "special_request")
 	private String specialRequests;
 	
-	@Column(name = "user_id")
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
 	
-	@Column(name = "package_id")
+
 	@ManyToOne
 	@JoinColumn(name = "holiday_package_id")
 	private HolidayPackage holidayPackage;
