@@ -83,10 +83,14 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public boolean verifyAndSavePayment(SignatureVerificationRequest request) {
         try {
-            // Razorpay signature formula: order_id + "|" + payment_id
-//            String payload = request.getRazorpayOrderId() + "|" + request.getRazorpayPaymentId();
-//            boolean isValid = Utils.verifySignature(payload, request.getRazorpaySignature(), keySecret);
-        	boolean isValid = true;
+        	// 1. Create a JSON object with the exact keys Razorpay expects
+            JSONObject options = new JSONObject();
+            options.put("razorpay_order_id", request.getRazorpayOrderId());
+            options.put("razorpay_payment_id", request.getRazorpayPaymentId());
+            options.put("razorpay_signature", request.getRazorpaySignature());
+
+            // 2. Use Razorpay's SDK utility to cryptographically verify the signature
+            boolean isValid = Utils.verifyPaymentSignature(options, keySecret);
 
             if (isValid) {
                 Payment payment = paymentRepository.findByRazorpayOrderId(request.getRazorpayOrderId())
@@ -108,6 +112,7 @@ public class PaymentServiceImpl implements PaymentService {
             }
             return isValid;
         } catch (Exception e) {
+            System.err.println("Signature verification exception: " + e.getMessage());
             return false;
         }
     }

@@ -41,6 +41,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	private final BusRepository busRepository;
 	private final CityRepository cityRepository;
 	private final BookingRepository bookingRepository; // ADDED for refund logic
+	private final RefundService refundService; // Use the interface, not the Impl
 	private final ModelMapper map;
 	
 	@Override
@@ -136,12 +137,16 @@ public class ScheduleServiceImpl implements ScheduleService {
 			booking.setBookingStatus(BookingStatus.CANCELLED);
 			
 			// Calculate 100% Refund (Provider's fault)
-			BigDecimal refundAmount = booking.getTotalAmount();
-			
-			// TODO: Call your Payment Gateway integration here to process refund
-			// paymentService.processRefund(booking.getPaymentId(), refundAmount);
-			
-			bookingRepository.save(booking);
+            BigDecimal refundAmount = booking.getTotalAmount();
+            
+            try {
+                // Call the new Refund Service
+                refundService.processRefund(booking.getId(), refundAmount); 
+            } catch (Exception e) {
+                System.err.println("Failed to refund booking " + booking.getId());
+            }
+            
+            bookingRepository.save(booking);
 		}
 	}
 }

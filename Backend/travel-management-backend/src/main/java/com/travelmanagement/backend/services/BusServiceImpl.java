@@ -31,7 +31,7 @@ public class BusServiceImpl implements BusService {
     private final SeatRepository seatRepository; // ADDED: SeatRepository dependency
     private final BusScheduleRepository busScheduleRepository;
     private final BookingRepository bookingRepository;
-    
+    private final RefundService refundService; // Use the interface, not the Impl
     private final ModelMapper modelMapper;
 
     @Override
@@ -123,15 +123,17 @@ public class BusServiceImpl implements BusService {
             	System.out.println("DEBUG: Cancelling booking ID: " + booking.getId());
                 booking.setBookingStatus(BookingStatus.CANCELLED);
                 
-                // Calculate 100% Refund (Because it is the provider's fault)
+             // Calculate 100% Refund (Because it is the provider's fault)
                 BigDecimal refundAmount = booking.getTotalAmount();
                 
-                // TODO: Call your PaymentService here to actually send the money back to the bank
-                // paymentService.processRefund(booking.getPaymentId(), refundAmount);
+                try {
+                    // Call the new Refund Service
+                    refundService.processRefund(booking.getId(), refundAmount); 
+                } catch (Exception e) {
+                    System.err.println("Failed to refund booking " + booking.getId());
+                }
                 
                 bookingRepository.save(booking);
-                
-                // TODO: Send an Email or SMS to the user letting them know!
             }
             schedule.setStatus(ScheduleStatus.CANCELLED);
             busScheduleRepository.save(schedule);
