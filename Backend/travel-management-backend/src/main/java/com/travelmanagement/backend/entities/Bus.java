@@ -67,6 +67,7 @@ public class Bus {
     @JoinColumn(name = "route_id", nullable = false)
     private Route route;
 	
+	
 	@OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<BusSchedule> busSchedules;
 

@@ -139,10 +139,28 @@ public class BookingServiceImpl implements BookingService {
         booking.setBookingReference("TRVL-" + UUID.randomUUID().toString().substring(0,6).toUpperCase());
         booking.setBookingStatus(BookingStatus.CONFIRMED);
         
-        // Dynamic Pricing Placeholder: You can update this to calculate fare based on stops later.
-        BigDecimal farePerSeat = new BigDecimal("500.00"); 
-        BigDecimal total = farePerSeat.multiply(new BigDecimal(requestDto.getPassengers().size()));
-        booking.setTotalAmount(total);
+        //Dynamic pricing based on stops traveled
+        
+        //get the total base fare price for the entire route form schedule
+        BigDecimal totalRouteFare = schedule.getFare();
+        
+        //find the total number of stops on this route
+        int totalStops = busStopRepository.countByRouteId(schedule.getRoute().getId());
+        
+        //calculate total "segments" ex if there are 5 stops then there are 4 segments
+        int totalSegments = Math.max(1, totalStops -1);
+        
+        //calculate how many segments this specific passenger is traveling
+        int segmentsTraveled = dropOffStop.getStopOrder() - boardingStop.getStopOrder();
+        
+        //calculate the exact fare per seat
+        BigDecimal farePerSegment  = totalRouteFare.divide(new BigDecimal(totalSegments), 2, java.math.RoundingMode.HALF_UP);
+        BigDecimal farePerSeat = farePerSegment.multiply(new BigDecimal(segmentsTraveled));
+        
+        //calculate total for all passengers for that boooking
+        BigDecimal totalAmount = farePerSeat.multiply(new BigDecimal(requestDto.getPassengers().size()));
+        booking.setTotalAmount(totalAmount);
+        
 
         // Create BookedSeat Entities mapping
         List<BookedSeat> bookedSeats = new ArrayList<>();
@@ -172,30 +190,30 @@ public class BookingServiceImpl implements BookingService {
 
         return mapToBookingResponse(savedBooking);
     }
-
+    
     @Override
     public List<BookingResponseDto> getBookingsByUserId(Long userId) {
         return bookingRepository.findAllByUserId(userId).stream()
                 .map(this::mapToBookingResponse)
                 .collect(Collectors.toList());
     }
-
+    
     @Override
     public BookingResponseDto getBookingById(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found!"));
         return mapToBookingResponse(booking);
     }
-
+    
     @Override
     @Transactional
     public CancellationResponseDto cancelBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found!"));
-
+        
         booking.setBookingStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
-
+        
         CancellationResponseDto response = new CancellationResponseDto();
         response.setBookingId(booking.getId());
         response.setPnrNumber(booking.getBookingReference());
