@@ -1,6 +1,5 @@
 package com.travelmanagement.backend.repositories;
 
-
 import java.math.BigDecimal;
 
 import org.springframework.data.domain.Page;
@@ -13,9 +12,9 @@ import org.springframework.stereotype.Repository;
 import com.travelmanagement.backend.entities.HolidayPackage;
 
 @Repository
-public interface HolidayPackageRepository extends JpaRepository<HolidayPackage, Long>{
+public interface HolidayPackageRepository extends JpaRepository<HolidayPackage, Long> {
 
-	@Query("SELECT h FROM HolidayPackage h WHERE h.status = 'ACTIVE' "+
+	@Query("SELECT h FROM HolidayPackage h WHERE h.status = 'ACTIVE' " +
 	"AND (:destination IS NULL OR h.destinationCity = :destination) " +
 	"AND (:minPrice IS NULL OR h.basePrice >= :minPrice) " +
 	"AND (:maxPrice IS NULL OR h.basePrice <= :maxPrice)")
@@ -24,5 +23,5 @@ public interface HolidayPackageRepository extends JpaRepository<HolidayPackage, 
 			@Param("minPrice") BigDecimal minPrice,
 			@Param("maxPrice") BigDecimal maxPrice,
 			Pageable pageable);
-	
+
 }
