@@ -45,9 +45,5 @@ public class HolidayPackageRequest {
 	
 	@NotNull(message="Bus ID is reequired")
 	private Long busId;
-	
-	
-	
-	
-	
+
 }
