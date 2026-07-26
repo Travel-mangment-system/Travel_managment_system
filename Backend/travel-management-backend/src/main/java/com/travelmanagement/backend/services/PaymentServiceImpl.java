@@ -7,10 +7,12 @@ import com.travelmanagement.backend.dtos.PaymentDTOs.*;
 import com.travelmanagement.backend.entities.Booking;
 import com.travelmanagement.backend.entities.PackageBooking; // <-- CHANGED: Imported new PackageBooking entity
 import com.travelmanagement.backend.entities.BookingStatus;   // <-- CHANGED: Imported for setting status to CONFIRMED
+import com.travelmanagement.backend.entities.HolidayPackage;
 import com.travelmanagement.backend.entities.Payment;
 import com.travelmanagement.backend.entities.PaymentStatus;
 import com.travelmanagement.backend.entities.PaymentMethod;
 import com.travelmanagement.backend.repositories.Booking.BookingRepository;
+import com.travelmanagement.backend.repositories.HolidayPackageRepository;
 import com.travelmanagement.backend.repositories.PackageBookingRepository; // <-- CHANGED: Imported PackageBookingRepository
 import com.travelmanagement.backend.repositories.PaymentRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final BookingRepository bookingRepository;
     private final PackageBookingRepository packageBookingRepository; // <-- CHANGED: Injected to handle Package data access
-
+    private final HolidayPackageRepository holidayPackageRepository;
+    
     @Value("${razorpay.key.id}")
     private String keyId;
 
@@ -42,20 +45,19 @@ public class PaymentServiceImpl implements PaymentService {
         BigDecimal totalAmount;
         String receiptId;
         
-        /* 
-         * CHANGED: Dynamic Polymorphic Fetching
-         * We check the 'bookingType' from the request. If it's "PACKAGE", we extract data 
-         * from PackageBooking. Otherwise, we default to the existing Bus Booking logic.
-         * This guarantees the old code remains completely untouched and safe.
-         */
+        Payment payment = new Payment(); // Instantiate early to attach the correct booking
+
         if ("PACKAGE".equalsIgnoreCase(request.getBookingType())) {
             PackageBooking packageBooking = packageBookingRepository.findById(request.getBookingId())
                     .orElseThrow(() -> new RuntimeException("Package Booking not found: " + request.getBookingId()));
             
             totalAmount = packageBooking.getTotalAmountPaid();
             receiptId = "txn_pkg_booking_" + packageBooking.getPackageBookingId();
+            
+            // Link the payment to the package booking!
+            payment.setPackageBooking(packageBooking); 
+            
         } else {
-            // Existing Bus Booking logic preserved exactly as it was
             Booking busBooking;
             if (request.getBookingId() != null && request.getBookingId() > 0) {
                 busBooking = bookingRepository.findById(request.getBookingId())
@@ -66,36 +68,21 @@ public class PaymentServiceImpl implements PaymentService {
             }
             totalAmount = busBooking.getTotalAmount();
             receiptId = "txn_booking_" + busBooking.getId();
+            
+            // Link the payment to the bus booking!
+            payment.setBooking(busBooking); 
         }
         
         RazorpayClient razorpay = new RazorpayClient(keyId, keySecret);
-
-        // Razorpay expects amount in paise (multiply INR by 100)
         int amountInPaise = totalAmount.multiply(new BigDecimal("100")).intValue();
         
         JSONObject orderRequest = new JSONObject();
         orderRequest.put("amount", amountInPaise);
         orderRequest.put("currency", "INR");
         orderRequest.put("receipt", receiptId);
-
+        
         Order razorpayOrder = razorpay.orders.create(orderRequest);
         String orderId = razorpayOrder.get("id");
-
-        // Save initial PENDING payment record
-        Payment payment = new Payment();
-        
-        /* 
-         * CHANGED: Conditional mapping for the payment tracking entity.
-         * If your payment entity has a column map for package bookings, set it here.
-         * For now, we map the generic fields. If your Payment entity *only* links to bus booking, 
-         * you'll want to add `private PackageBooking packageBooking` to your Payment entity class.
-         */
-        if ("PACKAGE".equalsIgnoreCase(request.getBookingType())) {
-            // payment.setPackageBooking(packageBooking); // <-- Uncomment if you add this relationship to Payment entity
-        } else {
-            // Existing baseline bus mapping logic remains safe
-            bookingRepository.findById(request.getBookingId()).ifPresent(payment::setBooking);
-        }
         
         payment.setAmount(totalAmount);
         payment.setRazorpayOrderId(orderId);
@@ -113,40 +100,31 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public boolean verifyAndSavePayment(SignatureVerificationRequest request) {
         try {
-            // Keep your testing configuration (isValid = true), but structure ready for production
-            boolean isValid = true; 
+            // Verify Razorpay Signature here using Utils.verifyPaymentSignature(...)
+            boolean isValid = true; // Assume true for testing
 
             if (isValid) {
                 Payment payment = paymentRepository.findByRazorpayOrderId(request.getRazorpayOrderId())
                         .orElseThrow(() -> new RuntimeException("Payment record not found"));
 
-                // Update the payment record upon success
                 payment.setRazorpayPaymentId(request.getRazorpayPaymentId());
                 payment.setPaymentStatus(PaymentStatus.SUCCESS); 
-                payment.setPaymentMethod(PaymentMethod.CARD);  
                 payment.setPaidAt(LocalDateTime.now());
-                
                 paymentRepository.save(payment);
                 
-                /*
-                 * CHANGED: Automated Post-Payment Status Update
-                 * Dynamically updates the actual booking status to CONFIRMED based on what type of
-                 * transaction just succeeded, handling both tables securely.
-                 */
-                if (payment.getBooking() != null) {
-                    // It's a Bus Booking
-                    Booking busBooking = payment.getBooking();
-                    // busBooking.setBookingStatus(BookingStatus.CONFIRMED); // <-- Uncomment to update your Bus table
-                    bookingRepository.save(busBooking);
-                } else {
-                    /* 
-                     * If it's a Package booking, we locate it via the tracking order metadata/receipt strings 
-                     * or by querying the repository with the order id.
-                     */
-                     packageBookingRepository.findByPaymentId(request.getRazorpayOrderId()).ifPresent(pkgBooking -> {
-                         // pkgBooking.setBookingStatus(BookingStatus.CONFIRMED); // <-- Uncomment to update your Package table
-                         packageBookingRepository.save(pkgBooking);
-                     });
+                // FINAL STEP: CONFIRM THE BOOKING & REDUCE SEATS
+                if (payment.getPackageBooking() != null) {
+                     PackageBooking pkgBooking = payment.getPackageBooking();
+                     
+                     // 1. Update Booking Status
+                     pkgBooking.setPaymentId(request.getRazorpayPaymentId()); 
+                     pkgBooking.setBookingStatus(BookingStatus.CONFIRMED); // <--- Make it CONFIRMED
+                     packageBookingRepository.save(pkgBooking);
+                     
+                     // 2. Reduce the available spots NOW because payment is successful!
+                     HolidayPackage holidayPackage = pkgBooking.getHolidayPackage();
+                     holidayPackage.setAvailableSpots(holidayPackage.getAvailableSpots() - pkgBooking.getNumberOfTravelers());
+                     holidayPackageRepository.save(holidayPackage);
                 }
             }
             return isValid;
