@@ -26,7 +26,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"booking"})
+@ToString(exclude = {"booking", "packageBooking"})
 
 public class Payment {
 
@@ -55,8 +55,12 @@ public class Payment {
 	private LocalDateTime paidAt;
 
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="booking_id",nullable = false)
+	@JoinColumn(name="booking_id")
 	private Booking booking;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "package_booking_id")
+	private PackageBooking packageBooking;
 	
 	
 	

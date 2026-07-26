@@ -3,10 +3,13 @@ package com.travelmanagement.backend.dtos;
 import lombok.Data;
 import java.math.BigDecimal;
 
+import com.travelmanagement.backend.entities.BookingStatus;
+
 public class PaymentDTOs {
 
     @Data
     public static class CreateOrderRequest {
+    	private String bookingType;
         private Long bookingId;
     }
 

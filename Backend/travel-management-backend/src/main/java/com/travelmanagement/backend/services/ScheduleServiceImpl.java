@@ -58,6 +58,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 		Bus bus = busRepository.findById(request.getBusId()).orElseThrow(()->new RuntimeException("Bus not found"));
 		Route route = routeRepository.findById(request.getRouteId()).orElseThrow(()->new RuntimeException("Route not found"));
+		
+		bus.setRoute(route);
+		busRepository.save(bus);
+		
 		BusSchedule busSchedule = new BusSchedule();
 		busSchedule.setBus(bus);
 		busSchedule.setRoute(route);
@@ -96,6 +100,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		
 		SeatLayoutResponse response = new SeatLayoutResponse();
 		response.setScheduleId(schedule.getScheduleId()); // Uses your exact field name
+
 		response.setTotalCapacity(capacity);
 		
 		List<SeatStatus> seatList = new ArrayList<>();
@@ -123,6 +128,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 			throw new RuntimeException("Cannot cancel a schedule that has already departed.");
 		}
 
+		
 		// 3. Mark the schedule as cancelled (Soft Delete)
 		// NOTE: Make sure "CANCELLED" exists in your ScheduleStatus enum!
 		schedule.setStatus(ScheduleStatus.CANCELLED); 
