@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.travelmanagement.backend.dtos.HolidayPackageRequest;
 import com.travelmanagement.backend.dtos.HolidayPackageResponse;
+import com.travelmanagement.backend.entities.Bus;
 import com.travelmanagement.backend.entities.HolidayPackage;
 import com.travelmanagement.backend.entities.PackageStatus;
+import com.travelmanagement.backend.repositories.BusRepository;
 import com.travelmanagement.backend.repositories.HolidayPackageRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 public class HolidayPackageServiceImpl implements HolidayPackageService {
 	
 	private final HolidayPackageRepository packageRepository;
+	private final BusRepository busRepo;
+	
 	
 
 	@Override
@@ -29,7 +33,10 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 		HolidayPackage newPackage = new HolidayPackage();
 		mapRequestToEntity(request, newPackage);
 		newPackage.setStatus(PackageStatus.ACTIVE);
-		
+		Bus bus = busRepo.findById(request.getBusId()).orElseThrow(()-> new RuntimeException("bus id not found"));
+		newPackage.setAssignedBus(bus);
+		newPackage.setTotalCapacity(request.getTotalCapacity());
+		newPackage.setDepartureDatetime(request.getDepartureDatetime());
 		HolidayPackage savedPackage = packageRepository.save(newPackage);
 		return mapEntityToResponse(savedPackage);
 	}

@@ -77,5 +77,7 @@ public class HolidayPackage {
 	
 	@OneToMany(mappedBy = "holidayPackage", cascade = CascadeType.ALL)
 	private List<PackageBooking> packageBookings;
+
+	
 	
 }
