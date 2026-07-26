@@ -11,7 +11,10 @@ import org.springframework.stereotype.Repository;
 
 import com.travelmanagement.backend.entities.HolidayPackage;
 
-@Repository
+//<<<<<<< HEAD
+//=======
+//@Repository
+//>>>>>>> 613438973b2689a4577e1f8de42a913e1a15f3b2
 public interface HolidayPackageRepository extends JpaRepository<HolidayPackage, Long> {
 
 	@Query("SELECT h FROM HolidayPackage h WHERE h.status = 'ACTIVE' " +

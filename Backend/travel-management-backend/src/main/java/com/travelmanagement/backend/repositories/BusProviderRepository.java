@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import com.travelmanagement.backend.entities.BusProvider;
 
 public interface BusProviderRepository extends JpaRepository<BusProvider, Long>{
-//Jpa automatically provides methods like save(),findById() and findAll()
+
 }

@@ -68,7 +68,6 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 	
 	
 	private void mapRequestToEntity(HolidayPackageRequest request, HolidayPackage entity) {
-		// Note: Adjust these getters based on the exact fields Aditya put in HolidayPackageRequest!
 		entity.setTitle(request.getTitle());
 		entity.setDescription(request.getDescription());
 		entity.setBasePrice(request.getBasePrice());

@@ -14,10 +14,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 
-@Setter
-@Getter
+@Entity
 @RequiredArgsConstructor
+@Getter
+@Setter
 @Table(name = "Daily_Activity")
+
 public class DailyActivity {
 	
 	@Id

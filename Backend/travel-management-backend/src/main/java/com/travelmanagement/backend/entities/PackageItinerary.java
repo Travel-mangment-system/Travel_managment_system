@@ -19,9 +19,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(name = "Package_Iternary")
 @RequiredArgsConstructor
-@Table(name = "Package_Itinerary")
-
 public class PackageItinerary {
 	
 	@Id
