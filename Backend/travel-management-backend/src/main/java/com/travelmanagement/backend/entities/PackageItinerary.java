@@ -14,19 +14,17 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
-
-@Entity
 @Getter
 @Setter
-@Table(name = "Package_Iternary")
 @RequiredArgsConstructor
+@Entity
+@Table(name="Package_Itinerary")
 public class PackageItinerary {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long itineraryId;
-	
+
 	private int dayNumber;
 	private String dayTitle;
 	private String hotelName;
