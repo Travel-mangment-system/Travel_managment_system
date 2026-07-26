@@ -1,5 +1,7 @@
 package com.travelmanagement.backend.entities;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "Daily_Activity")
+
 public class DailyActivity {
 	
 	@Id

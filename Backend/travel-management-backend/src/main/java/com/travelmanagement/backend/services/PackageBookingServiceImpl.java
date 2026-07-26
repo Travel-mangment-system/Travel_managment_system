@@ -139,7 +139,7 @@ public class PackageBookingServiceImpl implements PackageBookingService {
 	@Override
 	public CanceResponse cancelBooking(Long bookingId, Long id) {
 		//fetch booking and ensure booking belongs to this exact user
-		PackageBooking booking = bookingRepository.findByPackageBookingIdAndId(bookingId, id).orElseThrow(()->new RuntimeException("booking not found or you dont have permissions to cancel booking"));
+		PackageBooking booking = bookingRepository.findByPackageBookingIdAndUser_Id(bookingId, id).orElseThrow(()->new RuntimeException("booking not found or you dont have permissions to cancel booking"));
 		
 		//prevent double-cancellations
 		if(booking.getBookingStatus() == BookingStatus.CANCELLED) {

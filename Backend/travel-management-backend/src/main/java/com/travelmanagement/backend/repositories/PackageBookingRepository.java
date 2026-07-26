@@ -11,7 +11,7 @@ public interface PackageBookingRepository extends JpaRepository<PackageBooking, 
 
 	Optional<PackageBooking> findByPaymentId(String razorpayOrderId);
 
-	Optional<PackageBooking> findByPackageBookingIdAndId(Long bookingId, Long id);
+	Optional<PackageBooking> findByPackageBookingIdAndUser_Id(Long packageBookingId, Long userId);
 
 	List<PackageBooking> findAllByOrderByBookingDateDesc();
 	

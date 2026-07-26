@@ -64,7 +64,7 @@ public class Bus {
 	private BusProvider busProvider;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "route_id", nullable = false)
+    @JoinColumn(name = "route_id")
     private Route route;
 	
 	
