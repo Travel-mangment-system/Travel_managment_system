@@ -13,11 +13,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+
+@Entity
+@RequiredArgsConstructor
 @Getter
 @Setter
-@RequiredArgsConstructor
-@Entity
-@Table(name="Daily_Activity")
+@Table(name = "Daily_Activity")
+
 public class DailyActivity {
 	
 	@Id

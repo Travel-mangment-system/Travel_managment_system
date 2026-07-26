@@ -14,11 +14,13 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+
+@Entity
 @Getter
 @Setter
+@Table(name = "Package_Iternary")
 @RequiredArgsConstructor
-@Entity
-@Table(name="Package_Itinerary")
 public class PackageItinerary {
 	
 	@Id

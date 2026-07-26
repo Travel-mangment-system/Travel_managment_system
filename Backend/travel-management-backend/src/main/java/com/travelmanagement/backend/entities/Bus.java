@@ -64,8 +64,9 @@ public class Bus {
 	private BusProvider busProvider;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "route_id", nullable = false)
+    @JoinColumn(name = "route_id")
     private Route route;
+	
 	
 	@OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<BusSchedule> busSchedules;

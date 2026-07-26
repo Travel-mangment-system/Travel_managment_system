@@ -5,10 +5,15 @@ import com.razorpay.RazorpayClient;
 import com.razorpay.Utils;
 import com.travelmanagement.backend.dtos.PaymentDTOs.*;
 import com.travelmanagement.backend.entities.Booking;
+import com.travelmanagement.backend.entities.PackageBooking; // <-- CHANGED: Imported new PackageBooking entity
+import com.travelmanagement.backend.entities.BookingStatus;   // <-- CHANGED: Imported for setting status to CONFIRMED
+import com.travelmanagement.backend.entities.HolidayPackage;
 import com.travelmanagement.backend.entities.Payment;
 import com.travelmanagement.backend.entities.PaymentStatus;
 import com.travelmanagement.backend.entities.PaymentMethod;
 import com.travelmanagement.backend.repositories.Booking.BookingRepository;
+import com.travelmanagement.backend.repositories.HolidayPackageRepository;
+import com.travelmanagement.backend.repositories.PackageBookingRepository; // <-- CHANGED: Imported PackageBookingRepository
 import com.travelmanagement.backend.repositories.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
@@ -26,7 +31,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final BookingRepository bookingRepository;
-
+    private final PackageBookingRepository packageBookingRepository; // <-- CHANGED: Injected to handle Package data access
+    private final HolidayPackageRepository holidayPackageRepository;
+    
     @Value("${razorpay.key.id}")
     private String keyId;
 
@@ -35,42 +42,52 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public OrderResponse createOrder(CreateOrderRequest request) throws Exception {
-    	Booking booking;
-    	
-    	/// 1. DYNAMIC BOOKING FETCHING
-        if (request.getBookingId() != null && request.getBookingId() > 0) {
-            booking = bookingRepository.findById(request.getBookingId())
-                    .orElseThrow(() -> new RuntimeException("Booking not found: " + request.getBookingId()));
-        } else {
-            // Force fetching the latest booking ID from the database
-            booking = bookingRepository.findLatestBooking()
-                    .orElseThrow(() -> new RuntimeException("No bookings found in system"));
-            
-            System.out.println("System automatically selected latest booking ID: " + booking.getId());
-        }
-    	
-        BigDecimal totalAmount = booking.getTotalAmount();
-        RazorpayClient razorpay = new RazorpayClient(keyId, keySecret);
+        BigDecimal totalAmount;
+        String receiptId;
+        
+        Payment payment = new Payment(); // Instantiate early to attach the correct booking
 
-        // Razorpay expects amount in paise (multiply INR by 100)
+        if ("PACKAGE".equalsIgnoreCase(request.getBookingType())) {
+            PackageBooking packageBooking = packageBookingRepository.findById(request.getBookingId())
+                    .orElseThrow(() -> new RuntimeException("Package Booking not found: " + request.getBookingId()));
+            
+            totalAmount = packageBooking.getTotalAmountPaid();
+            receiptId = "txn_pkg_booking_" + packageBooking.getPackageBookingId();
+            
+            // Link the payment to the package booking!
+            payment.setPackageBooking(packageBooking); 
+            
+        } else {
+            Booking busBooking;
+            if (request.getBookingId() != null && request.getBookingId() > 0) {
+                busBooking = bookingRepository.findById(request.getBookingId())
+                        .orElseThrow(() -> new RuntimeException("Booking not found: " + request.getBookingId()));
+            } else {
+                busBooking = bookingRepository.findLatestBooking()
+                        .orElseThrow(() -> new RuntimeException("No bookings found in system"));
+            }
+            totalAmount = busBooking.getTotalAmount();
+            receiptId = "txn_booking_" + busBooking.getId();
+            
+            // Link the payment to the bus booking!
+            payment.setBooking(busBooking); 
+        }
+        
+        RazorpayClient razorpay = new RazorpayClient(keyId, keySecret);
         int amountInPaise = totalAmount.multiply(new BigDecimal("100")).intValue();
         
         JSONObject orderRequest = new JSONObject();
         orderRequest.put("amount", amountInPaise);
         orderRequest.put("currency", "INR");
-        orderRequest.put("receipt", "txn_booking_" + booking.getId());
-
+        orderRequest.put("receipt", receiptId);
+        
         Order razorpayOrder = razorpay.orders.create(orderRequest);
         String orderId = razorpayOrder.get("id");
-
-        // Save initial PENDING payment record using your updated Entity and Enums
-        Payment payment = new Payment();
-        payment.setBooking(booking);
+        
         payment.setAmount(totalAmount);
         payment.setRazorpayOrderId(orderId);
-        payment.setPaymentStatus(PaymentStatus.PENDING); // Using your Enum
+        payment.setPaymentStatus(PaymentStatus.PENDING); 
         
-        // We do not set PaymentMethod or RazorpayPaymentId yet, as they happen after checkout
         paymentRepository.save(payment);
 
         OrderResponse response = new OrderResponse();
@@ -83,28 +100,32 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public boolean verifyAndSavePayment(SignatureVerificationRequest request) {
         try {
-            // Razorpay signature formula: order_id + "|" + payment_id
-//            String payload = request.getRazorpayOrderId() + "|" + request.getRazorpayPaymentId();
-//            boolean isValid = Utils.verifySignature(payload, request.getRazorpaySignature(), keySecret);
-        	boolean isValid = true;
+            // Verify Razorpay Signature here using Utils.verifyPaymentSignature(...)
+            boolean isValid = true; // Assume true for testing
 
             if (isValid) {
                 Payment payment = paymentRepository.findByRazorpayOrderId(request.getRazorpayOrderId())
                         .orElseThrow(() -> new RuntimeException("Payment record not found"));
 
-                // Update the payment record upon success
                 payment.setRazorpayPaymentId(request.getRazorpayPaymentId());
-                payment.setPaymentStatus(PaymentStatus.SUCCESS); // Using your Enum
-                payment.setPaymentMethod(PaymentMethod.CARD);  // Assuming ONLINE as default for Razorpay
+                payment.setPaymentStatus(PaymentStatus.SUCCESS); 
                 payment.setPaidAt(LocalDateTime.now());
-                
-                
                 paymentRepository.save(payment);
                 
-                // Note: You should also update the Booking entity status to CONFIRMED here
-                // Booking booking = payment.getBooking();
-                // booking.setBookingStatus(BookingStatus.CONFIRMED);
-                // bookingRepository.save(booking);
+                // FINAL STEP: CONFIRM THE BOOKING & REDUCE SEATS
+                if (payment.getPackageBooking() != null) {
+                     PackageBooking pkgBooking = payment.getPackageBooking();
+                     
+                     // 1. Update Booking Status
+                     pkgBooking.setPaymentId(request.getRazorpayPaymentId()); 
+                     pkgBooking.setBookingStatus(BookingStatus.CONFIRMED); // <--- Make it CONFIRMED
+                     packageBookingRepository.save(pkgBooking);
+                     
+                     // 2. Reduce the available spots NOW because payment is successful!
+                     HolidayPackage holidayPackage = pkgBooking.getHolidayPackage();
+                     holidayPackage.setAvailableSpots(holidayPackage.getAvailableSpots() - pkgBooking.getNumberOfTravelers());
+                     holidayPackageRepository.save(holidayPackage);
+                }
             }
             return isValid;
         } catch (Exception e) {
@@ -114,12 +135,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void processWebhook(String payload, String signature) throws Exception {
-        // Verifies that the webhook actually came from Razorpay
         boolean isValid = Utils.verifyWebhookSignature(payload, signature, keySecret);
         if (!isValid) {
             throw new RuntimeException("Invalid webhook signature");
         }
-        
-        // Logic for handling background events like 'payment.captured' or 'refund.processed' goes here
     }
 }

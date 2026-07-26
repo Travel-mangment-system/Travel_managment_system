@@ -40,8 +40,6 @@ public class BusServiceImpl implements BusService {
         BusProvider provider = providerRepository.findById(request.getProviderId())
                 .orElseThrow(() -> new RuntimeException("Bus Provider not found with ID: " + request.getProviderId()));
         
-        Route route = routeRepository.findById(request.getRouteId())
-                .orElseThrow(() -> new RuntimeException("Route not found with ID: " + request.getRouteId()));
 
         Bus bus = new Bus();
         bus.setBusNumber(request.getBusNumber());
@@ -49,8 +47,15 @@ public class BusServiceImpl implements BusService {
         bus.setBusType(request.getBusType());
         bus.setTotalSeats(request.getTotalSeats());
         bus.setBusProvider(provider);
-        bus.setRoute(route);
         bus.setStatus(BusStatus.ACTIVE);
+        
+        if(request.getRouteId() != null) {
+            Route route = routeRepository.findById(request.getRouteId())
+                    .orElseThrow(() -> new RuntimeException("Route not found with ID: " + request.getRouteId()));
+            bus.setRoute(route);
+        }else {
+        	bus.setRoute(null);
+        }
         
         // Save the bus first so we have an ID for the seats to link to
         Bus savedBus = busRepository.save(bus);
