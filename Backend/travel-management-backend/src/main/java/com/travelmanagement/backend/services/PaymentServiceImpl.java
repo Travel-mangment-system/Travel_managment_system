@@ -5,16 +5,16 @@ import com.razorpay.RazorpayClient;
 import com.razorpay.Utils;
 import com.travelmanagement.backend.dtos.PaymentDTOs.*;
 import com.travelmanagement.backend.entities.Booking;
-import com.travelmanagement.backend.entities.PackageBooking; // <-- CHANGED: Imported new PackageBooking entity
-import com.travelmanagement.backend.entities.BookingStatus;   // <-- CHANGED: Imported for setting status to CONFIRMED
+import com.travelmanagement.backend.entities.PackageBooking;
+import com.travelmanagement.backend.entities.BookingStatus;
 import com.travelmanagement.backend.entities.HolidayPackage;
 import com.travelmanagement.backend.entities.Payment;
 import com.travelmanagement.backend.entities.PaymentStatus;
-import com.travelmanagement.backend.entities.PaymentMethod;
 import com.travelmanagement.backend.repositories.Booking.BookingRepository;
 import com.travelmanagement.backend.repositories.HolidayPackageRepository;
-import com.travelmanagement.backend.repositories.PackageBookingRepository; // <-- CHANGED: Imported PackageBookingRepository
+import com.travelmanagement.backend.repositories.PackageBookingRepository;
 import com.travelmanagement.backend.repositories.PaymentRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final BookingRepository bookingRepository;
-    private final PackageBookingRepository packageBookingRepository; // <-- CHANGED: Injected to handle Package data access
+    private final PackageBookingRepository packageBookingRepository;
     private final HolidayPackageRepository holidayPackageRepository;
     
     @Value("${razorpay.key.id}")
@@ -45,34 +45,35 @@ public class PaymentServiceImpl implements PaymentService {
         BigDecimal totalAmount;
         String receiptId;
         
-        Payment payment = new Payment(); // Instantiate early to attach the correct booking
+        Payment payment = new Payment();
 
+        // 1. DYNAMICALLY HANDLE PACKAGE VS BUS
         if ("PACKAGE".equalsIgnoreCase(request.getBookingType())) {
             PackageBooking packageBooking = packageBookingRepository.findById(request.getBookingId())
                     .orElseThrow(() -> new RuntimeException("Package Booking not found: " + request.getBookingId()));
             
             totalAmount = packageBooking.getTotalAmountPaid();
-            receiptId = "txn_pkg_booking_" + packageBooking.getPackageBookingId();
+            receiptId = "txn_pkg_" + packageBooking.getPackageBookingId();
             
-            // Link the payment to the package booking!
             payment.setPackageBooking(packageBooking); 
             
         } else {
             Booking busBooking;
             if (request.getBookingId() != null && request.getBookingId() > 0) {
                 busBooking = bookingRepository.findById(request.getBookingId())
-                        .orElseThrow(() -> new RuntimeException("Booking not found: " + request.getBookingId()));
+                        .orElseThrow(() -> new RuntimeException("Bus Booking not found: " + request.getBookingId()));
             } else {
                 busBooking = bookingRepository.findLatestBooking()
                         .orElseThrow(() -> new RuntimeException("No bookings found in system"));
             }
-            totalAmount = busBooking.getTotalAmount();
-            receiptId = "txn_booking_" + busBooking.getId();
             
-            // Link the payment to the bus booking!
+            totalAmount = busBooking.getTotalAmount();
+            receiptId = "txn_bus_" + busBooking.getId();
+            
             payment.setBooking(busBooking); 
         }
         
+        // 2. CREATE RAZORPAY ORDER
         RazorpayClient razorpay = new RazorpayClient(keyId, keySecret);
         int amountInPaise = totalAmount.multiply(new BigDecimal("100")).intValue();
         
@@ -84,6 +85,7 @@ public class PaymentServiceImpl implements PaymentService {
         Order razorpayOrder = razorpay.orders.create(orderRequest);
         String orderId = razorpayOrder.get("id");
         
+        // 3. SAVE PENDING PAYMENT TO DATABASE
         payment.setAmount(totalAmount);
         payment.setRazorpayOrderId(orderId);
         payment.setPaymentStatus(PaymentStatus.PENDING); 
@@ -108,6 +110,7 @@ public class PaymentServiceImpl implements PaymentService {
             boolean isValid = Utils.verifyPaymentSignature(options, keySecret);
 
             if (isValid) {
+                // 1. UPDATE PAYMENT RECORD
                 Payment payment = paymentRepository.findByRazorpayOrderId(request.getRazorpayOrderId())
                         .orElseThrow(() -> new RuntimeException("Payment record not found"));
 
@@ -116,27 +119,25 @@ public class PaymentServiceImpl implements PaymentService {
                 payment.setPaidAt(LocalDateTime.now());
                 paymentRepository.save(payment);
                 
-                // FINAL STEP: CONFIRM THE BOOKING & REDUCE SEATS
+                // 2. DYNAMICALLY CONFIRM THE CORRECT BOOKING TYPE
                 if (payment.getPackageBooking() != null) {
-                     PackageBooking pkgBooking = payment.getPackageBooking();
-                     
-                     pkgBooking.setPaymentId(request.getRazorpayPaymentId()); 
-                     pkgBooking.setBookingStatus(BookingStatus.CONFIRMED);
-                     packageBookingRepository.save(pkgBooking);
-                     
-                     HolidayPackage holidayPackage = pkgBooking.getHolidayPackage();
-                     holidayPackage.setAvailableSpots(holidayPackage.getAvailableSpots() - pkgBooking.getNumberOfTravelers());
-                     holidayPackageRepository.save(holidayPackage);
-                     
+                    
+                    PackageBooking pkgBooking = payment.getPackageBooking();
+                    pkgBooking.setPaymentId(request.getRazorpayPaymentId()); 
+                    pkgBooking.setBookingStatus(BookingStatus.CONFIRMED);
+                    packageBookingRepository.save(pkgBooking);
+                    
+                    HolidayPackage holidayPackage = pkgBooking.getHolidayPackage();
+                    holidayPackage.setAvailableSpots(holidayPackage.getAvailableSpots() - pkgBooking.getNumberOfTravelers());
+                    holidayPackageRepository.save(holidayPackage);
+                    
                 } else if (payment.getBooking() != null) {
-                     // NEW: Handle BUS booking confirmation
-                     Booking busBooking = payment.getBooking();
-                     
-                     
-                     busBooking.setBookingStatus(BookingStatus.CONFIRMED); 
-                     bookingRepository.save(busBooking);
-                     
-                     // Add logic here if you need to reduce available bus seats!
+                    
+                    Booking busBooking = payment.getBooking();
+                    busBooking.setBookingStatus(BookingStatus.CONFIRMED); 
+                    bookingRepository.save(busBooking);
+                    
+                    // Note: If you have bus seat reduction logic, it goes here!
                 }
             }
             return isValid;

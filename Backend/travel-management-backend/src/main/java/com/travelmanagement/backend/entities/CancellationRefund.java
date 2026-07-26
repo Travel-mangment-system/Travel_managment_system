@@ -15,8 +15,12 @@ public class CancellationRefund {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "booking_id", nullable = false)
+    @JoinColumn(name = "booking_id", nullable = true)
     private Booking booking;
+    
+    @OneToOne 
+    @JoinColumn(name = "package_booking_id", nullable = true)
+    private PackageBooking packageBooking;
 
     private BigDecimal refundAmount;
 
