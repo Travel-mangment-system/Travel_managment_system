@@ -29,7 +29,6 @@ import com.travelmanagement.backend.services.PackageItineraryService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/packages")
 public class AdminPackageController {
