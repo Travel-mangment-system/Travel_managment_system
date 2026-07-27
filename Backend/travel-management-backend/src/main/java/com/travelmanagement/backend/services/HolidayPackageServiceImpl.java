@@ -46,46 +46,6 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 			}
         }
 		HolidayPackage holidayPackage=new HolidayPackage();
-		
-//<<<<<<< HEAD
-//		HolidayPackage updatedPackage = packageRepository.save(existingPackage);
-//		return mapEntityToResponse(updatedPackage);
-//	}
-//
-//	@Override
-//	@Transactional
-//	public void updatePackage(Long packageId, PackageStatus status) {
-//		HolidayPackage existingPackage = getPackageById(packageId);
-//		existingPackage.setStatus(status);
-//		packageRepository.save(existingPackage);
-//	}
-//
-//	
-//	
-//	@Override
-//	public HolidayPackage getPackageById(Long id) {
-//		return packageRepository.findById(id)
-//				.orElseThrow(() -> new RuntimeException("Holiday Package not found with ID: " + id));
-//	}
-//
-//	@Override
-//	public Page<HolidayPackage> searchActivePackages(String destination, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
-//		return packageRepository.findActiveWithFilters(destination, minPrice, maxPrice, pageable);
-//	}
-//	
-//	
-//	
-//	private void mapRequestToEntity(HolidayPackageRequest request, HolidayPackage entity) {
-//		entity.setTitle(request.getTitle());
-//		entity.setDescription(request.getDescription());
-//		entity.setBasePrice(request.getBasePrice());
-//		entity.setDurationDays(request.getDurationDays());
-//		entity.setDurationNights(request.getDurationNights());
-//		entity.setDestinationCity(request.getDestinationCity());
-//	}
-//	
-//	private HolidayPackageResponse mapEntityToResponse(HolidayPackage entity) {
-//=======
 		holidayPackage.setTitle(request.getTitle());
 		holidayPackage.setDescription(request.getDescription());
 		holidayPackage.setBasePrice(request.getBasePrice());

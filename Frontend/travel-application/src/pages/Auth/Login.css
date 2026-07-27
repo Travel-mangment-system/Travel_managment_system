@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
+/* ==========================
+   GLOBAL
+========================== */
+
 *{
     margin:0;
     padding:0;
@@ -9,16 +13,15 @@
 
 body{
     background:#edf2f7;
-    overflow:hidden;
 }
 
 /* ==========================
-   PAGE
+   LOGIN PAGE
 ========================== */
 
 .login-page{
     width:100%;
-    height:100vh;
+    min-height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -26,14 +29,13 @@ body{
     background:#edf2f7;
 }
 
-.container{
+.login-page .container{
     max-width:1120px;
 }
 
-.auth-wrapper{
+.login-page .auth-wrapper{
     width:100%;
-    height:92vh;
-    max-height:700px;
+    height: 700px;   /* Increase this value */
     background:#fff;
     border-radius:22px;
     overflow:hidden;
@@ -44,229 +46,157 @@ body{
    LEFT PANEL
 ========================== */
 
-.left-section{
-
+.login-page .left-section{
     position:relative;
-
     height:100%;
-
     background:url("../../assets/images/travel.jpeg") center center/cover no-repeat;
-
 }
 
-.left-section::before{
-
+.login-page .left-section::before{
     content:"";
-
     position:absolute;
-
     inset:0;
-
-    background:rgba(0,0,0,0.30);
-
+    background:rgba(0,0,0,.30);
 }
 
-.overlay{
-
+.login-page .overlay{
     position:relative;
-
     z-index:2;
-
     height:100%;
-
     padding:28px;
-
     display:flex;
-
     flex-direction:column;
-
     justify-content:center;
-
     color:#fff;
-
 }
 
 /* ==========================
    LOGO
 ========================== */
 
-.logo-title{
-
+.login-page .logo-title{
     font-size:38px;
-
     font-weight:700;
-
     margin-bottom:10px;
-
 }
 
-.tag-line{
-
+.login-page .tag-line{
     font-size:18px;
-
     line-height:1.6;
-
     opacity:.95;
-
     margin-bottom:40px;
-
 }
 
 /* ==========================
    FEATURES
 ========================== */
 
-.feature{
-
+.login-page .feature{
     display:flex;
-
     align-items:flex-start;
-
     gap:14px;
-
     margin-bottom:24px;
-
 }
 
-.feature-icon{
-
+.login-page .feature-icon{
     width:44px;
-
     height:44px;
-
     border-radius:12px;
-
     background:rgba(255,255,255,.15);
-
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
     font-size:20px;
-
 }
 
-.feature h6{
-
+.login-page .feature h6{
     font-size:16px;
-
     margin-bottom:4px;
-
     font-weight:600;
-
 }
 
-.feature p{
-
+.login-page .feature p{
     font-size:13px;
-
     line-height:1.4;
-
     opacity:.9;
-
 }
 
 /* ==========================
    RIGHT PANEL
 ========================== */
 
-.form-section{
-
+.login-page .form-section{
     height:100%;
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     padding:26px 34px;
-
     background:#fff;
-
 }
 
-.login-card{
-
+.login-page .login-card{
     width:100%;
-
     max-width:470px;
-
+    animation:fadeUp .5s ease;
 }
 
 /* ==========================
    TITLE
 ========================== */
 
-.login-card h2{
-
+.login-page .login-card h2{
     font-size:30px;
-
     font-weight:700;
-
     color:#222;
-
     margin-bottom:6px;
-
 }
 
-.login-card>p{
-
+.login-page .login-card>p{
     color:#777;
-
     font-size:14px;
-
     margin-bottom:20px;
-
 }
 
-.login-as{
-
+.login-page .login-as{
     display:block;
-
     font-size:14px;
-
     font-weight:600;
-
     margin-bottom:12px;
-
     color:#444;
-
 }
-/* ==========================================
-   ROLE SELECTION
-========================================== */
 
-.role-selection{
+/* ==========================
+   ROLE SELECTION
+========================== */
+
+.login-page .role-selection{
     display:flex;
     gap:12px;
     margin-bottom:18px;
 }
 
-.role-card{
+.login-page .role-card{
     flex:1;
     border:2px solid #e8e8e8;
     border-radius:14px;
     padding:10px;
     text-align:center;
     cursor:pointer;
-    transition:.25s;
+    transition:all .25s ease;
     background:#fff;
 }
 
-.role-card:hover{
+.login-page .role-card:hover{
     transform:translateY(-3px);
     box-shadow:0 8px 18px rgba(0,0,0,.08);
 }
 
-.role-card.active{
+.login-page .role-card.active{
     border-color:#0E8A8A;
     box-shadow:0 8px 20px rgba(14,138,138,.18);
 }
 
-.role-icon{
+.login-page .role-icon{
     width:44px;
     height:44px;
     margin:auto;
@@ -279,28 +209,33 @@ body{
     margin-bottom:8px;
 }
 
-.role-card span{
+.login-page .role-card span{
     font-size:13px;
     font-weight:600;
     color:#333;
 }
 
-/* ==========================================
+/* ==========================
    FORM
-========================================== */
+========================== */
 
-.login-card label{
+.login-page .login-card label{
     font-size:13px;
     font-weight:600;
     margin-bottom:6px;
     color:#444;
 }
 
-.input-group{
-    margin-bottom:14px;
+.login-page .mb-3{
+    margin-bottom:16px !important;
 }
 
-.form-control{
+.login-page .input-group{
+    display:flex;
+    align-items:center;
+}
+
+.login-page .form-control{
     height:46px;
     border-radius:10px 0 0 10px !important;
     border-right:none;
@@ -309,54 +244,64 @@ body{
     padding-left:14px;
 }
 
-.form-control:focus{
+.login-page .form-control:focus{
     border-color:#0E8A8A;
+    box-shadow:none !important;
 }
 
-.input-group-text{
+.login-page .input-group-text{
     background:#fff;
     border-left:none;
     border-radius:0 10px 10px 0 !important;
-    padding:0 14px;
     color:#777;
+    padding:0 14px;
 }
 
-.form-control::placeholder{
+.login-page .form-control::placeholder{
     color:#aaa;
     font-size:13px;
 }
 
-/* ==========================================
-   REMEMBER / FORGOT
-========================================== */
+/* ==========================
+   REMEMBER ME
+========================== */
 
-.remember{
+.login-page .remember{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin:8px 0 16px;
+    margin:10px 0 18px;
     font-size:13px;
 }
 
-.remember input{
+.login-page .remember div{
+    display:flex;
+    align-items:center;
+}
+
+.login-page .remember input{
     margin-right:6px;
 }
 
-.remember a{
-    color:#0E8A8A;
+.login-page .remember span{
+    color:#555;
+}
+
+.login-page .remember a{
     text-decoration:none;
+    color:#0E8A8A;
     font-weight:600;
 }
 
-.remember a:hover{
+.login-page .remember a:hover{
     text-decoration:underline;
 }
 
-/* ==========================================
-   LOGIN BUTTON
-========================================== */
+/* ==========================
+   SIGN IN BUTTON
+========================== */
 
-.signin-btn{
+.login-page .signin-btn{
     width:100%;
     height:46px;
     border:none;
@@ -364,87 +309,95 @@ body{
     color:#fff;
     font-size:15px;
     font-weight:600;
-    transition:.25s;
+    cursor:pointer;
+    transition:all .25s ease;
     margin-bottom:16px;
 }
 
-.signin-btn:hover{
+.login-page .signin-btn:hover{
     transform:translateY(-2px);
     box-shadow:0 10px 22px rgba(0,0,0,.18);
 }
 
-/* ==========================================
+/* ==========================
    DIVIDER
-========================================== */
+========================== */
 
-.divider{
+.login-page .divider{
     display:flex;
     align-items:center;
     gap:12px;
     color:#888;
     font-size:13px;
-    margin:14px 0;
+    margin:16px 0;
 }
 
-.divider::before,
-.divider::after{
+.login-page .divider::before,
+.login-page .divider::after{
     content:"";
     flex:1;
     height:1px;
     background:#ddd;
 }
 
-/* ==========================================
-   SOCIAL
-========================================== */
+/* ==========================
+   SOCIAL ICONS
+========================== */
 
-.social-icons{
+.login-page .social-icons{
     display:flex;
     justify-content:center;
     gap:14px;
-    margin-bottom:16px;
+    margin-bottom:18px;
 }
 
-.social-icons div{
+.login-page .social-icons div{
     width:42px;
     height:42px;
     border-radius:10px;
     background:#f7f7f7;
     border:1px solid #e3e3e3;
     display:flex;
-    align-items:center;
     justify-content:center;
+    align-items:center;
     cursor:pointer;
-    transition:.25s;
+    transition:all .25s ease;
     font-size:18px;
 }
 
-.social-icons div:hover{
+.login-page .social-icons div:hover{
     transform:translateY(-3px);
     box-shadow:0 8px 18px rgba(0,0,0,.12);
 }
 
-.social-icons div:nth-child(1){ color:#EA4335; }
-.social-icons div:nth-child(2){ color:#1877F2; }
-.social-icons div:nth-child(3){ color:#111; }
+.login-page .social-icons div:nth-child(1){
+    color:#EA4335;
+}
 
+.login-page .social-icons div:nth-child(2){
+    color:#1877F2;
+}
+
+.login-page .social-icons div:nth-child(3){
+    color:#111;
+}
 /* ==========================================
-   REGISTER LINK
+   SIGNUP LINK
 ========================================== */
 
-.signup-link{
+.login-page .signup-link{
     text-align:center;
     font-size:13px;
     color:#666;
 }
 
-.signup-link a{
+.login-page .signup-link a{
     color:#0E8A8A;
     font-weight:700;
     text-decoration:none;
 }
 
-.signup-link a:hover{
+.login-page .signup-link a:hover{
     text-decoration:underline;
 }
 
@@ -452,70 +405,141 @@ body{
    ANIMATION
 ========================================== */
 
-.login-card{
-    animation:fadeUp .5s ease;
-}
-
 @keyframes fadeUp{
     from{
         opacity:0;
         transform:translateY(18px);
     }
+
     to{
         opacity:1;
         transform:translateY(0);
     }
 }
 
+.login-page .login-card{
+    animation:fadeUp .5s ease;
+}
+
 /* ==========================================
    RESPONSIVE
 ========================================== */
 
-@media(max-width:992px){
+@media (max-width:992px){
 
     body{
         overflow:auto;
     }
 
-    .auth-wrapper{
+    .login-page{
+        min-height:100vh;
         height:auto;
-        max-height:none;
+        padding:20px 10px;
     }
 
-    .left-section{
+    .login-page .container{
+        max-width:100%;
+    }
+
+    .login-page .auth-wrapper{
+        height:auto;
+        max-height:none;
+        border-radius:18px;
+    }
+
+    .login-page .left-section{
         display:none;
     }
 
-    .form-section{
-        padding:24px;
+    .login-page .form-section{
+        padding:30px 20px;
     }
 
-    .login-page{
-        height:auto;
-        min-height:100vh;
+    .login-page .login-card{
+        max-width:100%;
     }
+
 }
 
-@media(max-width:576px){
+@media (max-width:768px){
 
-    .role-selection{
+    .login-page .role-selection{
         flex-direction:column;
     }
 
-    .login-card h2{
-        font-size:24px;
+    .login-page .role-card{
+        width:100%;
     }
 
-    .form-section{
+    .login-page .login-card h2{
+        font-size:26px;
+    }
+
+    .login-page .tag-line{
+        font-size:16px;
+    }
+
+}
+
+@media (max-width:576px){
+
+    .login-page{
+        padding:12px;
+    }
+
+    .login-page .form-section{
         padding:18px;
     }
 
-    .signin-btn{
-        height:44px;
+    .login-page .login-card h2{
+        font-size:24px;
     }
 
-    .social-icons div{
+    .login-page .login-card>p{
+        font-size:13px;
+    }
+
+    .login-page .signin-btn{
+        height:44px;
+        font-size:14px;
+    }
+
+    .login-page .social-icons{
+        gap:10px;
+    }
+
+    .login-page .social-icons div{
         width:38px;
         height:38px;
+        font-size:16px;
     }
+
+    .login-page .remember{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+    }
+
+}
+
+@media (max-width:420px){
+
+    .login-page .role-card{
+        padding:8px;
+    }
+
+    .login-page .role-icon{
+        width:38px;
+        height:38px;
+        font-size:16px;
+    }
+
+    .login-page .role-card span{
+        font-size:12px;
+    }
+
+    .login-page .logo-title{
+        font-size:28px;
+    }
+
 }

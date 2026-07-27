@@ -145,4 +145,11 @@ public class BusServiceImpl implements BusService {
         }
 		
 	}
+	@Override
+    public List<BusResponseDTO> getAllBuses() {
+        List<Bus> buses = busRepository.findAll();
+        return buses.stream()
+                .map(bus -> modelMapper.map(bus, BusResponseDTO.class))
+                .toList(); // or .collect(Collectors.toList()) if on older Java version
+    }
 }

@@ -3,6 +3,9 @@ package com.travelmanagement.backend.controllers;
 import com.travelmanagement.backend.dtos.*;
 import com.travelmanagement.backend.services.BusService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/buses")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class BusController {
 
     private final BusService busService;
@@ -36,5 +40,10 @@ public class BusController {
         busService.deleteBus(id);
         
         return ResponseEntity.ok("Bus successfully deactivated and all future bookings have been refunded.");
+    }
+ // Add this new endpoint to fetch all buses
+    @GetMapping
+    public ResponseEntity<List<BusResponseDTO>> getAllBuses() {
+        return ResponseEntity.ok(busService.getAllBuses());
     }
 }
