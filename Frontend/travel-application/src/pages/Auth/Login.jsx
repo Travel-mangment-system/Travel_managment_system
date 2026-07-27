@@ -49,6 +49,7 @@ export default function Login() {
     try {
       const response = await loginUser(loginData);
 
+      // Save user details to localStorage
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
       localStorage.setItem("name", response.data.fullName);
@@ -56,7 +57,17 @@ export default function Login() {
 
       alert("Login Successful!");
 
-      navigate("/dashboard");
+      // DYNAMIC ROUTING: Check the role returned from the database
+      const userRole = response.data.role;
+
+      if (userRole === "ADMIN" || userRole === "ROLE_ADMIN") {
+        navigate("/Admin-Dashboard");
+      } else if (userRole === "PROVIDER" || userRole === "ROLE_PROVIDER") {
+        navigate("/provider-dashboard"); 
+      } else {
+        navigate("/home"); // Default route for CUSTOMER or ordinary users
+      }
+      
     } catch (error) {
       alert(error.response?.data?.message || "Invalid Email or Password");
     }
@@ -68,10 +79,8 @@ export default function Login() {
         <div className="row shadow-lg auth-wrapper">
 
           {/* LEFT SIDE */}
-
           <div className="col-lg-5 left-section">
             <div className="overlay">
-
               <h2 className="logo-title">
                 TravelHub
               </h2>
@@ -86,7 +95,6 @@ export default function Login() {
                 <div className="feature-icon">
                   🚌
                 </div>
-
                 <div>
                   <h6>Book Buses & Packages</h6>
                   <p>Quick and easy booking experience</p>
@@ -97,7 +105,6 @@ export default function Login() {
                 <div className="feature-icon">
                   💰
                 </div>
-
                 <div>
                   <h6>Best Prices</h6>
                   <p>Get the best deals and offers</p>
@@ -108,115 +115,63 @@ export default function Login() {
                 <div className="feature-icon">
                   🛡️
                 </div>
-
                 <div>
                   <h6>Secure & Reliable</h6>
                   <p>Your safety is our priority</p>
                 </div>
               </div>
-
             </div>
           </div>
 
           {/* RIGHT SIDE */}
-
           <div className="col-lg-7 form-section">
             <div className="login-card">
-
               <h2>Sign In</h2>
-
-              <p>
-                Welcome back! Please sign in to continue
-              </p>
+              <p>Welcome back! Please sign in to continue</p>
 
               <label className="login-as">
                 Login as
               </label>
 
               <div className="role-selection">
-
                 <div
-                  className={`role-card ${
-                    role === "CUSTOMER" ? "active" : ""
-                  }`}
-                  style={{
-                    borderColor:
-                      role === "CUSTOMER"
-                        ? theme.CUSTOMER.color
-                        : "#ddd",
-                  }}
+                  className={`role-card ${role === "CUSTOMER" ? "active" : ""}`}
+                  style={{ borderColor: role === "CUSTOMER" ? theme.CUSTOMER.color : "#ddd" }}
                   onClick={() => setRole("CUSTOMER")}
                 >
-                  <div
-                    className="role-icon"
-                    style={{
-                      background: theme.CUSTOMER.color,
-                    }}
-                  >
+                  <div className="role-icon" style={{ background: theme.CUSTOMER.color }}>
                     {theme.CUSTOMER.icon}
                   </div>
-
                   <span>Customer</span>
                 </div>
 
                 <div
-                  className={`role-card ${
-                    role === "PROVIDER" ? "active" : ""
-                  }`}
-                  style={{
-                    borderColor:
-                      role === "PROVIDER"
-                        ? theme.PROVIDER.color
-                        : "#ddd",
-                  }}
+                  className={`role-card ${role === "PROVIDER" ? "active" : ""}`}
+                  style={{ borderColor: role === "PROVIDER" ? theme.PROVIDER.color : "#ddd" }}
                   onClick={() => setRole("PROVIDER")}
                 >
-                  <div
-                    className="role-icon"
-                    style={{
-                      background: theme.PROVIDER.color,
-                    }}
-                  >
+                  <div className="role-icon" style={{ background: theme.PROVIDER.color }}>
                     {theme.PROVIDER.icon}
                   </div>
-
                   <span>Bus Provider</span>
                 </div>
 
                 <div
-                  className={`role-card ${
-                    role === "ADMIN" ? "active" : ""
-                  }`}
-                  style={{
-                    borderColor:
-                      role === "ADMIN"
-                        ? theme.ADMIN.color
-                        : "#ddd",
-                  }}
+                  className={`role-card ${role === "ADMIN" ? "active" : ""}`}
+                  style={{ borderColor: role === "ADMIN" ? theme.ADMIN.color : "#ddd" }}
                   onClick={() => setRole("ADMIN")}
                 >
-                  <div
-                    className="role-icon"
-                    style={{
-                      background: theme.ADMIN.color,
-                    }}
-                  >
+                  <div className="role-icon" style={{ background: theme.ADMIN.color }}>
                     {theme.ADMIN.icon}
                   </div>
-
                   <span>Admin</span>
                 </div>
-
               </div>
 
               <form onSubmit={handleSubmit}>
-
                 <div className="mb-3">
-
                   <label>Email</label>
-
                   <div className="input-group">
-
                     <input
                       type="email"
                       name="email"
@@ -226,19 +181,15 @@ export default function Login() {
                       onChange={handleChange}
                       required
                     />
-
                     <span className="input-group-text">
                       <BsEnvelope />
                     </span>
-
                   </div>
-
-                </div>                <div className="mb-3">
-
+                </div>                
+                
+                <div className="mb-3">
                   <label>Password</label>
-
                   <div className="input-group">
-
                     <input
                       type="password"
                       name="passwordHash"
@@ -248,37 +199,26 @@ export default function Login() {
                       onChange={handleChange}
                       required
                     />
-
                     <span className="input-group-text">
                       <BsEye />
                     </span>
-
                   </div>
-
                 </div>
 
                 <div className="remember">
-
                   <div>
-
                     <input type="checkbox" />
-
                     <span>Remember me</span>
-
                   </div>
-
                   <Link to="/forgot-password">
                     Forgot Password?
                   </Link>
-
                 </div>
 
                 <button
                   type="submit"
                   className="signin-btn"
-                  style={{
-                    background: theme[role].color,
-                  }}
+                  style={{ background: theme[role].color }}
                 >
                   Sign In
                 </button>
@@ -288,37 +228,22 @@ export default function Login() {
                 </div>
 
                 <div className="social-icons">
-
                   <div>G</div>
-
                   <div>f</div>
-
                   <div></div>
-
                 </div>
 
                 <div className="signup-link">
-
                   Don't have an account?{" "}
-
                   <Link to="/register">
                     Sign Up
                   </Link>
-
                 </div>
-
               </form>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
-
   );
-
 }

@@ -48,41 +48,21 @@ const PackageInformation = ({
 
                     <div className="col-md-6">
 
-                        <label className="form-label">
-                            Destination
-                        </label>
+    <label className="form-label">
+        Destination
+    </label>
 
-                        <select
-                            className="form-select"
-                            name="destinationCity"
-                            value={packageData.destinationCity}
-                            onChange={handleChange}
-                            required
-                        >
+    <input
+        type="text"
+        className="form-control"
+        name="destinationCity"
+        placeholder="Enter Destination"
+        value={packageData.destinationCity}
+        onChange={handleChange}
+        required
+    />
 
-                            <option value="">
-                                Select Destination
-                            </option>
-
-                            <option value="Goa">
-                                Goa
-                            </option>
-
-                            <option value="Manali">
-                                Manali
-                            </option>
-
-                            <option value="Kerala">
-                                Kerala
-                            </option>
-
-                            <option value="Kashmir">
-                                Kashmir
-                            </option>
-
-                        </select>
-
-                    </div>
+</div>
 
                     {/* Base Price */}
 

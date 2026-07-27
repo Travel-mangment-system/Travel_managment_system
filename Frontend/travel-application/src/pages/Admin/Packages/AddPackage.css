@@ -3,33 +3,25 @@
 =========================================== */
 
 .add-package-page{
-
     min-height:100vh;
     background:#f5f7fb;
     padding:35px;
-
 }
 
 .page-header{
-
     margin-bottom:30px;
-
 }
 
 .page-title{
-
     font-size:34px;
     font-weight:700;
     color:#1f2937;
     margin-bottom:6px;
-
 }
 
 .page-subtitle{
-
     color:#6b7280;
     font-size:16px;
-
 }
 
 /* ===========================================
@@ -37,7 +29,6 @@
 =========================================== */
 
 .package-card{
-
     border:none;
     border-radius:16px;
     background:#ffffff;
@@ -45,28 +36,21 @@
     overflow:hidden;
     margin-bottom:25px;
     transition:.3s;
-
 }
 
 .package-card:hover{
-
     transform:translateY(-2px);
     box-shadow:0 12px 28px rgba(0,0,0,.12);
-
 }
 
 .package-card .card-header{
-
     background:#fff;
     border-bottom:1px solid #ececec;
     padding:20px 24px;
-
 }
 
 .package-card .card-body{
-
     padding:24px;
-
 }
 
 /* ===========================================
@@ -74,42 +58,32 @@
 =========================================== */
 
 .form-label{
-
     font-weight:600;
     color:#374151;
     margin-bottom:8px;
-
 }
 
 .form-control,
 .form-select{
-
     border-radius:10px;
     min-height:48px;
     border:1px solid #dcdcdc;
-
 }
 
 textarea.form-control{
-
     min-height:130px;
     resize:none;
-
 }
 
 .form-control:focus,
 .form-select:focus{
-
     border-color:#0d6efd;
     box-shadow:0 0 0 .18rem rgba(13,110,253,.18);
-
 }
 
 input[readonly]{
-
     background:#eef5ff;
     font-weight:600;
-
 }
 
 /* ===========================================
@@ -117,22 +91,45 @@ input[readonly]{
 =========================================== */
 
 .day-card{
-
     border:1px solid #e5e7eb;
     border-radius:14px;
     background:#fafafa;
     padding:22px;
     margin-bottom:24px;
-
 }
 
+/* ===========================================
+   ACTIVITY CARD
+=========================================== */
+
 .activity-card{
-
     background:#ffffff;
-    border:1px solid #ededed;
-    border-radius:10px;
-    padding:16px;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    padding:18px;
+    margin-bottom:18px;
+}
 
+.activity-card .row{
+    align-items:end;
+}
+
+.activity-card .form-control{
+    height:44px;
+}
+
+.activity-card .btn-danger{
+    width:100%;
+    height:44px;
+    white-space:nowrap;
+    min-width:90px;
+    font-weight:600;
+}
+
+.activity-card .form-label{
+    font-size:14px;
+    font-weight:600;
+    color:#374151;
 }
 
 /* ===========================================
@@ -140,31 +137,23 @@ input[readonly]{
 =========================================== */
 
 .summary-card{
-
     position:sticky;
     top:20px;
-
 }
 
 .summary-item{
-
     display:flex;
     justify-content:space-between;
     align-items:center;
     margin:12px 0;
-
 }
 
 .summary-item span{
-
     color:#6b7280;
-
 }
 
 .summary-item strong{
-
     color:#111827;
-
 }
 
 /* ===========================================
@@ -172,26 +161,20 @@ input[readonly]{
 =========================================== */
 
 .upload-box{
-
     border:2px dashed #d7d7d7;
     border-radius:12px;
     background:#fafafa;
     padding:20px;
     text-align:center;
-
 }
 
 .upload-box:hover{
-
     border-color:#0d6efd;
     background:#f5f9ff;
-
 }
 
 .img-fluid{
-
     border-radius:12px;
-
 }
 
 /* ===========================================
@@ -199,18 +182,14 @@ input[readonly]{
 =========================================== */
 
 .save-btn{
-
     height:50px;
     font-size:17px;
     font-weight:600;
     border-radius:10px;
-
 }
 
 .btn{
-
     border-radius:10px;
-
 }
 
 /* ===========================================
@@ -218,16 +197,12 @@ input[readonly]{
 =========================================== */
 
 ::-webkit-scrollbar{
-
     width:8px;
-
 }
 
 ::-webkit-scrollbar-thumb{
-
     background:#bcbcbc;
     border-radius:20px;
-
 }
 
 /* ===========================================
@@ -237,9 +212,7 @@ input[readonly]{
 @media(max-width:1200px){
 
     .summary-card{
-
         position:static;
-
     }
 
 }
@@ -247,21 +220,15 @@ input[readonly]{
 @media(max-width:992px){
 
     .add-package-page{
-
         padding:20px;
-
     }
 
     .page-title{
-
         font-size:28px;
-
     }
 
     .package-card{
-
         margin-bottom:20px;
-
     }
 
 }
@@ -269,15 +236,15 @@ input[readonly]{
 @media(max-width:768px){
 
     .package-card .card-body{
-
         padding:18px;
-
     }
 
     .page-title{
-
         font-size:24px;
+    }
 
+    .activity-card .btn-danger{
+        margin-top:10px;
     }
 
 }

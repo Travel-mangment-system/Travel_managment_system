@@ -1,8 +1,11 @@
+import AdminLayout from "../../../layouts/AdminLayout";
 import { useEffect, useState } from "react";
+
 import PackageInformation from "../../../components/Packages/PackageInformation";
 import ItinerarySection from "../../../components/Packages/ItinerarySection";
 import ImageUpload from "../../../components/Packages/ImageUpload";
 import PackageSummary from "../../../components/Packages/PackageSummary";
+
 import "./AddPackage.css";
 
 import {
@@ -86,8 +89,7 @@ const AddPackage = () => {
                         ret.getTime() - departure.getTime();
 
                     const days = Math.ceil(
-                        diff /
-                        (1000 * 60 * 60 * 24)
+                        diff / (1000 * 60 * 60 * 24)
                     );
 
                     updated.durationDays = days;
@@ -142,62 +144,84 @@ const AddPackage = () => {
 
     return (
 
-        <div className="container-fluid add-package-page">
+        <AdminLayout>
 
-            <div className="page-header">
+            <div className="container-fluid add-package-page">
 
-                <h2 className="page-title">
+                {/* Page Header */}
 
-                    Add New Holiday Package
+                <div className="page-header">
 
-                </h2>
+                    <h2 className="page-title">
+                        Add New Holiday Package
+                    </h2>
 
-                <p className="page-subtitle">
-
-                    Create and manage holiday packages
-
-                </p>
-
-            </div>
-
-            <form onSubmit={handleSubmit}>
-
-                <div className="row g-4 align-items-start">
-
-                    <div className="col-xl-5 col-lg-6">
-
-                        <PackageInformation
-                            packageData={packageData}
-                            handleChange={handleChange}
-                            buses={buses}
-                        />
-
-                    </div>
-
-                    <div className="col-xl-4 col-lg-6">
-
-                        <ItinerarySection
-                            itineraries={itineraries}
-                            setItineraries={setItineraries}
-                        />
-
-                    </div>
-
-                    <div className="col-xl-3 col-lg-12">
-
-                        <ImageUpload />
-
-                        <PackageSummary
-                            packageData={packageData}
-                        />
-
-                    </div>
+                    <p className="page-subtitle">
+                        Create and manage holiday packages
+                    </p>
 
                 </div>
 
-            </form>
+                <form onSubmit={handleSubmit}>
 
-        </div>
+                    {/* ==========================
+                        Row 1
+                    ========================== */}
+
+                    <div className="row g-4">
+
+                        {/* Package Information */}
+
+                        <div className="col-lg-8">
+
+                            <PackageInformation
+                                packageData={packageData}
+                                handleChange={handleChange}
+                                buses={buses}
+                            />
+
+                        </div>
+
+                        {/* Right Sidebar */}
+
+                        <div className="col-lg-4">
+
+                            <ImageUpload />
+
+                            <div className="mt-4">
+
+                                <PackageSummary
+                                    packageData={packageData}
+                                />
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {/* ==========================
+                        Row 2
+                    ========================== */}
+
+                    <div className="row mt-4">
+
+                        <div className="col-12">
+
+                            <ItinerarySection
+                                itineraries={itineraries}
+                                setItineraries={setItineraries}
+                            />
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </AdminLayout>
 
     );
 

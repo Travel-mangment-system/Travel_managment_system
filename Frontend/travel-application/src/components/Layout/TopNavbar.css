@@ -1,0 +1,102 @@
+.top-navbar {
+    height: 70px;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+
+    width: 380px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 10px;
+
+    padding: 10px 15px;
+}
+
+.search-icon {
+    color: #64748b;
+}
+
+.search-input {
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    margin-left: 10px;
+
+    width: 100%;
+
+    font-size: 15px;
+
+}
+
+.top-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 25px;
+
+}
+
+.btn-icon {
+
+    background: transparent;
+
+    border: none;
+
+    cursor: pointer;
+
+    color: #475569;
+
+}
+
+.profile-section {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+.avatar {
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 50%;
+
+    background: #0f766e;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: bold;
+
+}

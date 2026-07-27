@@ -1,15 +1,20 @@
+import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { 
   Search, Bell, LayoutDashboard, Bus, Users, Settings, LogOut, 
   Eye, Filter, X, Plus, Edit, Trash2
-} from "lucide-react";
+} from "lucide-react";// Added for navigation
 import "./BrowsePackagesPage.css";
 
 export default function ManagePackagesPage() {
+  const navigate = useNavigate();
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
+  // New state to hold dynamic user data for the top right corner
+  const [userInfo, setUserInfo] = useState({ name: "Loading...", role: "", initials: ".." });
+
   // Search states
   const [inputValue, setInputValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,26 +22,84 @@ export default function ManagePackagesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState(null);
 
+
   useEffect(() => {
-    fetchPackages();
+    // 1. Check if the user is an Admin FIRST
+    const hasAccess = verifyAdminRole();
+    
+    // 2. Only fetch data if they are an Admin
+    if (hasAccess) {
+      fetchPackages();
+    }
   }, []);
+
+  // FRONTEND SECURITY: Decode JWT and verify Admin Role
+  const verifyAdminRole = () => {
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+      navigate("/login");
+      return false;
+    }
+
+    try {
+      // Decode the payload part of the JWT
+      const payloadBase64 = token.split('.')[1];
+      const decodedPayload = JSON.parse(atob(payloadBase64));
+      
+      const userRole = decodedPayload.user_role;
+      
+      // If they are not an ADMIN, kick them out
+      if (userRole !== "ADMIN" && userRole !== "ROLE_ADMIN") {
+        alert("Access Denied: You do not have administrator privileges.");
+        navigate("/Admin-Dashboard");
+        return false;
+      }
+      
+      // Extract and format user data for header
+      const rawName = decodedPayload.sub || "Admin User";
+      const displayName = rawName.includes('@') ? rawName.split('@')[0] : rawName;
+      
+      const displayRole = userRole.replace("ROLE_", "");
+      const formattedRole = displayRole.charAt(0).toUpperCase() + displayRole.slice(1).toLowerCase();
+      
+      const initials = displayName.substring(0, 2).toUpperCase();
+      
+      setUserInfo({ 
+        name: displayName, 
+        role: formattedRole, 
+        initials: initials 
+      });
+
+      return true;
+    } catch (err) {
+      console.error("Invalid token format:", err);
+      localStorage.clear();
+      navigate("/login");
+      return false;
+    }
+  };
 
   const fetchPackages = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token"); // Retrieve JWT token
+      const token = localStorage.getItem("token"); 
       
       const response = await fetch("http://localhost:8080/api/v1/admin/packages", {
         headers: {
-          'Authorization': `Bearer ${token}`, // Attach token here
+          'Authorization': `Bearer ${token}`, 
           'Content-Type': 'application/json'
         }
       });
       
-      if (!response.ok) throw new Error("Failed to fetch packages");
+      if (!response.ok) {
+         if (response.status === 401 || response.status === 403) {
+             throw new Error("Unauthorized access. Please log in again.");
+         }
+         throw new Error("Failed to fetch packages");
+      }
       const data = await response.json();
       
-      // Admins should see all packages, so we removed the 'ACTIVE' only filter
       setPackages(data);
     } catch (err) {
       setError(err.message);
@@ -46,16 +109,15 @@ export default function ManagePackagesPage() {
     }
   };
 
-  // Restored Delete Functionality
   const handleDelete = async (packageId) => {
     if (window.confirm("Are you sure you want to cancel and delete this package? Customers will be refunded 100%.")) {
       try {
-        const token = localStorage.getItem("token"); // Retrieve JWT token
+        const token = localStorage.getItem("token"); 
         
         const response = await fetch(`http://localhost:8080/api/v1/admin/packages/${packageId}`, {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${token}` // Attach token here
+            'Authorization': `Bearer ${token}` 
           }
         });
         
@@ -69,6 +131,11 @@ export default function ManagePackagesPage() {
         console.error("Error deleting:", err);
       }
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
   };
 
   const formatDate = (dateString) => {
@@ -123,7 +190,7 @@ export default function ManagePackagesPage() {
 
   return (
     <div className="manage-packages-layout">
-      {/* SIDEBAR - Restored to Admin format */}
+      {/* SIDEBAR */}
       <aside className="sidebar">
         <div className="sidebar-header">
           <Bus className="brand-icon" size={32} />
@@ -131,14 +198,17 @@ export default function ManagePackagesPage() {
         </div>
         <div className="sidebar-title">Admin Panel</div>
         <nav className="sidebar-nav">
-          <a href="#" className="nav-item"><LayoutDashboard size={20} /> Dashboard</a>
+          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/Admin-Dashboard"); }}><LayoutDashboard size={20} /> Dashboard</a>
           <a href="#" className="nav-item"><Users size={20} /> Users</a>
           <a href="#" className="nav-item"><Bus size={20} /> Bus Providers</a>
+          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/manage-buses"); }}><Bus size={20} /> Manage Buses</a>
           <a href="#" className="nav-item active"><Bus size={20} /> Packages</a>
         </nav>
         <div className="sidebar-footer">
           <a href="#" className="nav-item"><Settings size={20} /> Settings</a>
-          <a href="#" className="nav-item logout"><LogOut size={20} /> Logout</a>
+          <button className="nav-item logout" onClick={handleLogout} style={{background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer'}}>
+            <LogOut size={20} /> Logout
+          </button>
         </div>
       </aside>
 
@@ -169,10 +239,17 @@ export default function ManagePackagesPage() {
           <div className="top-actions">
             <button className="btn-icon"><Bell size={24} /></button>
             <div className="profile-section">
-              <div className="avatar">AU</div>
+              {/* Dynamic Avatar Initials */}
+              <div className="avatar">{userInfo.initials}</div>
               <div>
-                <div style={{fontWeight: 600, fontSize: '0.875rem', color: '#334155'}}>Admin User</div>
-                <div style={{fontSize: '0.75rem', color: '#64748b'}}>Super Admin</div>
+                {/* Dynamic Username */}
+                <div style={{fontWeight: 600, fontSize: '0.875rem', color: '#334155', textTransform: 'capitalize'}}>
+                  {userInfo.name}
+                </div>
+                {/* Dynamic Role */}
+                <div style={{fontSize: '0.75rem', color: '#64748b'}}>
+                  {userInfo.role}
+                </div>
               </div>
             </div>
           </div>
@@ -184,11 +261,13 @@ export default function ManagePackagesPage() {
               <h1 className="page-title">Manage Packages</h1>
               <p className="page-subtitle">View and manage all holiday packages</p>
             </div>
-            {/* Restored Add New Package Button */}
-            <button className="btn-primary">
+            <button
+              className="btn-primary"
+              onClick={() => navigate("/admin/add-package")}
+          >
               <Plus size={18} />
               Add New Package
-            </button>
+          </button>
           </div>
 
           <div className="table-card">
@@ -277,7 +356,6 @@ export default function ManagePackagesPage() {
                         </td>
                         <td>
                           <div style={{display: 'flex', gap: '8px', justifyContent: 'center', alignItems: 'center'}}>
-                            {/* Restored Admin Actions */}
                             <button className="btn-icon" title="View Details" onClick={() => handleView(pkg)}>
                               <Eye size={18} />
                             </button>
