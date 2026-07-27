@@ -1,5 +1,5 @@
 package com.travelmanagement.backend.security;
-
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 import javax.crypto.SecretKey;
@@ -26,7 +26,8 @@ public class JwtUtils {
 	@PostConstruct
 	public void myInit() {
 		log.info("******* Generating cryptographic secret key SHA 256 for Travel System");
-		key = Keys.hmacShaKeyFor(secret.getBytes());
+//		key = Keys.hmacShaKeyFor(secret.getBytes());
+		key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 	}
 
 	public String generateJWT(CustomUserDetailsImp userDetails) {

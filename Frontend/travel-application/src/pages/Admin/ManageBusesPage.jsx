@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { 
   Search, Bell, LayoutDashboard, Bus, Users, Settings, LogOut, 
   Eye, Filter, X, Edit, Trash2
@@ -25,12 +26,17 @@ export default function ManageBusesPage() {
   const fetchBuses = async () => {
     try {
       setLoading(true);
-      // Adjust the URL if you have a specific admin endpoint for fetching all buses
-      const response = await fetch("http://localhost:8080/api/v1/buses");
-      if (!response.ok) throw new Error("Failed to fetch buses");
-      const data = await response.json();
+      const token = localStorage.getItem("token"); // Retrieve JWT token
+
+      // Use axios with the Authorization header
+      const response = await axios.get("http://localhost:8080/api/v1/admin/buses", {
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+});
       
-      setBuses(data);
+      // Axios automatically parses JSON to response.data
+      setBuses(response.data);
     } catch (err) {
       setError(err.message);
       console.error("Fetch error:", err);
@@ -42,8 +48,13 @@ export default function ManageBusesPage() {
   const handleDelete = async (busId) => {
     if (window.confirm("Are you sure you want to delete this bus? All future bookings will be cancelled and refunded 100%.")) {
       try {
+        const token = localStorage.getItem("token"); // Retrieve JWT token
+        
         const response = await fetch(`http://localhost:8080/api/v1/buses/${busId}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}` // Attach token here
+          }
         });
         
         if (response.ok) {
@@ -150,7 +161,7 @@ export default function ManageBusesPage() {
         <div className="page-container">
           <div className="page-header">
             <div>
-              <h1 className="page-title">Manage Fleet</h1>
+              <h1 className="page-title">Manage Bus</h1>
               <p className="page-subtitle">View and manage all registered buses</p>
             </div>
             {/* Add New Bus button has been intentionally omitted per instructions */}

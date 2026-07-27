@@ -24,7 +24,15 @@ export default function ManagePackagesPage() {
   const fetchPackages = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:8080/api/v1/admin/packages");
+      const token = localStorage.getItem("token"); // Retrieve JWT token
+      
+      const response = await fetch("http://localhost:8080/api/v1/admin/packages", {
+        headers: {
+          'Authorization': `Bearer ${token}`, // Attach token here
+          'Content-Type': 'application/json'
+        }
+      });
+      
       if (!response.ok) throw new Error("Failed to fetch packages");
       const data = await response.json();
       
@@ -42,8 +50,13 @@ export default function ManagePackagesPage() {
   const handleDelete = async (packageId) => {
     if (window.confirm("Are you sure you want to cancel and delete this package? Customers will be refunded 100%.")) {
       try {
+        const token = localStorage.getItem("token"); // Retrieve JWT token
+        
         const response = await fetch(`http://localhost:8080/api/v1/admin/packages/${packageId}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}` // Attach token here
+          }
         });
         
         if (response.ok) {
