@@ -15,4 +15,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     Optional<Payment> findByRazorpayOrderId(String razorpayOrderId);
     Optional<Payment> findByBookingId(Long bookingId);
     Optional<Payment> findByBooking_IdAndPaymentStatus(Long bookingId, PaymentStatus paymentStatus);
+ // INCORRECT (IDE guess): Returns Optional<Booking>
+    // CORRECTED: Now returns Optional<Payment> instead of Optional<Booking>
+    Optional<Payment> findByPackageBooking_PackageBookingIdAndPaymentStatus(Long packageBookingId, PaymentStatus paymentStatus);
+	
 }

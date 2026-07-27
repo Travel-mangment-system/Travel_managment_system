@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+/* ==========================================
+   GLOBAL
+========================================== */
+
 *{
     margin:0;
     padding:0;
@@ -11,427 +15,312 @@ body{
     background:#edf2f7;
 }
 
+/* ==========================================
+   REGISTER PAGE
+========================================== */
+
 .auth-bg{
-
     min-height:100vh;
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     padding:10px;
-
     background:#edf2f7;
-
 }
 
-.auth-container{
-
+.auth-bg .auth-container{
     max-width:1320px;
-
 }
 
-.auth-wrapper{
+.auth-bg .auth-wrapper{
     background:#fff;
     border-radius:20px;
     overflow:hidden;
     box-shadow:0 15px 40px rgba(0,0,0,.12);
-
     display:flex;
     align-items:stretch;
 }
 
-/* ================= LEFT PANEL ================= */
+/* ==========================================
+   LEFT PANEL
+========================================== */
 
-.left-panel{
-
+.auth-bg .left-panel{
     position:relative;
-
     width:100%;
-
     height:100%;
-
     min-height:100%;
-
     background:url("../../assets/images/travel.jpeg") center center;
-
     background-size:cover;
-
 }
 
-.left-panel::before{
-
+.auth-bg .left-panel::before{
     content:"";
-
     position:absolute;
-
     inset:0;
-
     background:rgba(0,0,0,.25);
-
 }
 
-.overlay{
-
+.auth-bg .overlay{
     position:absolute;
-
     inset:0;
-
     display:flex;
-
     flex-direction:column;
-
     justify-content:center;
-
     padding:35px;
-
-    color:white;
-
+    color:#fff;
     z-index:5;
-
 }
 
-.overlay h1{
-
+.auth-bg .overlay h1{
     font-size:46px;
-
     font-weight:700;
-
     margin-bottom:15px;
-
 }
 
-.overlay p{
-
+.auth-bg .overlay p{
     font-size:18px;
-
     line-height:1.5;
-
     margin-bottom:25px;
-
 }
 
-.feature{
-
+.auth-bg .feature{
     font-size:18px;
-
     margin-bottom:12px;
-
     font-weight:500;
-
 }
 
-/* ================= RIGHT PANEL ================= */
+/* ==========================================
+   RIGHT PANEL
+========================================== */
 
-.card{
-
+.auth-bg .card{
     border:none;
-
     border-radius:0;
-
     box-shadow:none;
-
     height:620px;
-
+    animation:fadeIn .5s ease;
 }
 
-.card-body{
-
+.auth-bg .card-body{
     padding:25px 35px;
-
 }
 
-.card h2{
-
+.auth-bg .card h2{
     font-size:42px;
-
     text-align:center;
-
     font-weight:700;
-
     margin-bottom:5px;
-
 }
 
-.subtitle{
-
+.auth-bg .subtitle{
     text-align:center;
-
     font-size:18px;
-
     color:#666;
-
     margin-bottom:20px;
-
 }
 /* ==========================================
             ROLE BUTTONS
 ========================================== */
 
-.role-buttons{
-
+.auth-bg .role-buttons{
     display:flex;
     gap:10px;
     margin-bottom:18px;
-
 }
 
-.role-buttons .btn{
-
+.auth-bg .role-buttons .btn{
     flex:1;
     height:42px;
     border-radius:8px;
     font-size:15px;
     font-weight:600;
-    transition:.3s;
-
+    transition:all .3s ease;
 }
 
-.role-buttons .btn:hover{
-
+.auth-bg .role-buttons .btn:hover{
     transform:translateY(-2px);
-
 }
 
 /* ==========================================
                 FORM
 ========================================== */
 
-form{
-
+.auth-bg form{
     display:flex;
     flex-direction:column;
-
 }
 
-label{
-
+.auth-bg label{
     display:block;
     font-size:14px;
     font-weight:600;
     color:#333;
     margin-bottom:5px;
-
 }
 
-.row{
-
+.auth-bg .row{
     margin-bottom:2px;
-
 }
 
-.mb-3{
-
+.auth-bg .mb-3{
     margin-bottom:12px !important;
-
 }
 
-.form-control{
-
+.auth-bg .form-control{
     height:40px;
     border-radius:8px;
     border:1px solid #d9d9d9;
     font-size:14px;
     padding:8px 12px;
-    box-shadow:none!important;
-    transition:.25s;
-
+    box-shadow:none !important;
+    transition:all .25s ease;
 }
 
-.form-control:focus{
-
+.auth-bg .form-control:focus{
     border-color:#198754;
-    box-shadow:0 0 0 .12rem rgba(25,135,84,.15)!important;
-
+    box-shadow:0 0 0 .12rem rgba(25,135,84,.15) !important;
 }
 
 /* ==========================================
-            GENDER
+                GENDER
 ========================================== */
 
-.bottom-row{
-
+.auth-bg .bottom-row{
     display:flex;
     justify-content:space-between;
     align-items:center;
     margin:8px 0 15px;
-
 }
 
-.gender-section{
-
+.auth-bg .gender-section{
     display:flex;
     align-items:center;
     gap:15px;
-
 }
 
-.gender-title{
-
+.auth-bg .gender-title{
     margin:0;
     font-size:14px;
     font-weight:600;
-
 }
 
-.gender-options{
-
+.auth-bg .gender-options{
     display:flex;
     gap:20px;
-
 }
 
-.gender-options .form-check{
-
+.auth-bg .gender-options .form-check{
     display:flex;
     align-items:center;
     gap:6px;
     margin:0;
-
 }
 
-.gender-options .form-check-input{
-
+.auth-bg .gender-options .form-check-input{
     margin:0;
-
 }
 
-.form-check-label{
-
+.auth-bg .form-check-label{
     font-size:13px;
     margin:0;
-
 }
 
 /* ==========================================
-            TERMS
+                TERMS
 ========================================== */
 
-.form-check{
-
+.auth-bg .form-check{
     display:flex;
     align-items:center;
-
 }
 
-.form-check-input{
-
+.auth-bg .form-check-input{
     margin-right:8px;
     cursor:pointer;
-
 }
 
 /* ==========================================
-            BUTTON
+            REGISTER BUTTON
 ========================================== */
 
-.btn-register{
-
+.auth-bg .btn-register{
     width:100%;
     height:42px;
     border-radius:8px;
     font-size:16px;
     font-weight:600;
     margin-top:5px;
-    transition:.3s;
-
+    transition:all .3s ease;
 }
 
-.btn-register:hover{
-
+.auth-bg .btn-register:hover{
     transform:translateY(-2px);
-
+    box-shadow:0 8px 20px rgba(25,135,84,.25);
 }
 /* ==========================================
             LOGIN LINK
 ========================================== */
 
-.login-link{
-
+.auth-bg .login-link{
     margin-top:15px;
-
     text-align:center;
-
     font-size:14px;
-
     color:#555;
-
 }
 
-.login-link a{
-
+.auth-bg .login-link a{
     color:#198754;
-
     text-decoration:none;
-
     font-weight:600;
-
 }
 
-.login-link a:hover{
-
+.auth-bg .login-link a:hover{
     text-decoration:underline;
-
 }
 
 /* ==========================================
-            CARD ANIMATION
+            ANIMATION
 ========================================== */
-
-.card{
-
-    animation:fadeIn .5s ease;
-
-}
 
 @keyframes fadeIn{
 
     from{
-
         opacity:0;
         transform:translateY(15px);
-
     }
 
     to{
-
         opacity:1;
         transform:translateY(0);
-
     }
 
 }
 
+.auth-bg .card{
+    animation:fadeIn .5s ease;
+}
+
 /* ==========================================
-        DESKTOP (1080P OPTIMIZED)
+        DESKTOP
 ========================================== */
 
 @media (min-width:1200px){
 
-    .auth-container{
-
+    .auth-bg .auth-container{
         max-width:1320px;
-
     }
 
-    .left-panel{
-
+    .auth-bg .left-panel{
         height:620px;
-
     }
 
-    .card{
-
+    .auth-bg .card{
         height:620px;
-
     }
 
-    .card-body{
-
+    .auth-bg .card-body{
         padding:24px 32px;
-
     }
 
 }
@@ -442,46 +331,32 @@ label{
 
 @media (max-width:1199px){
 
-    .left-panel{
-
+    .auth-bg .left-panel{
         height:580px;
-
     }
 
-    .card{
-
+    .auth-bg .card{
         height:580px;
-
     }
 
-    .overlay h1{
-
+    .auth-bg .overlay h1{
         font-size:38px;
-
     }
 
-    .overlay p{
-
+    .auth-bg .overlay p{
         font-size:16px;
-
     }
 
-    .feature{
-
+    .auth-bg .feature{
         font-size:16px;
-
     }
 
-    .card h2{
-
+    .auth-bg .card h2{
         font-size:34px;
-
     }
 
-    .subtitle{
-
+    .auth-bg .subtitle{
         font-size:16px;
-
     }
 
 }
@@ -492,28 +367,20 @@ label{
 
 @media (max-width:992px){
 
-    .left-panel{
-
+    .auth-bg .left-panel{
         display:none;
-
     }
 
-    .card{
-
+    .auth-bg .card{
         height:auto;
-
     }
 
-    .card-body{
-
+    .auth-bg .card-body{
         padding:25px;
-
     }
 
-    .auth-wrapper{
-
+    .auth-bg .auth-wrapper{
         border-radius:15px;
-
     }
 
 }
@@ -524,46 +391,31 @@ label{
 
 @media (max-width:768px){
 
-    .role-buttons{
-
+    .auth-bg .role-buttons{
         flex-direction:column;
-
     }
 
-    .bottom-row{
-
+    .auth-bg .bottom-row{
         flex-direction:column;
-
         align-items:flex-start;
-
         gap:15px;
-
     }
 
-    .gender-section{
-
+    .auth-bg .gender-section{
         flex-direction:column;
-
         align-items:flex-start;
-
     }
 
-    .gender-options{
-
+    .auth-bg .gender-options{
         gap:15px;
-
     }
 
-    .card h2{
-
+    .auth-bg .card h2{
         font-size:28px;
-
     }
 
-    .subtitle{
-
+    .auth-bg .subtitle{
         font-size:15px;
-
     }
 
 }
@@ -575,45 +427,30 @@ label{
 @media (max-width:576px){
 
     .auth-bg{
-
         padding:8px;
-
     }
 
-    .card-body{
-
+    .auth-bg .card-body{
         padding:18px;
-
     }
 
-    .form-control{
-
+    .auth-bg .form-control{
         height:38px;
-
         font-size:13px;
-
     }
 
-    .btn-register{
-
+    .auth-bg .btn-register{
         height:40px;
-
         font-size:15px;
-
     }
 
-    .role-buttons .btn{
-
+    .auth-bg .role-buttons .btn{
         height:40px;
-
         font-size:14px;
-
     }
 
-    .login-link{
-
+    .auth-bg .login-link{
         font-size:13px;
-
     }
 
 }
