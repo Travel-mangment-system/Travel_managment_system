@@ -1,9 +1,12 @@
 package com.travelmanagement.backend.services;
 
+import java.util.List;
+
 import org.jspecify.annotations.Nullable;
 
 import com.travelmanagement.backend.dtos.HolidayPackageRequest;
 import com.travelmanagement.backend.dtos.HolidayPackageResponse;
+import com.travelmanagement.backend.entities.HolidayPackage;
 import com.travelmanagement.backend.entities.PackageStatus;
 
 import jakarta.validation.Valid;
@@ -19,4 +22,5 @@ public interface HolidayPackageService {
 	        PackageStatus status);
 
 	void deletePackage(Long packageId);
+	List<HolidayPackage> getAllPackages();
 }

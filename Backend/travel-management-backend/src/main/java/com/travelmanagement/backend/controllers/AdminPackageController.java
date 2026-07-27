@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +20,7 @@ import com.travelmanagement.backend.dtos.HolidayPackageResponse;
 import com.travelmanagement.backend.dtos.PackageItineraryRequest;
 import com.travelmanagement.backend.dtos.PackageItineraryResponse;
 import com.travelmanagement.backend.dtos.UpdatePackageStatusRequest;
+import com.travelmanagement.backend.entities.HolidayPackage;
 import com.travelmanagement.backend.entities.PackageItinerary;
 import com.travelmanagement.backend.services.HolidayPackageService;
 import com.travelmanagement.backend.services.PackageItineraryService;
@@ -26,6 +29,7 @@ import com.travelmanagement.backend.services.PackageItineraryService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/packages")
 public class AdminPackageController {
@@ -69,6 +73,11 @@ public class AdminPackageController {
         holidayPackageService.deletePackage(packageId);
         
         return ResponseEntity.ok("Package successfully cancelled. The bus has been released, and all customers have been refunded 100%.");
+    }
+	@GetMapping
+    public ResponseEntity<List<HolidayPackage>> getAllPackages() {
+        List<HolidayPackage> packages = holidayPackageService.getAllPackages();
+        return ResponseEntity.ok(packages);
     }
 	
 }

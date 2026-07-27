@@ -33,6 +33,7 @@ public class PackageBookingDto {
 		private Long userId;
 		private String paymentId;
 		private String specialRequests;
+		private Long busId;
 		private List<Traveler> travlers;
 	}
 	
@@ -49,6 +50,7 @@ public class PackageBookingDto {
 		private BigDecimal totalAmountPaid;
 		private BookingStatus bookingStatus;
 		private String message;
+		private Long busId;
 	}
 	
 	@Data

@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -71,13 +73,28 @@ public class HolidayPackage {
 	@Column(name= "created_at")
 	private LocalDateTime createdAt;
 	
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name= "assigned_bus_id",unique = true)
 	private Bus assignedBus;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "holidayPackage", cascade = CascadeType.ALL)
 	private List<PackageBooking> packageBookings;
-
+	
+	public Long getPackageId() { return packageId; }
+    public String getTitle() { return title; }
+    public String getDescription() { return description; }
+    public BigDecimal getBasePrice() { return basePrice; }
+    public Integer getDurationDays() { return durationDays; }
+    public Integer getDurationNights() { return durationNights; }
+    public String getDestinationCity() { return destinationCity; }
+    public LocalDateTime getDepartureDatetime() { return departureDatetime; }
+    public LocalDateTime getReturnDatetime() { return returnDatetime; }
+    public Integer getTotalCapacity() { return totalCapacity; }
+    public Integer getAvailableSpots() { return availableSpots; }
+    public PackageStatus getStatus() { return status; }
+    
 	
 	
 }

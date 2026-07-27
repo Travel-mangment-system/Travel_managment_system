@@ -168,4 +168,10 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
             packageBookingRepository.save(booking);
         }
 	}
+	// Add this method inside HolidayPackageServiceImpl
+	@Override
+	public List<HolidayPackage> getAllPackages() {
+	    // Fetches all packages from the database
+	    return holidayPackageRepository.findAll();
+	}
 }
