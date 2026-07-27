@@ -17,7 +17,6 @@ import com.travelmanagement.backend.services.BusProviderService;
 
 @RestController
 @RequestMapping("/api/v1/providers")
-@CrossOrigin(origins = "http://localhost:3000")
 public class ProviderController {
 	
 	@Autowired

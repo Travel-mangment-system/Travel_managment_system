@@ -3,12 +3,16 @@ import {
   Search, Bell, LayoutDashboard, Bus, Users, Settings, LogOut, 
   Eye, Filter, X, Edit, Trash2
 } from "lucide-react";
-import "./BrowsePackagesPage.css"; // Ensure this matches your CSS file name
+import { useNavigate } from "react-router-dom";
+import "./BrowsePackagesPage.css"; 
 
 export default function ManageBusesPage() {
   const [buses, setBuses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // New state to hold dynamic user data for the top right corner
+  const [userInfo, setUserInfo] = useState({ name: "Loading...", role: "", initials: ".." });
   
   // Search states
   const [inputValue, setInputValue] = useState("");
@@ -17,11 +21,65 @@ export default function ManageBusesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBus, setSelectedBus] = useState(null);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
-    fetchBuses();
+    const hasAccess = verifyAdminRole();
+    if (hasAccess) {
+      fetchBuses();
+    }
   }, []);
 
-  // Public GET request (no token required)
+  const verifyAdminRole = () => {
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+      navigate("/login");
+      return false;
+    }
+
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const decodedPayload = JSON.parse(atob(payloadBase64));
+      
+      const userRole = decodedPayload.user_role;
+      
+      if (userRole !== "ADMIN" && userRole !== "ROLE_ADMIN") {
+        alert("Access Denied: You do not have administrator privileges.");
+        navigate("/Admin-Dashboard");
+        return false;
+      }
+      
+      // --- NEW: Extract and format user data for header ---
+      // Spring Boot typically stores the username/email in the "sub" (subject) claim
+      const rawName = decodedPayload.sub || "Admin User";
+      
+      // If it's an email (e.g., admin@travel.com), this extracts just the "admin" part
+      const displayName = rawName.includes('@') ? rawName.split('@')[0] : rawName;
+      
+      // Clean up role text (changes "ROLE_ADMIN" to just "Admin")
+      const displayRole = userRole.replace("ROLE_", "");
+      const formattedRole = displayRole.charAt(0).toUpperCase() + displayRole.slice(1).toLowerCase();
+      
+      // Get first two letters for the circular avatar (e.g., "admin" -> "AD")
+      const initials = displayName.substring(0, 2).toUpperCase();
+      
+      setUserInfo({ 
+        name: displayName, 
+        role: formattedRole, 
+        initials: initials 
+      });
+      // ---------------------------------------------------
+
+      return true;
+    } catch (err) {
+      console.error("Invalid token format:", err);
+      localStorage.clear();
+      navigate("/login");
+      return false;
+    }
+  };
+
   const fetchBuses = async () => {
     try {
       setLoading(true);
@@ -47,22 +105,22 @@ export default function ManageBusesPage() {
     }
   };
 
-  // Secured DELETE request (requires admin JWT token)
   const handleDelete = async (busId) => {
     if (window.confirm("Are you sure you want to delete this bus? All future bookings will be cancelled and refunded 100%.")) {
       try {
-        const token = localStorage.getItem("token"); // Retrieve JWT token
+        const token = localStorage.getItem("token"); 
         
         const response = await fetch(`http://localhost:8080/api/v1/buses/${busId}`, {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
           }
         });
         
         if (response.ok) {
           alert("Bus successfully deleted and refunds processed.");
-          fetchBuses(); // Refresh the list
+          fetchBuses(); 
         } else {
           alert("Failed to delete bus. Unauthorized or forbidden.");
         }
@@ -70,6 +128,11 @@ export default function ManageBusesPage() {
         console.error("Error deleting:", err);
       }
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
   };
 
   const handleView = (bus) => {
@@ -92,7 +155,6 @@ export default function ManageBusesPage() {
     }
   };
 
-  // FILTER LOGIC - Searching by Bus Name or Bus Number
   const filteredBuses = buses.filter((bus) => {
     if (!searchTerm) return true;
 
@@ -113,15 +175,17 @@ export default function ManageBusesPage() {
         </div>
         <div className="sidebar-title">Admin Panel</div>
         <nav className="sidebar-nav">
-          <a href="#" className="nav-item"><LayoutDashboard size={20} /> Dashboard</a>
+          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/Admin-Dashboard"); }}><LayoutDashboard size={20} /> Dashboard</a>
           <a href="#" className="nav-item"><Users size={20} /> Users</a>
           <a href="#" className="nav-item"><Bus size={20} /> Bus Providers</a>
           <a href="#" className="nav-item active"><Bus size={20} /> Manage Buses</a>
-          <a href="#" className="nav-item"><Bus size={20} /> Packages</a>
+          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/packages"); }}><Bus size={20} /> Packages</a>
         </nav>
         <div className="sidebar-footer">
           <a href="#" className="nav-item"><Settings size={20} /> Settings</a>
-          <a href="#" className="nav-item logout"><LogOut size={20} /> Logout</a>
+          <button className="nav-item logout" onClick={handleLogout} style={{background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer'}}>
+            <LogOut size={20} /> Logout
+          </button>
         </div>
       </aside>
 
@@ -152,10 +216,17 @@ export default function ManageBusesPage() {
           <div className="top-actions">
             <button className="btn-icon"><Bell size={24} /></button>
             <div className="profile-section">
-              <div className="avatar">AU</div>
+              {/* Dynamic Avatar Initials */}
+              <div className="avatar">{userInfo.initials}</div>
               <div>
-                <div style={{fontWeight: 600, fontSize: '0.875rem', color: '#334155'}}>Admin User</div>
-                <div style={{fontSize: '0.75rem', color: '#64748b'}}>Super Admin</div>
+                {/* Dynamic Username */}
+                <div style={{fontWeight: 600, fontSize: '0.875rem', color: '#334155', textTransform: 'capitalize'}}>
+                  {userInfo.name}
+                </div>
+                {/* Dynamic Role */}
+                <div style={{fontSize: '0.75rem', color: '#64748b'}}>
+                  {userInfo.role}
+                </div>
               </div>
             </div>
           </div>

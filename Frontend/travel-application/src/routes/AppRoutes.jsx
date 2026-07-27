@@ -8,6 +8,7 @@ import Register from "../pages/Auth/Register";
 import BusSearch from "../pages/Bus/BusSearch";
 import BrowsePackagesPage from "../pages/Admin/BrowsePackagesPage";
 import ManageBusesPage from "../pages/Admin/ManageBusesPage";
+import Dashboard from "../pages/Admin/Dashboard";
 
 function AppRoutes() {
   return (
@@ -21,6 +22,7 @@ function AppRoutes() {
       <Route path="/buses" element={<BusSearch />} />
       <Route path="/packages" element={<BrowsePackagesPage />} />
       <Route path="/manage-buses" element={<ManageBusesPage />} />
+      <Route path="/Admin-Dashboard" element={<Dashboard/>} />
     </Routes>
   );
 }

@@ -68,7 +68,7 @@ public class SecurityConfiguration {
             		
             		.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             		
-
+            		
                     // Swagger
                     .requestMatchers(
                             "/v3/api-docs/**",
@@ -86,6 +86,8 @@ public class SecurityConfiguration {
                     // Any other public APIs
                     .requestMatchers("/auth/**")
                     .permitAll()
+                    
+                    .requestMatchers(HttpMethod.GET, "/api/v1/buses").permitAll()
 
                     // Everything else requires JWT
                     .anyRequest()
