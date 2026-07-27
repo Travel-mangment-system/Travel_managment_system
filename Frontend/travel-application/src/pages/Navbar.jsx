@@ -1,38 +1,55 @@
-import React from 'react';
-import '../css/Navbar.css';
+import { Link, useNavigate } from "react-router-dom";
+import "../css/Navbar.css";
 
 const Navbar = () => {
+  // 1. Make sure navigate is defined here
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("role");
+    localStorage.removeItem("name");
+    navigate("/login");
+  };
+
   return (
-    <nav className="navbar">
-      <div className="logo">
-        <i className="fa-solid fa-bus logo-icon"></i>
-        <div className="logo-text">
-          <h2>TravelHub</h2>
-          <p>Journey Beyond Limits</p>
-        </div>
-      </div>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4 shadow-sm" style={{ position: 'relative', zIndex: 1050 }}>
+      {/* ... (keep your existing logo and hamburger menu code here) ... */}
+      
+      <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul className="navbar-nav align-items-center gap-3">
+          <li className="nav-item"><Link className="nav-link text-white" to="/">Home</Link></li>
+          <li className="nav-item"><Link className="nav-link text-white" to="/packages">Packages</Link></li>
 
-      <ul className="nav-links">
-        <li>Home</li>
-        <li>Buses</li>
-        <li>Holiday Packages</li>
-        <li>Offers</li>
-        <li>Routes</li>
-        <li>About Us</li>
-        <li>Contact Us</li>
-      </ul>
-
-      <div className="nav-right">
-        <div className="nav-item currency">
-          <i className="fa-solid fa-globe"></i> INR <i className="fa-solid fa-chevron-down" style={{ fontSize: '10px' }}></i>
-        </div>
-        <div className="nav-item support">
-          <i className="fa-solid fa-headset"></i>
-          <span>24/7 Support</span>
-        </div>
-        <button className="login-btn">
-          <i className="fa-regular fa-user"></i> Login / Sign Up
-        </button>
+          {token ? (
+            <>
+              <li className="nav-item"><Link className="nav-link text-white" to="/my-bookings">My Bookings</Link></li>
+              <li className="nav-item"><button className="btn btn-outline-light btn-sm px-3" onClick={handleLogout}>Logout</button></li>
+            </>
+          ) : (
+            <>
+              {/* 2. THESE are the buttons you need to fix with onClick handlers */}
+              <li className="nav-item">
+                <button 
+                  className="btn btn-primary btn-sm px-3 text-white" 
+                  onClick={() => navigate("/login")}
+                >
+                  Login
+                </button>
+              </li>
+              <li className="nav-item">
+                <button 
+                  className="btn btn-outline-light btn-sm px-3" 
+                  onClick={() => navigate("/register")}
+                >
+                  Register
+                </button>
+              </li>
+            </>
+          )}
+        </ul>
       </div>
     </nav>
   );
