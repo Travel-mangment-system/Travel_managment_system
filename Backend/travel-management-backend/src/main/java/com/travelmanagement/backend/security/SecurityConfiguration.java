@@ -74,7 +74,7 @@ public class SecurityConfiguration {
                             "/swagger-ui/**",
                             "/swagger-ui.html")
                     .permitAll()
-
+                    
                     // Authentication APIs
                     .requestMatchers(
                             HttpMethod.POST,

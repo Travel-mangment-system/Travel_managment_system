@@ -26,17 +26,25 @@ export default function ManageBusesPage() {
   const fetchBuses = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token"); // Retrieve JWT token
-
-      // Use axios with the Authorization header
-      const response = await axios.get("http://localhost:8080/api/v1/admin/buses", {
-  headers: {
-    Authorization: `Bearer ${token}`
-  }
-});
       
-      // Axios automatically parses JSON to response.data
-      setBuses(response.data);
+      // 1. Get the token back from localStorage
+      const token = localStorage.getItem("token"); 
+
+      // 2. Attach the token to the Authorization header
+      const response = await fetch("http://localhost:8080/api/v1/buses", {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`, // <-- This was missing!
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+         throw new Error(`Request failed with status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setBuses(data);
     } catch (err) {
       setError(err.message);
       console.error("Fetch error:", err);
