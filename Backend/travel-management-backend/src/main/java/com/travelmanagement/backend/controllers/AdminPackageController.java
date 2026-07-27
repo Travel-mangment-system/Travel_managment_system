@@ -29,7 +29,6 @@ import com.travelmanagement.backend.services.PackageItineraryService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/packages")
 public class AdminPackageController {
@@ -79,5 +78,14 @@ public class AdminPackageController {
         List<HolidayPackage> packages = holidayPackageService.getAllPackages();
         return ResponseEntity.ok(packages);
     }
+	
+	@PostMapping("/admin")
+    public ResponseEntity<?> createPackageEntity(@RequestBody HolidayPackageRequest request) {
+        HolidayPackageResponse response = holidayPackageService.createPackage(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+	
+	
+	
 	
 }

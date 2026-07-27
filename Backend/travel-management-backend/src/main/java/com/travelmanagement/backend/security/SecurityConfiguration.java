@@ -64,6 +64,7 @@ public class SecurityConfiguration {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             // Authorization
+         // Authorization
             .authorizeHttpRequests(auth -> auth
             		
             		.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -80,6 +81,12 @@ public class SecurityConfiguration {
                             HttpMethod.POST,
                             "/api/v1/users/signup",
                             "/api/v1/users/signin")
+                    .permitAll()
+
+                    // ADD THIS LINE HERE:
+                    .requestMatchers(
+                            HttpMethod.GET,
+                            "/api/v1/admin/packages")
                     .permitAll()
 
                     // Any other public APIs
