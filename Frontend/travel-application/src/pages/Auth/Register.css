@@ -1,0 +1,619 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#edf2f7;
+}
+
+.auth-bg{
+
+    min-height:100vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:10px;
+
+    background:#edf2f7;
+
+}
+
+.auth-container{
+
+    max-width:1320px;
+
+}
+
+.auth-wrapper{
+    background:#fff;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 15px 40px rgba(0,0,0,.12);
+
+    display:flex;
+    align-items:stretch;
+}
+
+/* ================= LEFT PANEL ================= */
+
+.left-panel{
+
+    position:relative;
+
+    width:100%;
+
+    height:100%;
+
+    min-height:100%;
+
+    background:url("../../assets/images/travel.jpeg") center center;
+
+    background-size:cover;
+
+}
+
+.left-panel::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:rgba(0,0,0,.25);
+
+}
+
+.overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    padding:35px;
+
+    color:white;
+
+    z-index:5;
+
+}
+
+.overlay h1{
+
+    font-size:46px;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+
+}
+
+.overlay p{
+
+    font-size:18px;
+
+    line-height:1.5;
+
+    margin-bottom:25px;
+
+}
+
+.feature{
+
+    font-size:18px;
+
+    margin-bottom:12px;
+
+    font-weight:500;
+
+}
+
+/* ================= RIGHT PANEL ================= */
+
+.card{
+
+    border:none;
+
+    border-radius:0;
+
+    box-shadow:none;
+
+    height:620px;
+
+}
+
+.card-body{
+
+    padding:25px 35px;
+
+}
+
+.card h2{
+
+    font-size:42px;
+
+    text-align:center;
+
+    font-weight:700;
+
+    margin-bottom:5px;
+
+}
+
+.subtitle{
+
+    text-align:center;
+
+    font-size:18px;
+
+    color:#666;
+
+    margin-bottom:20px;
+
+}
+/* ==========================================
+            ROLE BUTTONS
+========================================== */
+
+.role-buttons{
+
+    display:flex;
+    gap:10px;
+    margin-bottom:18px;
+
+}
+
+.role-buttons .btn{
+
+    flex:1;
+    height:42px;
+    border-radius:8px;
+    font-size:15px;
+    font-weight:600;
+    transition:.3s;
+
+}
+
+.role-buttons .btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+/* ==========================================
+                FORM
+========================================== */
+
+form{
+
+    display:flex;
+    flex-direction:column;
+
+}
+
+label{
+
+    display:block;
+    font-size:14px;
+    font-weight:600;
+    color:#333;
+    margin-bottom:5px;
+
+}
+
+.row{
+
+    margin-bottom:2px;
+
+}
+
+.mb-3{
+
+    margin-bottom:12px !important;
+
+}
+
+.form-control{
+
+    height:40px;
+    border-radius:8px;
+    border:1px solid #d9d9d9;
+    font-size:14px;
+    padding:8px 12px;
+    box-shadow:none!important;
+    transition:.25s;
+
+}
+
+.form-control:focus{
+
+    border-color:#198754;
+    box-shadow:0 0 0 .12rem rgba(25,135,84,.15)!important;
+
+}
+
+/* ==========================================
+            GENDER
+========================================== */
+
+.bottom-row{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:8px 0 15px;
+
+}
+
+.gender-section{
+
+    display:flex;
+    align-items:center;
+    gap:15px;
+
+}
+
+.gender-title{
+
+    margin:0;
+    font-size:14px;
+    font-weight:600;
+
+}
+
+.gender-options{
+
+    display:flex;
+    gap:20px;
+
+}
+
+.gender-options .form-check{
+
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin:0;
+
+}
+
+.gender-options .form-check-input{
+
+    margin:0;
+
+}
+
+.form-check-label{
+
+    font-size:13px;
+    margin:0;
+
+}
+
+/* ==========================================
+            TERMS
+========================================== */
+
+.form-check{
+
+    display:flex;
+    align-items:center;
+
+}
+
+.form-check-input{
+
+    margin-right:8px;
+    cursor:pointer;
+
+}
+
+/* ==========================================
+            BUTTON
+========================================== */
+
+.btn-register{
+
+    width:100%;
+    height:42px;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:600;
+    margin-top:5px;
+    transition:.3s;
+
+}
+
+.btn-register:hover{
+
+    transform:translateY(-2px);
+
+}
+/* ==========================================
+            LOGIN LINK
+========================================== */
+
+.login-link{
+
+    margin-top:15px;
+
+    text-align:center;
+
+    font-size:14px;
+
+    color:#555;
+
+}
+
+.login-link a{
+
+    color:#198754;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+}
+
+.login-link a:hover{
+
+    text-decoration:underline;
+
+}
+
+/* ==========================================
+            CARD ANIMATION
+========================================== */
+
+.card{
+
+    animation:fadeIn .5s ease;
+
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+        transform:translateY(15px);
+
+    }
+
+    to{
+
+        opacity:1;
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ==========================================
+        DESKTOP (1080P OPTIMIZED)
+========================================== */
+
+@media (min-width:1200px){
+
+    .auth-container{
+
+        max-width:1320px;
+
+    }
+
+    .left-panel{
+
+        height:620px;
+
+    }
+
+    .card{
+
+        height:620px;
+
+    }
+
+    .card-body{
+
+        padding:24px 32px;
+
+    }
+
+}
+
+/* ==========================================
+        LAPTOP
+========================================== */
+
+@media (max-width:1199px){
+
+    .left-panel{
+
+        height:580px;
+
+    }
+
+    .card{
+
+        height:580px;
+
+    }
+
+    .overlay h1{
+
+        font-size:38px;
+
+    }
+
+    .overlay p{
+
+        font-size:16px;
+
+    }
+
+    .feature{
+
+        font-size:16px;
+
+    }
+
+    .card h2{
+
+        font-size:34px;
+
+    }
+
+    .subtitle{
+
+        font-size:16px;
+
+    }
+
+}
+
+/* ==========================================
+            TABLET
+========================================== */
+
+@media (max-width:992px){
+
+    .left-panel{
+
+        display:none;
+
+    }
+
+    .card{
+
+        height:auto;
+
+    }
+
+    .card-body{
+
+        padding:25px;
+
+    }
+
+    .auth-wrapper{
+
+        border-radius:15px;
+
+    }
+
+}
+
+/* ==========================================
+            MOBILE
+========================================== */
+
+@media (max-width:768px){
+
+    .role-buttons{
+
+        flex-direction:column;
+
+    }
+
+    .bottom-row{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:15px;
+
+    }
+
+    .gender-section{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .gender-options{
+
+        gap:15px;
+
+    }
+
+    .card h2{
+
+        font-size:28px;
+
+    }
+
+    .subtitle{
+
+        font-size:15px;
+
+    }
+
+}
+
+/* ==========================================
+        SMALL MOBILE
+========================================== */
+
+@media (max-width:576px){
+
+    .auth-bg{
+
+        padding:8px;
+
+    }
+
+    .card-body{
+
+        padding:18px;
+
+    }
+
+    .form-control{
+
+        height:38px;
+
+        font-size:13px;
+
+    }
+
+    .btn-register{
+
+        height:40px;
+
+        font-size:15px;
+
+    }
+
+    .role-buttons .btn{
+
+        height:40px;
+
+        font-size:14px;
+
+    }
+
+    .login-link{
+
+        font-size:13px;
+
+    }
+
+}
