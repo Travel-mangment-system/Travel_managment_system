@@ -20,6 +20,7 @@ public class ScheduleDto {
     @Data
     public static class ScheduleResponse {
         private Long scheduleId;
+        private Long RouteId;
         private String busNumber; 
         private String busName;   
         private String sourceCity;

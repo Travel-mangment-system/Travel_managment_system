@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import BusCard from "../../components/ui/BusCard";
+import { searchBuses } from "../../services/busService";
 import "./BusSearch.css";
 
 const BusSearch = () => {
@@ -12,14 +13,14 @@ const BusSearch = () => {
   const date = searchParams.get("date") || "24 May 2024, Friday";
 
   const [buses, setBuses] = useState([]);
+  const [loading, setLoading] = useState(true); // Added loading state
 
-  // Fetch dummy buses perfectly matching the UI image
   // Fetch buses when the page loads or URL parameters change
   useEffect(() => {
     const fetchBuses = async () => {
       setLoading(true);
       try {
-        // This now makes a real HTTP GET request to your backend
+        // Makes a real HTTP GET request to your backend
         const data = await searchBuses(source, destination, date);
 
         // Update the state with the real database records
@@ -85,16 +86,31 @@ const BusSearch = () => {
           </button>
         </div>
 
-        {/* Bus List */}
+        {/* Bus List with Loading and Empty States */}
         <div className="bus-list">
-          {buses.map((bus) => (
-            <BusCard key={bus.id} bus={bus} />
-          ))}
+          {loading ? (
+            <div
+              style={{ padding: "40px", textAlign: "center", color: "#6b7280" }}
+            >
+              Loading buses from database...
+            </div>
+          ) : buses.length === 0 ? (
+            <div
+              style={{ padding: "40px", textAlign: "center", color: "#6b7280" }}
+            >
+              No buses found for this route on this date.
+            </div>
+          ) : (
+            buses.map((bus) => <BusCard key={bus.id} bus={bus} />)
+          )}
         </div>
 
         {/* Footer Area */}
         <div className="list-footer">
-          <p>Showing 1 to {buses.length} of 25 buses</p>
+          <p>
+            Showing {buses.length > 0 ? 1 : 0} to {buses.length} of{" "}
+            {buses.length} buses
+          </p>
           <button className="btn-filter">
             <span style={{ fontSize: "18px" }}>≡</span> Sort & Filter
           </button>

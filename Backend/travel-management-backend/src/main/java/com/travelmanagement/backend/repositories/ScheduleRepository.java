@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.travelmanagement.backend.entities.BusSchedule;
+import com.travelmanagement.backend.entities.ScheduleStatus;
 
 public interface ScheduleRepository extends JpaRepository<BusSchedule, Long> {
 
@@ -19,5 +20,7 @@ public interface ScheduleRepository extends JpaRepository<BusSchedule, Long> {
 	           "AND s.departureDatetime >= :startOfDay AND s.departureDatetime < :endOfDay")
 	List<BusSchedule> findByRouteAndDate(Long sourceId, Long destinationId, LocalDateTime startOfDay,
 			LocalDateTime endOfDay);
+	
+	
 
 }
