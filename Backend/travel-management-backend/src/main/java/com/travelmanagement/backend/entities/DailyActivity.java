@@ -13,15 +13,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-
-@Entity
-@RequiredArgsConstructor
 @Getter
 @Setter
-@Table(name = "Daily_Activity")
-
+@RequiredArgsConstructor
+@Entity
+@Table(name="Daily_Activity")
 public class DailyActivity {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long activityId;

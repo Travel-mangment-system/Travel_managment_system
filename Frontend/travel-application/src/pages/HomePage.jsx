@@ -16,7 +16,6 @@ const HomePage = () => {
 
   return (
     <div className="home-container">
-      
       {/* HERO SECTION */}
       <section className="hero-section" style={{ backgroundImage: `url(${heroImage})` }}>
         <div className="hero-overlay"></div>
@@ -32,14 +31,9 @@ const HomePage = () => {
             <button className={activeTab === 'buses' ? 'tab active-tab' : 'tab'} onClick={() => setActiveTab('buses')}>
               <i className="fa-solid fa-bus"></i> Book Buses
             </button>
-            
-            {/* Wrapped in anchor tag for smooth scrolling */}
-            <a href="#packages-destination" style={{ textDecoration: 'none' }}>
-              <button className={activeTab === 'packages' ? 'tab active-tab' : 'tab'} onClick={() => setActiveTab('packages')}>
-                <i className="fa-solid fa-map"></i> Holiday Packages
-              </button>
-            </a>
-            
+            <button className={activeTab === 'packages' ? 'tab active-tab' : 'tab'} onClick={() => setActiveTab('packages')}>
+              <i className="fa-solid fa-map"></i> Holiday Packages
+            </button>
             <button className={activeTab === 'offers' ? 'tab active-tab' : 'tab'} onClick={() => setActiveTab('offers')}>
               <i className="fa-solid fa-tags"></i> Offers
             </button>
@@ -95,8 +89,7 @@ const HomePage = () => {
       </section>
 
       {/* PACKAGES SECTION */}
-      {/* Added ID here to receive the smooth scroll jump */}
-      <section className="packages-section" id="packages-destination">
+      <section className="packages-section">
         <div className="section-header">
           <div>
             <h2>Top Holiday Packages</h2>
@@ -155,7 +148,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
     </div>
   );
 };
