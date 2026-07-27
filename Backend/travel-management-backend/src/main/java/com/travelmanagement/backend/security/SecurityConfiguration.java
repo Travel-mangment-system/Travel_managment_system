@@ -67,6 +67,7 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(auth -> auth
             		
             		.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            		
 
                     // Swagger
                     .requestMatchers(

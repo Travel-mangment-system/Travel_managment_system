@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { 
   Search, Bell, LayoutDashboard, Bus, Users, Settings, LogOut, 
   Eye, Filter, X, Edit, Trash2
 } from "lucide-react";
-// Assuming you are reusing the same CSS file for layout consistency
-import "./BrowsePackagesPage.css";
+import "./BrowsePackagesPage.css"; // Ensure this matches your CSS file name
 
 export default function ManageBusesPage() {
   const [buses, setBuses] = useState([]);
@@ -23,18 +21,14 @@ export default function ManageBusesPage() {
     fetchBuses();
   }, []);
 
+  // Public GET request (no token required)
   const fetchBuses = async () => {
     try {
       setLoading(true);
       
-      // 1. Get the token back from localStorage
-      const token = localStorage.getItem("token"); 
-
-      // 2. Attach the token to the Authorization header
       const response = await fetch("http://localhost:8080/api/v1/buses", {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`, // <-- This was missing!
           'Content-Type': 'application/json'
         }
       });
@@ -53,6 +47,7 @@ export default function ManageBusesPage() {
     }
   };
 
+  // Secured DELETE request (requires admin JWT token)
   const handleDelete = async (busId) => {
     if (window.confirm("Are you sure you want to delete this bus? All future bookings will be cancelled and refunded 100%.")) {
       try {
@@ -61,15 +56,15 @@ export default function ManageBusesPage() {
         const response = await fetch(`http://localhost:8080/api/v1/buses/${busId}`, {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${token}` // Attach token here
+            'Authorization': `Bearer ${token}`
           }
         });
         
         if (response.ok) {
-          alert("Bus successfully deactivated and refunds processed.");
+          alert("Bus successfully deleted and refunds processed.");
           fetchBuses(); // Refresh the list
         } else {
-          alert("Failed to delete bus.");
+          alert("Failed to delete bus. Unauthorized or forbidden.");
         }
       } catch (err) {
         console.error("Error deleting:", err);
@@ -172,7 +167,6 @@ export default function ManageBusesPage() {
               <h1 className="page-title">Manage Bus</h1>
               <p className="page-subtitle">View and manage all registered buses</p>
             </div>
-            {/* Add New Bus button has been intentionally omitted per instructions */}
           </div>
 
           <div className="table-card">
