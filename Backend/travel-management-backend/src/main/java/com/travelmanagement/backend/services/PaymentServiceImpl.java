@@ -102,6 +102,10 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public boolean verifyAndSavePayment(SignatureVerificationRequest request) {
         try {
+<<<<<<< HEAD
+        	// 1. Create a JSON object with the exact keys Razorpay expects
+=======
+>>>>>>> cee5b58d84f5dddabf1892f09685e1bf0bca8d53
             JSONObject options = new JSONObject();
             options.put("razorpay_order_id", request.getRazorpayOrderId());
             options.put("razorpay_payment_id", request.getRazorpayPaymentId());

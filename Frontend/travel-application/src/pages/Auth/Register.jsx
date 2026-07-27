@@ -63,7 +63,7 @@ function Register() {
 };
 
   return (
-    <div className="auth-bg">
+    <div className="register-page auth-bg">
       <div className="container auth-container">
         <div className="row auth-wrapper">
           
