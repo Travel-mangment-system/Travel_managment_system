@@ -3,8 +3,18 @@ package com.travelmanagement.backend.services;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
+
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.travelmanagement.backend.CustomException.ResourceNotFoundException;
 import com.travelmanagement.backend.dtos.HolidayPackageRequest;
@@ -21,6 +31,7 @@ import com.travelmanagement.backend.repositories.BusRepository;
 import com.travelmanagement.backend.repositories.BusStopRepository;
 import com.travelmanagement.backend.repositories.HolidayPackageRepository;
 import com.travelmanagement.backend.repositories.PackageBookingRepository;
+import com.travelmanagement.backend.repositories.PackageItineraryRepository;
 import com.travelmanagement.backend.repositories.RouteRepository;
 
 import jakarta.validation.Valid;
@@ -35,9 +46,12 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 	private final BusRepository busRepository;
 	private final PackageBookingRepository packageBookingRepository;
     private final RefundService refundService;
+    private final PackageItineraryRepository packageItineraryRepository;
 
 	@Override
-	public HolidayPackageResponse createPackage(HolidayPackageRequest request) {
+	public HolidayPackageResponse createPackage(
+	        HolidayPackageRequest request,
+	        MultipartFile image) {
 		
 		Bus bus = busRepository.findById(request.getBusId())
                 .orElseThrow(() -> new ResourceNotFoundException("Bus not found with id : " + request.getBusId())); 
@@ -67,6 +81,37 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 		holidayPackage.setCreatedAt(LocalDateTime.now());
 		holidayPackage.setAssignedBus(bus);
 		
+		if (image != null && !image.isEmpty()) {
+
+		    try {
+
+		        String uploadDir = "uploads/packages/";
+
+		        Files.createDirectories(Paths.get(uploadDir));
+
+		        String fileName =
+		                UUID.randomUUID()
+		                + "_"
+		                + image.getOriginalFilename();
+
+		        Path filePath =
+		                Paths.get(uploadDir, fileName);
+
+		        Files.copy(
+		                image.getInputStream(),
+		                filePath,
+		                StandardCopyOption.REPLACE_EXISTING);
+
+		        holidayPackage.setImageUrl(fileName);
+
+		    } catch (IOException e) {
+
+		        throw new RuntimeException("Image upload failed", e);
+
+		    }
+
+		}
+		
 		bus.setStatus(BusStatus.ON_TOUR);
 		busRepository.save(bus);
 		
@@ -80,7 +125,7 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 		response.setBasePrice(savedpackage.getBasePrice());
 		response.setStatus(savedpackage.getStatus());
 		response.setAvailableSpots(savedpackage.getAvailableSpots());
-		
+		response.setImageUrl(savedpackage.getImageUrl());
 		return response;
 	}
 
@@ -107,7 +152,7 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 	    response.setBasePrice(updated.getBasePrice());
 	    response.setAvailableSpots(updated.getAvailableSpots());
 	    response.setStatus(updated.getStatus());
-	    
+	    response.setImageUrl(updated.getImageUrl());
 		return response;
 	}
 
@@ -129,44 +174,69 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 		holidayPackageRepository.save(holidayPackage);
 	}
 	@Override
-    public void deletePackage(Long packageId) {
-        // 2. Fetch the package
-        HolidayPackage holidayPackage = holidayPackageRepository.findById(packageId)
-                .orElseThrow(() -> new ResourceNotFoundException("Package not found with id : " + packageId));
+	@Transactional
+	public void deletePackage(Long packageId) {
 
-        // 3. Prevent cancelling if the tour has already started
-        if (holidayPackage.getDepartureDatetime().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Cannot cancel a package tour that has already departed.");
-        }
+	    // 1. Fetch the package
+	    HolidayPackage holidayPackage = holidayPackageRepository.findById(packageId)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "Package not found with id : " + packageId));
 
-        // 4. Update Package Status
-        holidayPackage.setStatus(PackageStatus.CANCELLED);
-        
-        // 5. Release the assigned bus back to ACTIVE pool
-        Bus bus = holidayPackage.getAssignedBus();
-        if (bus != null) {
-            bus.setStatus(BusStatus.ACTIVE);
-            busRepository.save(bus);
-        }
-        holidayPackageRepository.save(holidayPackage);
+	    // 2. Prevent deletion if the tour has already started
+	    if (holidayPackage.getDepartureDatetime().isBefore(LocalDateTime.now())) {
+	        throw new RuntimeException(
+	                "Cannot delete a package that has already departed.");
+	    }
 
-        // 6. Find all CONFIRMED bookings for this specific package
-        List<PackageBooking> activeBookings = packageBookingRepository
-                .findByHolidayPackage_PackageIdAndBookingStatus(packageId, BookingStatus.CONFIRMED);
+	    // 3. Release the assigned bus
+	    Bus bus = holidayPackage.getAssignedBus();
 
-        // 7. Cancel bookings and issue 100% refunds using our unified refund service
-        for (PackageBooking booking : activeBookings) {
-            booking.setBookingStatus(BookingStatus.CANCELLED);
-            
-            try {
-                // Call the unified Refund Service passing "PACKAGE" and "ADMIN" to trigger 100% refund
-                refundService.cancelAndRefund(booking.getPackageBookingId(), "PACKAGE", "ADMIN"); 
-            } catch (Exception e) {
-                System.err.println("Failed to refund package booking " + booking.getPackageBookingId() + ": " + e.getMessage());
-            }
-            
-            packageBookingRepository.save(booking);
-        }
+	    if (bus != null) {
+	        bus.setStatus(BusStatus.ACTIVE);
+	        busRepository.save(bus);
+	    }
+
+	    // 4. Get all confirmed bookings
+	    List<PackageBooking> activeBookings =
+	            packageBookingRepository
+	                    .findByHolidayPackage_PackageIdAndBookingStatus(
+	                            packageId,
+	                            BookingStatus.CONFIRMED);
+
+	    // 5. Cancel bookings and process refund
+	    for (PackageBooking booking : activeBookings) {
+
+	        booking.setBookingStatus(BookingStatus.CANCELLED);
+
+	        try {
+
+	            refundService.cancelAndRefund(
+	                    booking.getPackageBookingId(),
+	                    "PACKAGE",
+	                    "ADMIN"
+	            );
+
+	        } catch (Exception e) {
+
+	            System.err.println(
+	                    "Failed to refund booking "
+	                            + booking.getPackageBookingId()
+	                            + " : "
+	                            + e.getMessage()
+	            );
+
+	        }
+
+	        packageBookingRepository.save(booking);
+	    }
+
+	    // 6. Delete the package permanently
+	 // Delete all itinerary records first
+	    packageItineraryRepository.deleteByHolidayPackage_PackageId(packageId);
+
+	    // Now delete the package
+	    holidayPackageRepository.delete(holidayPackage);
 	}
 	// Add this method inside HolidayPackageServiceImpl
 	@Override

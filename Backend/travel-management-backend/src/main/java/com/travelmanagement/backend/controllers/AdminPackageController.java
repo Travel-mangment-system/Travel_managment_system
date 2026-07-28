@@ -21,26 +21,45 @@ import com.travelmanagement.backend.dtos.PackageItineraryRequest;
 import com.travelmanagement.backend.dtos.PackageItineraryResponse;
 import com.travelmanagement.backend.dtos.UpdatePackageStatusRequest;
 import com.travelmanagement.backend.entities.HolidayPackage;
+import com.travelmanagement.backend.entities.PackageBooking;
 import com.travelmanagement.backend.entities.PackageItinerary;
+import com.travelmanagement.backend.repositories.PackageBookingRepository;
 import com.travelmanagement.backend.services.HolidayPackageService;
 import com.travelmanagement.backend.services.PackageItineraryService;
 
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:5173")
+
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/packages")
 public class AdminPackageController {
 
 	private final HolidayPackageService holidayPackageService;
 	private final PackageItineraryService packageItineraryService;
-	@PostMapping
-	public ResponseEntity<?> createPackage(@RequestBody HolidayPackageRequest request)
-	{
-		HolidayPackageResponse response=holidayPackageService.createPackage(request);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	private final PackageBookingRepository packageBookingRepository;
+	
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> createPackage(
+
+	        @RequestPart("package") HolidayPackageRequest request,
+
+	        @RequestPart(value = "image", required = false)
+	        MultipartFile image
+
+	) {
+
+	    HolidayPackageResponse response =
+	            holidayPackageService.createPackage(request, image);
+
+	    return ResponseEntity
+	            .status(HttpStatus.CREATED)
+	            .body(response);
+
 	}
 	@PostMapping("/{packageId}/itineraries")
 	public ResponseEntity<PackageItineraryResponse> addItinerary(

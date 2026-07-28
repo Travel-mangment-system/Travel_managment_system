@@ -31,37 +31,51 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // CORS
+
             .cors(cors -> cors.configurationSource(request -> {
                 CorsConfiguration configuration = new CorsConfiguration();
+
                 configuration.setAllowedOrigins(List.of("http://localhost:5173"));
                 configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(List.of("*"));
+
+
+                configuration.setAllowedOrigins(
+                        List.of("http://localhost:5173"));
+
+                configuration.setAllowedMethods(
+                        List.of(
+                                "GET",
+                                "POST",
+                                "PUT",
+                                "DELETE",
+                                "OPTIONS"));
+
+                configuration.setAllowedHeaders(List.of("*"));
+
+
                 configuration.setAllowCredentials(true);
                 return configuration;
+
             }))
 
-            // Disable CSRF (REST API)
             .csrf(csrf -> csrf.disable())
 
-            // Stateless Session
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-            // Authorization
             .authorizeHttpRequests(auth -> auth
-                    
+                  
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                    // Swagger
                     .requestMatchers(
                             "/v3/api-docs/**",
                             "/swagger-ui/**",
                             "/swagger-ui.html")
                     .permitAll()
 
-                    // Authentication APIs
-                    .requestMatchers( 
+
+                    .requestMatchers(
                             HttpMethod.POST,
                             "/api/v1/users/signup",
                             "/api/v1/users/signin")
@@ -77,13 +91,13 @@ public class SecurityConfiguration {
                     .anyRequest().authenticated()
             )
 
-            // JWT Filter
             .addFilterBefore(
                     jwtFilter,
                     UsernamePasswordAuthenticationFilter.class
             );
 
         return http.build();
+
     }
 
     @Bean
@@ -96,4 +110,5 @@ public class SecurityConfiguration {
             AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
+
 }

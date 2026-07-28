@@ -27,7 +27,9 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/providers")
+
 @RequiredArgsConstructor
+
 public class ProviderController {
 	
 	

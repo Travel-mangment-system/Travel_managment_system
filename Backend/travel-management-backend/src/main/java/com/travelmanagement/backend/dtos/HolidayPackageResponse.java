@@ -17,4 +17,5 @@ public class HolidayPackageResponse {
 	private BigDecimal basePrice;
 	private PackageStatus status;
 	private Integer availableSpots;
+	private String imageUrl;
 }

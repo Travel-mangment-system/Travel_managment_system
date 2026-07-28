@@ -23,7 +23,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @RestController
-//@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 	private final UserService userService;
 	

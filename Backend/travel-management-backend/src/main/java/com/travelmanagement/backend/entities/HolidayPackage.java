@@ -42,6 +42,9 @@ public class HolidayPackage {
 	@Column(name= "description", length = 1000)
 	private String description;
 	
+	@Column(name = "image_url")
+	private String imageUrl;
+	
 	@Column(name= "base_price", nullable = false)
 	private BigDecimal basePrice;
 	

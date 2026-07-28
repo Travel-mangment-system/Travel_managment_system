@@ -56,21 +56,32 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(readOnly = true)
 	public UserLoginResponseDTO loginUser(UserLoginRequestDTO loginDTO) {
-		UsernamePasswordAuthenticationToken authTicket = 
-				new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPasswordHash());
-		
-		Authentication authenticatedContext = authManager.authenticate(authTicket);
-		CustomUserDetailsImp userDetails = (CustomUserDetailsImp) authenticatedContext.getPrincipal();
-		String generatedJwt = jwtUtils.generateJWT(userDetails);
-		
-		UserLoginResponseDTO response = new UserLoginResponseDTO();
-		response.setId(userDetails.getUserId());
-		response.setFullName(userDetails.getUserFullName());
-		response.setEmail(userDetails.getUsername());
-		response.setRole(userDetails.getRole());
-		response.setToken(generatedJwt); 
-		
-		return response;
+
+	    UsernamePasswordAuthenticationToken authTicket =
+	            new UsernamePasswordAuthenticationToken(
+	                    loginDTO.getEmail(),
+	                    loginDTO.getPasswordHash());
+
+	    Authentication authenticatedContext = authManager.authenticate(authTicket);
+
+	    CustomUserDetailsImp userDetails =
+	            (CustomUserDetailsImp) authenticatedContext.getPrincipal();
+
+	    // Check whether the selected role matches the user's actual role
+	    if (!userDetails.getRole().equals(loginDTO.getRole())) {
+	        throw new RuntimeException("Please login with the correct role.");
+	    }
+
+	    String generatedJwt = jwtUtils.generateJWT(userDetails);
+
+	    UserLoginResponseDTO response = new UserLoginResponseDTO();
+	    response.setId(userDetails.getUserId());
+	    response.setFullName(userDetails.getUserFullName());
+	    response.setEmail(userDetails.getUsername());
+	    response.setRole(userDetails.getRole());
+	    response.setToken(generatedJwt);
+
+	    return response;
 	}
 
 	@Override
