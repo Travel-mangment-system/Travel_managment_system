@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/buses")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "http://localhost:5173")
 public class BusController {
 
     private final BusService busService;
@@ -52,5 +52,10 @@ public class BusController {
         busService.deleteBus(id);
         
         return ResponseEntity.ok("Bus successfully deactivated and all future bookings have been refunded.");
+    }
+ // Add this new endpoint to fetch all buses
+    @GetMapping
+    public ResponseEntity<List<BusResponseDTO>> getAllBuses() {
+        return ResponseEntity.ok(busService.getAllBuses());
     }
 }

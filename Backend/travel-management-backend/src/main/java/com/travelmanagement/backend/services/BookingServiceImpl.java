@@ -137,7 +137,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setUser(user);
         booking.setSchedule(schedule);
         booking.setBookingReference("TRVL-" + UUID.randomUUID().toString().substring(0,6).toUpperCase());
-        booking.setBookingStatus(BookingStatus.CONFIRMED);
+        booking.setBookingStatus(BookingStatus.PENDING);
         
         //Dynamic pricing based on stops traveled
         
@@ -241,5 +241,18 @@ public class BookingServiceImpl implements BookingService {
         }).collect(Collectors.toList());
         dto.setBookedSeats(seats);
         return dto;
+    }
+    
+    @Override
+    @Transactional
+    public BookingResponseDto confirmPayment(Long bookingId, String paymentMethod) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found!"));
+                
+        // Switch status from PENDING to CONFIRMED once payment goes through
+        booking.setBookingStatus(BookingStatus.CONFIRMED);
+        Booking savedBooking = bookingRepository.save(booking);
+        
+        return mapToBookingResponse(savedBooking);
     }
 }

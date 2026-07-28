@@ -56,4 +56,8 @@ public class BusProvider {
 	
 	@OneToMany(mappedBy = "busProvider", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Bus> buses;
+	
+	public Long getId() {
+		return this.id;
+	}
 }

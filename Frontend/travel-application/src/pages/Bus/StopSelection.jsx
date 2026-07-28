@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
+import api from "../../services/api";
 import "./StopSelection.css";
 
 const StopSelection = () => {
@@ -11,16 +12,15 @@ const StopSelection = () => {
 
   const [boardingPoints, setBoardingPoints] = useState([]);
   const [droppingPoints, setDroppingPoints] = useState([]);
-  const [totalStopsCount, setTotalStopsCount] = useState(0); // <-- Added to track total stops
+  const [totalStopsCount, setTotalStopsCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const [selectedBoarding, setSelectedBoarding] = useState(null);
   const [selectedDropping, setSelectedDropping] = useState(null);
 
-  // <-- Added state to hold the dynamic fare -->
   const [calculatedFare, setCalculatedFare] = useState(busDetails?.fare || 0);
 
-  // 1. Fetch Stops from Database
+  // 1. Fetch Stops from Database with explicit token injection
   useEffect(() => {
     const fetchStops = async () => {
       if (!routeId) {
@@ -29,10 +29,16 @@ const StopSelection = () => {
       }
 
       try {
-        const response = await fetch(
-          `http://localhost:8080/api/v1/bus-stops/route/${routeId}`,
-        );
-        const data = await response.json();
+        // Explicitly grab the token from localStorage to match Postman behavior
+        const token = localStorage.getItem("token");
+
+        const response = await api.get(`/api/v1/bus-stops/route/${routeId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = response.data;
 
         // Save the total number of stops for our math formula
         setTotalStopsCount(data.length);
@@ -56,25 +62,26 @@ const StopSelection = () => {
     fetchStops();
   }, [routeId]);
 
-  // 2. DYNAMIC FARE CALCULATION (Mirroring your Spring Boot Logic)
+  // 2. DYNAMIC FARE CALCULATION
   useEffect(() => {
-    if (selectedBoarding && selectedDropping && totalStopsCount > 1) {
+    if (
+      selectedBoarding &&
+      selectedDropping &&
+      totalStopsCount > 1 &&
+      busDetails?.fare
+    ) {
       const totalRouteFare = busDetails.fare;
 
-      // Calculate total segments (e.g., 5 stops = 4 segments)
       const totalSegments = Math.max(1, totalStopsCount - 1);
-
-      // Calculate segments traveled
       const segmentsTraveled =
         selectedDropping.stopOrder - selectedBoarding.stopOrder;
 
-      // Ensure they didn't select stops in the wrong direction
       if (segmentsTraveled > 0) {
         const farePerSegment = totalRouteFare / totalSegments;
         const exactFare = Math.round(farePerSegment * segmentsTraveled);
         setCalculatedFare(exactFare);
       } else {
-        setCalculatedFare(totalRouteFare); // Fallback
+        setCalculatedFare(totalRouteFare);
       }
     }
   }, [selectedBoarding, selectedDropping, totalStopsCount, busDetails]);
@@ -98,7 +105,7 @@ const StopSelection = () => {
       state: {
         boarding: selectedBoarding,
         dropping: selectedDropping,
-        calculatedFare: calculatedFare, // <-- Pass the newly calculated fare to the Seat map!
+        calculatedFare: calculatedFare,
         busDetails: busDetails,
       },
     });
@@ -262,7 +269,6 @@ const StopSelection = () => {
         <div className="action-right">
           <div className="total-fare-box">
             <span className="label">Base Fare</span>
-            {/* Displaying the newly calculated dynamic fare here */}
             <span className="amount">₹{calculatedFare}</span>
             <span className="per-person">Per Person</span>
           </div>

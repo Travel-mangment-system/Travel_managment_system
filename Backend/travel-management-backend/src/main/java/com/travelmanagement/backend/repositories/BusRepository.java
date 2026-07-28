@@ -30,5 +30,11 @@ public interface BusRepository extends JpaRepository<Bus, Long> {
             String endCityName, 
             BusStatus status
     );
+	
+	// Count total buses for a specific provider
+    long countByBusProviderId(Long providerId);
+    
+    // Count buses for a specific provider by their status
+    long countByBusProviderIdAndStatus(Long providerId, BusStatus status);
 //>>>>>>> b38d24e0f360eef842d922d085a7a7ecb2e746ea
 }

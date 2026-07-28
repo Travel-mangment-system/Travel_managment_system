@@ -1,0 +1,53 @@
+/* Layout Overrides & Custom Scrollbar */
+.provider-dashboard-layout {
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    sans-serif;
+  color: #0f172a;
+}
+
+/* Tabs Hover Effects */
+.provider-dashboard-layout button {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Booking Card Hover Effect */
+.provider-dashboard-layout div[style*="border: 1px solid #e2e8f0"]:hover {
+  border-color: #cbd5e1;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.04),
+    0 2px 4px -1px rgba(0, 0, 0, 0.02);
+}
+
+/* Summary Card Action Items Hover */
+.provider-dashboard-layout div[style*="cursor: pointer"]:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+/* Input Search Focus State */
+.provider-dashboard-layout input[type="text"]:focus {
+  border-color: #0f766e !important;
+  box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.1);
+}
+
+/* Responsive adjustments for smaller displays */
+@media (max-width: 1024px) {
+  .provider-dashboard-layout div[style*="gridTemplateColumns: '1fr 320px'"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .provider-dashboard-layout
+    div[style*="gridTemplateColumns: '1.5fr 2fr 1fr'"] {
+    grid-template-columns: 1fr !important;
+  }
+}

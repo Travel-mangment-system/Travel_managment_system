@@ -1,5 +1,6 @@
 package com.travelmanagement.backend.repositories;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,6 +22,10 @@ public interface ScheduleRepository extends JpaRepository<BusSchedule, Long> {
 	List<BusSchedule> findByRouteAndDate(Long sourceId, Long destinationId, LocalDateTime startOfDay,
 			LocalDateTime endOfDay);
 	
-	
+	@Query("SELECT COUNT(s) FROM BusSchedule s WHERE s.bus.busProvider.id = :providerId AND DATE(s.departureDatetime) = :today")
+    long countTodaysTrips(@Param("providerId") Long providerId, @Param("today") LocalDate today);
+    
+    @Query("SELECT s FROM BusSchedule s WHERE s.bus.busProvider.id = :providerId AND s.departureDatetime >= CURRENT_TIMESTAMP ORDER BY s.departureDatetime ASC")
+    List<BusSchedule> findUpcomingSchedules(@Param("providerId") Long providerId);
 
 }

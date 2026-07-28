@@ -15,6 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class HolidayPackageRequest {
+
 //<<<<<<< HEAD
 //	
 //	private String title;
@@ -81,5 +82,5 @@ public class HolidayPackageRequest {
 
     @NotNull(message = "Bus ID is required")
     private Long busId;
+    
 }
-

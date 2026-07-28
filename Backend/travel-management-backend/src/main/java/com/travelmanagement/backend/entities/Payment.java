@@ -26,7 +26,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"booking"})
+@ToString(exclude = {"booking", "packageBooking"})
 
 public class Payment {
 

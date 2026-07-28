@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.travelmanagement.backend.dtos.BookingApiDtos.BookingRequestDto;
@@ -61,6 +62,15 @@ public class BookingController {
         BookingResponseDto ticketDetails = bookingService.getBookingById(id);
         return ResponseEntity.ok(ticketDetails);
     }
+    
+    @PostMapping("/{id}/confirm-payment")
+    public ResponseEntity<BookingResponseDto> confirmPayment(
+            @PathVariable Long id, 
+            @RequestParam String paymentMethod) {
+        BookingResponseDto response = bookingService.confirmPayment(id, paymentMethod);
+        return ResponseEntity.ok(response);
+    }
+    
 //
 //    /**
 //     * POST /api/v1/bookings/{id}/cancel
