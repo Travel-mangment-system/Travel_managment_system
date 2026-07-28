@@ -19,6 +19,7 @@ import BrowsePackagesPage from "../pages/Admin/BrowsePackagesPage";
 import Dashboard from "../pages/Admin/Dashboard";
 import ManageBusesPage from "../pages/Admin/ManageBusesPage";
 import AddPackage from "../pages/Admin/Packages/AddPackage";
+<<<<<<< HEAD
 
 // =======================
 // Layout
@@ -40,8 +41,34 @@ function AppRoutes() {
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+=======
+import Dashboard from "../pages/Admin/Dashboard";
+import PackageBookingPage from "../pages/PackageBooking/PackageBookingPage";
+import BookingSummaryPage from "../pages/PackageBooking/BookingSummaryPage";
+import BookingConfirmedPage from "../pages/PackageBooking/BookingConfirmedPage";
+import MyPackageBookingsPage from '../pages/PackageBooking/MyPackageBookingsPage';
 
 
+function AppRoutes() {
+    return (
+        <Routes>
+            {/* Auth Routes */}
+            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+>>>>>>> 1b6c9060d52d288eb358a0d0c54e7618aebe0fd5
+
+
+<<<<<<< HEAD
+=======
+            {/* Package & Booking Routes */}
+            <Route path="/packages" element={<BrowsePackagesPage />} />
+            <Route path="/admin/add-package" element={<AddPackage />} />
+            <Route path="/package-booking" element={<PackageBookingPage />} />
+            <Route path="/booking-summary/:bookingId" element={<BookingSummaryPage />} />
+            <Route path="/booking-confirmed" element={<BookingConfirmedPage />} />
+            <Route path="/my-package-bookings" element={<MyPackageBookingsPage />} />
+>>>>>>> 1b6c9060d52d288eb358a0d0c54e7618aebe0fd5
 
       {/* =====================================================
           ADDED THIS COMPLETE BLOCK
@@ -50,6 +77,7 @@ function AppRoutes() {
               <Navbar />
               <Outlet />
 
+<<<<<<< HEAD
           So Navbar will automatically appear on:
               /home
               /buses
@@ -88,6 +116,12 @@ function AppRoutes() {
 
     </Routes>
   );
+=======
+            {/* Dashboard */}
+            <Route path="/Admin-Dashboard" element={<Dashboard />} />
+        </Routes>
+    );
+>>>>>>> 1b6c9060d52d288eb358a0d0c54e7618aebe0fd5
 }
 
 export default AppRoutes;

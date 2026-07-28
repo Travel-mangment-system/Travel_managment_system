@@ -1,7 +1,15 @@
 import api from "../utils/axiosInstance";
 
-export const createPackage = (packageData) => {
-    return api.post("/admin/packages", packageData);
+export const createPackage = (formData) => {
+    return api.post(
+        "/admin/packages",
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }
+    );
 };
 
 export const getHolidayPackages = async () => {

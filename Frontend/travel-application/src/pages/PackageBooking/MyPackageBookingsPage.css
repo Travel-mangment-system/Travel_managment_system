@@ -1,0 +1,342 @@
+/* ==========================================================================
+   MyPackageBookingsPage.css
+   STRICTLY SCOPED: All classes prefixed with 'mypkg-' to prevent ANY 
+   CSS leakage. Fully unified with Package Booking UI.
+   ========================================================================== */
+
+/* Main Layout Setup */
+.mypkg-layout {
+  display: flex;
+  height: 100vh;
+  background-color: #f8fafc;
+  font-family: 'Poppins', sans-serif, system-ui, -apple-system;
+  margin: 0;
+  padding: 0;
+}
+
+/* ==========================================
+   SIDEBAR
+========================================== */
+.mypkg-sidebar {
+  width: 256px;
+  background-color: #0f172a;
+  color: #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: all 0.3s ease;
+  border-right: none;
+}
+
+.mypkg-sidebar-header {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+
+.mypkg-sidebar-header svg {
+  color: #0E8A8A; /* Teal brand icon */
+}
+
+.mypkg-sidebar-title {
+  padding: 0 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.mypkg-sidebar-nav {
+  flex: 1;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mypkg-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  margin: 0;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  font-weight: normal;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.mypkg-nav-item:hover {
+  background-color: #1e293b;
+  color: white;
+}
+
+.mypkg-active {
+  background-color: #0E8A8A;
+  color: white !important;
+}
+
+.mypkg-sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid #1e293b;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mypkg-logout {
+  color: #ef4444;
+}
+
+.mypkg-logout:hover {
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+/* ==========================================
+   MAIN CONTENT & TOP NAVBAR
+========================================== */
+.mypkg-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+
+.mypkg-top-navbar {
+  height: 4rem;
+  background-color: white;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  z-index: 10;
+}
+
+.mypkg-search-bar {
+  display: flex;
+  align-items: center;
+  width: 24rem;
+  background-color: #f1f5f9;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e2e8f0;
+}
+
+.mypkg-search-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  margin-left: 0.5rem;
+  width: 100%;
+  font-size: 0.875rem;
+  color: #334155;
+}
+
+.mypkg-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.mypkg-top-divider {
+  display: none; /* Hidden to match other layout */
+}
+
+.mypkg-profile-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-left: 1px solid #e2e8f0;
+  padding-left: 1.5rem;
+}
+
+.mypkg-profile-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #334155;
+}
+
+.mypkg-avatar {
+  height: 2.25rem;
+  width: 2.25rem;
+  border-radius: 9999px;
+  background-color: #0E8A8A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   PAGE CONTAINER & BOOKING CARDS
+========================================== */
+.mypkg-page-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.mypkg-summary-wrapper {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto 2rem auto;
+}
+
+.mypkg-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1rem;
+}
+
+.mypkg-summary-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.mypkg-summary-header p {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.mypkg-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.mypkg-summary-card {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.mypkg-summary-card h3 {
+  font-size: 1.1rem;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.75rem;
+}
+
+.mypkg-icon-align {
+  color: #0E8A8A;
+}
+
+.mypkg-detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.mypkg-detail-row span {
+  color: #475569;
+  font-weight: 500;
+}
+
+.mypkg-detail-row strong {
+  color: #0f172a;
+}
+
+.mypkg-highlight-card {
+  background-color: #f0fdfa; 
+  border-color: #ccfbf1;
+}
+
+.mypkg-highlight-card h3 {
+  border-bottom-color: #99f6e4;
+}
+
+.mypkg-total-row {
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  align-items: center;
+}
+
+.mypkg-total-row .mypkg-amount {
+  font-size: 1.25rem;
+  color: #0d9488;
+}
+
+.mypkg-cancel-btn {
+  background-color: #fff;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  width: 100%;
+  justify-content: center;
+  margin-top: 1.25rem;
+}
+
+.mypkg-cancel-btn:hover {
+  background-color: #fef2f2;
+}
+
+/* ==========================================
+   RESPONSIVE (Matching other layout)
+========================================== */
+@media screen and (max-width: 768px) {
+  .mypkg-layout { flex-direction: column; }
+  .mypkg-sidebar { width: 100%; height: auto; flex-direction: column; }
+  .mypkg-sidebar-header { justify-content: center; padding: 1rem; }
+  .mypkg-sidebar-title { display: none; }
+  
+  .mypkg-sidebar-nav { 
+    flex-direction: row; 
+    overflow-x: auto; 
+    padding: 0.5rem 1rem; 
+    scrollbar-width: none; 
+  }
+  .mypkg-sidebar-nav::-webkit-scrollbar { display: none; }
+  
+  .mypkg-sidebar-footer {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    border-top: none;
+    border-bottom: 1px solid #1e293b;
+  }
+
+  .mypkg-top-navbar .mypkg-search-bar { display: none; }
+  .mypkg-top-actions { width: 100%; justify-content: flex-end; }
+  
+  .mypkg-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
