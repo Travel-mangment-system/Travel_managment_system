@@ -26,4 +26,4 @@ public interface HolidayPackageService {
 
 	void deletePackage(Long packageId);
 	List<HolidayPackage> getAllPackages();
-}
+}  
