@@ -9,6 +9,11 @@ import BusSearch from "../pages/Bus/BusSearch";
 import BrowsePackagesPage from "../pages/Admin/BrowsePackagesPage";
 import ManageBusesPage from "../pages/Admin/ManageBusesPage";
 import Dashboard from "../pages/Admin/Dashboard";
+import PackageBookingPage from "../pages/PackageBooking/PackageBookingPage";
+import BookingSummaryPage from "../pages/PackageBooking/BookingSummaryPage";
+import BookingConfirmedPage from "../pages/PackageBooking/BookingConfirmedPage";
+import MyPackageBookingsPage from '../pages/PackageBooking/MyPackageBookingsPage';
+
 
 function AppRoutes() {
   return (
@@ -23,6 +28,10 @@ function AppRoutes() {
       <Route path="/packages" element={<BrowsePackagesPage />} />
       <Route path="/manage-buses" element={<ManageBusesPage />} />
       <Route path="/Admin-Dashboard" element={<Dashboard/>} />
+      <Route path="/package-booking" element={<PackageBookingPage/>} />
+      <Route path="//booking-summary/:bookingId" element={<BookingSummaryPage/>} />
+      <Route path="/booking-confirmed" element={<BookingConfirmedPage />} />
+      <Route path="/my-package-bookings" element={<MyPackageBookingsPage />} />
     </Routes>
   );
 }

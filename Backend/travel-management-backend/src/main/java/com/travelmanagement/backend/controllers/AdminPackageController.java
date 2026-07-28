@@ -21,7 +21,9 @@ import com.travelmanagement.backend.dtos.PackageItineraryRequest;
 import com.travelmanagement.backend.dtos.PackageItineraryResponse;
 import com.travelmanagement.backend.dtos.UpdatePackageStatusRequest;
 import com.travelmanagement.backend.entities.HolidayPackage;
+import com.travelmanagement.backend.entities.PackageBooking;
 import com.travelmanagement.backend.entities.PackageItinerary;
+import com.travelmanagement.backend.repositories.PackageBookingRepository;
 import com.travelmanagement.backend.services.HolidayPackageService;
 import com.travelmanagement.backend.services.PackageItineraryService;
 
@@ -35,6 +37,7 @@ public class AdminPackageController {
 
 	private final HolidayPackageService holidayPackageService;
 	private final PackageItineraryService packageItineraryService;
+	private final PackageBookingRepository packageBookingRepository;
 	@PostMapping
 	public ResponseEntity<?> createPackage(@RequestBody HolidayPackageRequest request)
 	{
