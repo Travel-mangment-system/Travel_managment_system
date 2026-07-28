@@ -18,7 +18,7 @@ const AddPackage = () => {
 
     const [buses, setBuses] = useState([]);
     const [itineraries, setItineraries] = useState([]);
-
+    const [images, setImages] = useState([]);
     const [packageData, setPackageData] = useState({
         title: "",
         description: "",
@@ -108,39 +108,54 @@ const AddPackage = () => {
 
     const handleSubmit = async (e) => {
 
-        e.preventDefault();
+    e.preventDefault();
 
-        try {
+    try {
 
-            console.log(packageData);
-            console.log(itineraries);
+        console.log("Package Data:", packageData);
+        console.log("Images:", images);
+        console.log("Itineraries:", itineraries);
 
-            const response =
-                await createPackage(packageData);
+        const formData = new FormData();
 
-            const packageId =
-                response.data.packageId;
+        formData.append(
+            "package",
+            new Blob(
+                [JSON.stringify(packageData)],
+                {
+                    type: "application/json"
+                }
+            )
+        );
 
-            for (const itinerary of itineraries) {
+        if (images.length > 0) {
+            formData.append("image", images[0]);
+        }
 
-                await addItinerary(
-                    packageId,
-                    itinerary
-                );
+        const response = await createPackage(formData);
 
-            }
+        const packageId = response.data.packageId;
 
-            alert("Package Created Successfully");
+        for (const itinerary of itineraries) {
 
-        } catch (error) {
-
-            console.error(error);
-
-            alert("Failed To Create Package");
+            await addItinerary(
+                packageId,
+                itinerary
+            );
 
         }
 
-    };
+        alert("Package Created Successfully");
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Failed To Create Package");
+
+    }
+
+};
 
     return (
 
@@ -186,7 +201,10 @@ const AddPackage = () => {
 
                         <div className="col-lg-4">
 
-                            <ImageUpload />
+                            <ImageUpload
+                                images={images}
+                                setImages={setImages}
+                            />
 
                             <div className="mt-4">
 

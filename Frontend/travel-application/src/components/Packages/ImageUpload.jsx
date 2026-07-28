@@ -1,8 +1,4 @@
-import { useState } from "react";
-
-const ImageUpload = () => {
-
-    const [images, setImages] = useState([]);
+const ImageUpload = ({ images, setImages }) => {
 
     const handleImageChange = (e) => {
 
@@ -51,9 +47,7 @@ const ImageUpload = () => {
                     />
 
                     <small className="text-muted d-block mt-2">
-
                         JPG, PNG, JPEG
-
                     </small>
 
                 </div>
@@ -65,9 +59,7 @@ const ImageUpload = () => {
                         <div className="mt-4">
 
                             <h6 className="fw-bold mb-3">
-
                                 Uploaded Images ({images.length})
-
                             </h6>
 
                             {

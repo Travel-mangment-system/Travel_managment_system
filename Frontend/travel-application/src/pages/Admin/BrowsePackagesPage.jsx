@@ -109,30 +109,65 @@ export default function ManagePackagesPage() {
     }
   };
 
-  const handleDelete = async (packageId) => {
-    if (window.confirm("Are you sure you want to cancel and delete this package? Customers will be refunded 100%.")) {
-      try {
-        const token = localStorage.getItem("token"); 
-        
-        const response = await fetch(`http://localhost:8080/api/v1/admin/packages/${packageId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}` 
-          }
-        });
-        
-        if (response.ok) {
-          alert("Package successfully cancelled.");
-          fetchPackages();
-        } else {
-          alert("Failed to delete package.");
-        }
-      } catch (err) {
-        console.error("Error deleting:", err);
-      }
-    }
-  };
+ const handleDelete = async (packageId) => {
 
+    const confirmDelete = window.confirm(
+        "Are you sure you want to permanently delete this package?\n\n" +
+        "• All confirmed bookings will be cancelled.\n" +
+        "• Customers will receive a 100% refund.\n" +
+        "• This action cannot be undone."
+    );
+
+    if (!confirmDelete) {
+        return;
+    }
+
+    try {
+
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+            `http://localhost:8080/api/v1/admin/packages/${packageId}`,
+            {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+
+        if (!response.ok) {
+
+            const errorMessage = await response.text();
+
+            throw new Error(
+                errorMessage || "Failed to delete package."
+            );
+
+        }
+
+       alert("Package deleted successfully.\nAll related confirmed bookings have been cancelled and refunded.");
+
+        // Remove deleted package from table immediately
+        setPackages((prevPackages) =>
+            prevPackages.filter(
+                (pkg) =>
+                    (pkg.packageId ||
+                        pkg.package_id ||
+                        pkg.id) !== packageId
+            )
+        );
+
+    } catch (error) {
+
+        console.error("Delete Error:", error);
+
+        alert(error.message);
+
+    }
+
+};
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
