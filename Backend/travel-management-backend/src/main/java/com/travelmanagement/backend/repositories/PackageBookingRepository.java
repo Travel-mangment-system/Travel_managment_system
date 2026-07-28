@@ -17,6 +17,8 @@ public interface PackageBookingRepository extends JpaRepository<PackageBooking, 
 	List<PackageBooking> findAllByOrderByBookingDateDesc();
 
 	List<PackageBooking> findByHolidayPackage_PackageIdAndBookingStatus(Long packageId, BookingStatus confirmed);
+
+	List<PackageBooking> findByUser_Id(Long userId);
 	
 	
 }

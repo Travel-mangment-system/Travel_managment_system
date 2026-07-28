@@ -11,6 +11,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:uploads/");
+                .addResourceLocations(
+                        "file:F:/Travel_Managment_System/Travel_managment_system/Backend/travel-management-backend/uploads/"
+                );
     }
 }

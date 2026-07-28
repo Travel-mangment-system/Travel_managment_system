@@ -5,6 +5,8 @@ import java.util.List;
 import org.jspecify.annotations.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.travelmanagement.backend.dtos.CustomerHomePackageDto;
+import com.travelmanagement.backend.dtos.CustomerPackageDetailsDto;
 import com.travelmanagement.backend.dtos.HolidayPackageRequest;
 import com.travelmanagement.backend.dtos.HolidayPackageResponse;
 import com.travelmanagement.backend.entities.HolidayPackage;
@@ -18,7 +20,7 @@ public interface HolidayPackageService {
 	        HolidayPackageRequest request,
 	        MultipartFile image);
 
-	HolidayPackageResponse updatePackage(Long packageId, @Valid HolidayPackageRequest request);
+//	HolidayPackageResponse updatePackage(Long packageId, @Valid HolidayPackageRequest request);
 
 	void updatePackage(
 	        Long packageId,
@@ -26,4 +28,12 @@ public interface HolidayPackageService {
 
 	void deletePackage(Long packageId);
 	List<HolidayPackage> getAllPackages();
-}  
+
+
+	HolidayPackageResponse updatePackage(Long packageId, @Valid HolidayPackageRequest request);
+
+	List<CustomerHomePackageDto> getCustomerHomePackages();
+
+	CustomerPackageDetailsDto getCustomerPackageDetails(Long packageId);
+}
+

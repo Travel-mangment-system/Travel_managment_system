@@ -68,7 +68,10 @@ body{
     flex-direction:column;
     justify-content:center;
     color:#fff;
+    background: rgba(0,0,0,0);
 }
+
+
 
 /* ==========================
    LOGO

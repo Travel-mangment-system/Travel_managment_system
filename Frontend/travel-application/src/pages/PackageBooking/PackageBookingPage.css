@@ -1,0 +1,390 @@
+/* ==========================================
+   PackageBookingPage.css
+   Scoped strictly to .manage-packages-layout
+========================================== */
+
+.manage-packages-layout {
+  display: flex;
+  height: 100vh;
+  background-color: #f8fafc;
+  font-family: 'Poppins', sans-serif, system-ui, -apple-system;
+}
+
+/* ==========================================
+   SIDEBAR
+========================================== */
+.manage-packages-layout .sidebar { 
+  width: 256px; 
+  background-color: #0f172a; 
+  color: #cbd5e1; 
+  display: flex; 
+  flex-direction: column; 
+  height: 100%; 
+  transition: all 0.3s ease; 
+}
+
+.manage-packages-layout .sidebar-header { 
+  padding: 1.5rem; 
+  display: flex; 
+  align-items: center; 
+  gap: 0.75rem; 
+  color: white; 
+}
+
+.manage-packages-layout .brand-icon { color: #0E8A8A; } /* Matched to your login theme color */
+.manage-packages-layout .brand-text { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.025em; }
+
+.manage-packages-layout .sidebar-title { 
+  padding: 0 1rem; 
+  font-size: 0.75rem; 
+  font-weight: 600; 
+  color: #64748b; 
+  text-transform: uppercase; 
+  margin-bottom: 0.5rem; 
+}
+
+.manage-packages-layout .sidebar-nav { 
+  flex: 1; 
+  padding: 0 1rem; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 0.5rem; 
+}
+
+.manage-packages-layout .nav-item { 
+  display: flex; 
+  align-items: center; 
+  gap: 0.75rem; 
+  padding: 0.5rem 0.75rem; 
+  border-radius: 0.5rem; 
+  color: inherit; 
+  text-decoration: none; 
+  transition: all 0.2s; 
+  white-space: nowrap; 
+}
+
+.manage-packages-layout .nav-item:hover { 
+  background-color: #1e293b; 
+  color: white; 
+}
+
+.manage-packages-layout .nav-item.active { 
+  background-color: #0E8A8A; 
+  color: white; 
+}
+
+.manage-packages-layout .sidebar-footer { 
+  padding: 1rem; 
+  border-top: 1px solid #1e293b; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 0.5rem; 
+}
+
+.manage-packages-layout .nav-item.logout { color: #ef4444; }
+
+/* ==========================================
+   MAIN CONTENT & TOP NAVBAR
+========================================== */
+.manage-packages-layout .main-content { 
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
+  height: 100%; 
+  overflow: hidden; 
+  width: 100%; 
+}
+
+.manage-packages-layout .top-navbar { 
+  height: 4rem; 
+  background-color: white; 
+  border-bottom: 1px solid #e2e8f0; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  padding: 0 1.5rem; 
+  z-index: 10; 
+}
+
+.manage-packages-layout .search-bar { 
+  display: flex; 
+  align-items: center; 
+  width: 24rem; 
+  background-color: #f1f5f9; 
+  border-radius: 0.5rem; 
+  padding: 0.5rem 0.75rem; 
+  border: 1px solid #e2e8f0; 
+}
+
+.manage-packages-layout .search-input { 
+  background: transparent; 
+  border: none; 
+  outline: none; 
+  margin-left: 0.5rem; 
+  width: 100%; 
+  font-size: 0.875rem; 
+  color: #334155; 
+}
+
+.manage-packages-layout .top-actions { 
+  display: flex; 
+  align-items: center; 
+  gap: 1.5rem; 
+}
+
+.manage-packages-layout .profile-section { 
+  display: flex; 
+  align-items: center; 
+  gap: 0.75rem; 
+  border-left: 1px solid #e2e8f0; 
+  padding-left: 1.5rem; 
+}
+
+.manage-packages-layout .avatar { 
+  height: 2.25rem; 
+  width: 2.25rem; 
+  border-radius: 9999px; 
+  background-color: #0E8A8A; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  color: white; 
+  font-weight: 700; 
+  font-size: 0.875rem; 
+  flex-shrink: 0; 
+}
+
+/* ==========================================
+   PAGE CONTAINER & BOOKING FORM
+========================================== */
+.manage-packages-layout .page-container { 
+  flex: 1; 
+  overflow-y: auto; 
+  padding: 2rem; 
+}
+
+.manage-packages-layout .booking-form-wrapper {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.manage-packages-layout .booking-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.manage-packages-layout .booking-header p {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+.manage-packages-layout .error-banner {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Travelers Section */
+.manage-packages-layout .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.75rem;
+}
+
+.manage-packages-layout .section-header h3 {
+  font-size: 1.2rem;
+  color: #1e293b;
+}
+
+.manage-packages-layout .btn-add-traveler {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #f1f5f9;
+  color: #0E8A8A;
+  border: 1px solid #cbd5e1;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.manage-packages-layout .btn-add-traveler:hover {
+  background-color: #e2e8f0;
+}
+
+/* Traveler Cards */
+.manage-packages-layout .traveler-card {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.manage-packages-layout .traveler-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.manage-packages-layout .traveler-card-header h4 {
+  font-size: 1rem;
+  color: #334155;
+}
+
+.manage-packages-layout .btn-remove {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.manage-packages-layout .btn-remove:hover {
+  text-decoration: underline;
+}
+
+.manage-packages-layout .traveler-inputs {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Input Fields - Safely Scoped! */
+.manage-packages-layout .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.manage-packages-layout .input-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #475569;
+}
+
+.manage-packages-layout .input-group input,
+.manage-packages-layout .input-group select {
+  padding: 0.625rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.manage-packages-layout .input-group input:focus,
+.manage-packages-layout .input-group select:focus {
+  border-color: #0E8A8A;
+}
+
+/* Special Requests */
+.manage-packages-layout .special-requests-section {
+  margin-bottom: 2rem;
+}
+
+.manage-packages-layout .special-requests-section h3 {
+  font-size: 1.1rem;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+}
+
+.manage-packages-layout .special-requests-section textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  outline: none;
+  resize: vertical;
+}
+
+.manage-packages-layout .special-requests-section textarea:focus {
+  border-color: #0E8A8A;
+}
+
+/* Footer Submit Button */
+.manage-packages-layout .booking-footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1.5rem;
+}
+
+.manage-packages-layout .btn-submit-booking {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #0E8A8A;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.manage-packages-layout .btn-submit-booking:hover:not(:disabled) {
+  background-color: #0b6b6b;
+}
+
+.manage-packages-layout .btn-submit-booking:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* ==========================================
+   RESPONSIVE (Matching your layout)
+========================================== */
+@media screen and (max-width: 768px) {
+  .manage-packages-layout { flex-direction: column; }
+  .manage-packages-layout .sidebar { width: 100%; height: auto; flex-direction: column; }
+  .manage-packages-layout .sidebar-header { justify-content: center; padding: 1rem; }
+  .manage-packages-layout .sidebar-title { display: none; }
+  
+  .manage-packages-layout .sidebar-nav { 
+    flex-direction: row; 
+    overflow-x: auto; 
+    padding: 0.5rem 1rem; 
+    scrollbar-width: none; 
+  }
+  .manage-packages-layout .sidebar-nav::-webkit-scrollbar { display: none; }
+  
+  .manage-packages-layout .sidebar-footer {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    border-top: none;
+    border-bottom: 1px solid #1e293b;
+  }
+
+  .manage-packages-layout .top-navbar .search-bar { display: none; }
+  .manage-packages-layout .top-actions { width: 100%; justify-content: flex-end; }
+  
+  .manage-packages-layout .traveler-inputs {
+    grid-template-columns: 1fr;
+  }
+}

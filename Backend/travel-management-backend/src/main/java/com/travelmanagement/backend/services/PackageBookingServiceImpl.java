@@ -139,15 +139,17 @@ public class PackageBookingServiceImpl implements PackageBookingService {
 			// Calculate 80% refund
 			refundAmount = totalPaid.multiply(new java.math.BigDecimal("0.80"));
 			
-			// Process razorpay refund
-			try {
-				RazorpayClient razorpayClient = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
-				JSONObject refundRequest = new JSONObject();
-				int refundAmountInPaise = refundAmount.multiply(new java.math.BigDecimal("100")).intValue();
-				refundRequest.put("amount", refundAmountInPaise);
-				razorpayClient.payments.refund(booking.getPaymentId(), refundRequest);
-			} catch(Exception e) {
-				throw new RuntimeException("Error while processing refund with razorpay: "+ e.getMessage());
+			// Process razorpay refund only if a valid payment ID exists
+			if (booking.getPaymentId() != null && !booking.getPaymentId().trim().isEmpty()) {
+				try {
+					RazorpayClient razorpayClient = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+					JSONObject refundRequest = new JSONObject();
+					int refundAmountInPaise = refundAmount.multiply(new java.math.BigDecimal("100")).intValue();
+					refundRequest.put("amount", refundAmountInPaise);
+					razorpayClient.payments.refund(booking.getPaymentId(), refundRequest);
+				} catch(Exception e) {
+					throw new RuntimeException("Error while processing refund with razorpay: "+ e.getMessage());
+				}
 			}
 			
 			// Restore available spots on the package 
@@ -170,7 +172,7 @@ public class PackageBookingServiceImpl implements PackageBookingService {
 		return PackageBookingDto.CanceResponse.builder()
 				.bookingId(booking.getPackageBookingId())
 				.bookingStatus(booking.getBookingStatus().name())
-				.refundAmount(refundAmount) // <-- FIXED: Returns actual refund amount, not total paid
+				.refundAmount(refundAmount)
 				.message(message)
 				.build();
 	}
