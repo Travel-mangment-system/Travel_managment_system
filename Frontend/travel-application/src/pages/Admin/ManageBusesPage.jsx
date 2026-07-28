@@ -81,29 +81,45 @@ export default function ManageBusesPage() {
   };
 
   const fetchBuses = async () => {
+
     try {
-      setLoading(true);
-      
-      const response = await fetch("http://localhost:8080/api/v1/buses", {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
+
+        setLoading(true);
+
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+            "http://localhost:8080/api/v1/buses",
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                `Request failed with status: ${response.status}`
+            );
         }
-      });
-      
-      if (!response.ok) {
-         throw new Error(`Request failed with status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setBuses(data);
+
+        const data = await response.json();
+
+        setBuses(data);
+
     } catch (err) {
-      setError(err.message);
-      console.error("Fetch error:", err);
+
+        setError(err.message);
+
     } finally {
-      setLoading(false);
+
+        setLoading(false);
+
     }
-  };
+
+};
 
   const handleDelete = async (busId) => {
     if (window.confirm("Are you sure you want to delete this bus? All future bookings will be cancelled and refunded 100%.")) {

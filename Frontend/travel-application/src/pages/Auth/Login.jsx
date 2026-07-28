@@ -16,10 +16,11 @@ export default function Login() {
 
   const [role, setRole] = useState("CUSTOMER");
 
-  const [loginData, setLoginData] = useState({
-    email: "",
-    passwordHash: "",
-  });
+ const [loginData, setLoginData] = useState({
+  email: "",
+  passwordHash: "",
+  role: "CUSTOMER", // Default selected role
+});
 
   const theme = {
     CUSTOMER: {
@@ -44,34 +45,48 @@ export default function Login() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const response = await loginUser(loginData);
+  try {
+    const request = {
+      email: loginData.email,
+      passwordHash: loginData.passwordHash,
+      role: role, // Selected role (CUSTOMER / PROVIDER / ADMIN)
+    };
 
-      // Save user details to localStorage
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("role", response.data.role);
-      localStorage.setItem("name", response.data.fullName);
-      localStorage.setItem("userId", response.data.id);
+    const response = await loginUser(request);
 
-      alert("Login Successful!");
+    // Save login details
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("role", response.data.role);
+    localStorage.setItem("name", response.data.fullName);
+    localStorage.setItem("userId", response.data.id);
 
-      // DYNAMIC ROUTING: Check the role returned from the database
-      const userRole = response.data.role;
+    alert("Login Successful!");
 
-      if (userRole === "ADMIN" || userRole === "ROLE_ADMIN") {
+    // Navigate based on actual role returned by backend
+    switch (response.data.role) {
+      case "ADMIN":
+      case "ROLE_ADMIN":
         navigate("/Admin-Dashboard");
-      } else if (userRole === "PROVIDER" || userRole === "ROLE_PROVIDER") {
-        navigate("/provider-dashboard"); 
-      } else {
-        navigate("/home"); // Default route for CUSTOMER or ordinary users
-      }
-      
-    } catch (error) {
-      alert(error.response?.data?.message || "Invalid Email or Password");
+        break;
+
+      case "PROVIDER":
+      case "ROLE_PROVIDER":
+        navigate("/provider-dashboard");
+        break;
+
+      case "CUSTOMER":
+      case "ROLE_CUSTOMER":
+      default:
+        navigate("/home");
+        break;
     }
-  };
+
+  } catch (error) {
+    alert(error.response?.data?.message || "Invalid Email or Password");
+  }
+};
 
   return (
     <div className="login-page">

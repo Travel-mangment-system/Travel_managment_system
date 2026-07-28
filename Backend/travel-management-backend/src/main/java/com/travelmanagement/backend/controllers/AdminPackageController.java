@@ -27,6 +27,9 @@ import com.travelmanagement.backend.repositories.PackageBookingRepository;
 import com.travelmanagement.backend.services.HolidayPackageService;
 import com.travelmanagement.backend.services.PackageItineraryService;
 
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,11 +41,24 @@ public class AdminPackageController {
 	private final HolidayPackageService holidayPackageService;
 	private final PackageItineraryService packageItineraryService;
 	private final PackageBookingRepository packageBookingRepository;
-	@PostMapping
-	public ResponseEntity<?> createPackage(@RequestBody HolidayPackageRequest request)
-	{
-		HolidayPackageResponse response=holidayPackageService.createPackage(request);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> createPackage(
+
+	        @RequestPart("package") HolidayPackageRequest request,
+
+	        @RequestPart(value = "image", required = false)
+	        MultipartFile image
+
+	) {
+
+	    HolidayPackageResponse response =
+	            holidayPackageService.createPackage(request, image);
+
+	    return ResponseEntity
+	            .status(HttpStatus.CREATED)
+	            .body(response);
+
 	}
 	@PostMapping("/{packageId}/itineraries")
 	public ResponseEntity<PackageItineraryResponse> addItinerary(

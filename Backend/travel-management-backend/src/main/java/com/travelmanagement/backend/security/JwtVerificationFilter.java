@@ -25,26 +25,37 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
-
-        // 1. If no token, move on (SecurityFilterChain will allow/deny based on route rules)
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // 2. We have a token, attempt to verify it
         try {
+
+            String authHeader = request.getHeader("Authorization");
+
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+
+                filterChain.doFilter(request, response);
+
+                return;
+
+            }
+
             String jwt = authHeader.substring(7);
+
+            log.info("JWT Token Received : {}", jwt);
+
             Claims claims = jwtUtils.verifyJwtAndExtractClaims(jwt);
 
             Long userId = claims.get("user_id", Long.class);
+
             String role = claims.get("user_role", String.class);
+
+            log.info("User Id : {}", userId);
+
+            log.info("Role : {}", role);
 
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
@@ -54,16 +65,23 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        } catch (Exception ex) {
-            // Token is genuinely invalid or expired
+            filterChain.doFilter(request, response);
+
+        }
+        catch (Exception ex) {
+
+            log.error("JWT Validation Failed", ex);
+
+            ex.printStackTrace();
+
             SecurityContextHolder.clearContext();
+
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid JWT");
-            return; // Stop the request here, don't let it reach the controllers
+
+            response.getWriter().write(ex.getMessage());
+
         }
 
-        // 3. IMPORTANT: Moved OUTSIDE the try-catch block!
-        // Now, if your Controller throws a 500 error, you will actually see it.
-        filterChain.doFilter(request, response);
     }
+
 }
