@@ -1,6 +1,7 @@
 package com.travelmanagement.backend.services;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.travelmanagement.backend.CustomException.ResourceNotFoundException;
+import com.travelmanagement.backend.dtos.CustomerHomePackageDto;
+import com.travelmanagement.backend.dtos.CustomerPackageDetailsDto;
 import com.travelmanagement.backend.dtos.HolidayPackageRequest;
 import com.travelmanagement.backend.dtos.HolidayPackageResponse;
 import com.travelmanagement.backend.entities.BookingStatus;
@@ -243,5 +246,70 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 	public List<HolidayPackage> getAllPackages() {
 	    // Fetches all packages from the database
 	    return holidayPackageRepository.findAll();
+	}
+	// ===========================================================
+	// CUSTOMER HOME PAGE
+	// ===========================================================
+
+	@Override
+	public List<CustomerHomePackageDto> getCustomerHomePackages() {
+
+	    List<HolidayPackage> packages =
+	            holidayPackageRepository.findByStatus(PackageStatus.ACTIVE);
+
+	    List<CustomerHomePackageDto> response = new ArrayList<>();
+
+	    for (HolidayPackage pkg : packages) {
+
+	        CustomerHomePackageDto dto = new CustomerHomePackageDto();
+
+	        dto.setPackageId(pkg.getPackageId());
+	        dto.setTitle(pkg.getTitle());
+	        dto.setDestinationCity(pkg.getDestinationCity());
+	        dto.setBasePrice(pkg.getBasePrice());
+	        dto.setDurationDays(pkg.getDurationDays());
+	        dto.setDurationNights(pkg.getDurationNights());
+	        dto.setAvailableSpots(pkg.getAvailableSpots());
+	        dto.setImageUrl(pkg.getImageUrl());
+
+	        response.add(dto);
+
+	    }
+
+	    return response;
+	}
+
+
+	// ===========================================================
+	// CUSTOMER PACKAGE DETAILS
+	// ===========================================================
+
+	@Override
+	public CustomerPackageDetailsDto getCustomerPackageDetails(Long packageId) {
+
+	    HolidayPackage pkg =
+	            holidayPackageRepository.findCustomerPackageById(packageId);
+
+	    if (pkg == null) {
+
+	        throw new RuntimeException("Package not found");
+
+	    }
+
+	    CustomerPackageDetailsDto dto = new CustomerPackageDetailsDto();
+
+	    dto.setPackageId(pkg.getPackageId());
+	    dto.setTitle(pkg.getTitle());
+	    dto.setDescription(pkg.getDescription());
+	    dto.setImageUrl(pkg.getImageUrl());
+	    dto.setDestinationCity(pkg.getDestinationCity());
+	    dto.setBasePrice(pkg.getBasePrice());
+	    dto.setDurationDays(pkg.getDurationDays());
+	    dto.setDurationNights(pkg.getDurationNights());
+	    dto.setAvailableSpots(pkg.getAvailableSpots());
+	    dto.setDepartureDatetime(pkg.getDepartureDatetime());
+	    dto.setReturnDatetime(pkg.getReturnDatetime());
+
+	    return dto;
 	}
 }

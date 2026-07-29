@@ -26,47 +26,106 @@ const StopSelection = () => {
 
   // State from previous page (BusSearch)
   const busDetails = location.state?.busDetails || {};
-  const baseFare = busDetails?.fare || 500;
+  const routeId = busDetails?.routeId || busDetails?.id || 1;
+  const baseFare = Number(busDetails?.fare) || 500;
 
-  // Local State for Stops
-  const [boardingPoints, setBoardingPoints] = useState([]);
-  const [droppingPoints, setDroppingPoints] = useState([]);
+  // Local State for Stops & Dynamic Pricing
+  const [stops, setStops] = useState([]);
   const [selectedBoarding, setSelectedBoarding] = useState(null);
   const [selectedDropping, setSelectedDropping] = useState(null);
+  const [calculatedFare, setCalculatedFare] = useState(baseFare);
   const [loading, setLoading] = useState(true);
 
+  // Fetch stops from database using routeId or scheduleId
   useEffect(() => {
     const fetchStops = async () => {
       setLoading(true);
       try {
         const token = localStorage.getItem("token");
 
-        // Mocking the data based on your screenshot
-        setBoardingPoints([
-          { id: 1, time: "17:55", name: "panvel" },
-          { id: 2, time: "18:35", name: "khopoli" },
-        ]);
-        setDroppingPoints([
-          { id: 3, time: "19:00", name: "Lonavala" },
-          { id: 4, time: "19:20", name: "Hinjewadi" },
-        ]);
+        // Adjust endpoint based on your backend controller (e.g., /api/v1/routes/{routeId}/stops or /api/v1/schedules/{busId}/stops)
+        const response = await api.get(`/api/v1/routes/${routeId}/stops`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        // Ensure stops are sorted by stopOrder to calculate segments correctly
+        const sortedStops = (response.data || []).sort(
+          (a, b) => a.stopOrder - b.stopOrder,
+        );
+        setStops(sortedStops);
+
+        // Auto-select first and last stop as defaults if available
+        if (sortedStops.length >= 2) {
+          setSelectedBoarding(sortedStops[0]);
+          setSelectedDropping(sortedStops[sortedStops.length - 1]);
+        }
       } catch (error) {
-        console.error("Failed to fetch stops:", error);
+        console.error(
+          "Failed to fetch database stops, falling back to mock data:",
+          error,
+        );
+
+        // Fallback mock dataset if backend endpoint differs
+        const fallbackStops = [
+          { id: 1, stopName: "Mumbai", stopOrder: 1, arrivalTime: "17:55" },
+          { id: 2, stopName: "Panvel", stopOrder: 2, arrivalTime: "18:35" },
+          { id: 3, stopName: "Lonavala", stopOrder: 3, arrivalTime: "19:00" },
+          { id: 4, stopName: "Hinjewadi", stopOrder: 4, arrivalTime: "19:20" },
+        ];
+        setStops(fallbackStops);
+        setSelectedBoarding(fallbackStops[0]);
+        setSelectedDropping(fallbackStops[fallbackStops.length - 1]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchStops();
-  }, [busId, busDetails]);
+  }, [busId, routeId]);
+
+  // Dynamic Pricing Calculation whenever Boarding or Dropping changes
+  useEffect(() => {
+    if (selectedBoarding && selectedDropping && stops.length > 1) {
+      const totalStops = stops.length;
+      const totalSegments = Math.max(1, totalStops - 1);
+      const segmentsTraveled =
+        selectedDropping.stopOrder - selectedBoarding.stopOrder;
+
+      if (segmentsTraveled > 0) {
+        const farePerSegment = baseFare / totalSegments;
+        const dynamicTotal = Math.round(farePerSegment * segmentsTraveled);
+        setCalculatedFare(dynamicTotal > 0 ? dynamicTotal : baseFare);
+      } else {
+        // Reset or keep base if invalid selection order
+        setCalculatedFare(baseFare);
+      }
+    }
+  }, [selectedBoarding, selectedDropping, baseFare, stops]);
 
   const handleContinue = () => {
+    if (!selectedBoarding || !selectedDropping) return;
+
+    if (selectedBoarding.stopOrder >= selectedDropping.stopOrder) {
+      alert(
+        "Invalid selection: Drop-off stop must be after the boarding stop.",
+      );
+      return;
+    }
+
     navigate(`/buses/${busId}/seats`, {
       state: {
         busDetails,
-        boarding: selectedBoarding,
-        dropping: selectedDropping,
-        calculatedFare: baseFare,
+        boarding: {
+          id: selectedBoarding.id,
+          name: selectedBoarding.stopName,
+          time: selectedBoarding.arrivalTime,
+        },
+        dropping: {
+          id: selectedDropping.id,
+          name: selectedDropping.stopName,
+          time: selectedDropping.arrivalTime,
+        },
+        calculatedFare,
       },
     });
   };
@@ -103,7 +162,7 @@ const StopSelection = () => {
         </div>
 
         <nav className="sidebar-nav">
-          <button className="nav-item" onClick={() => navigate("/dashboard")}>
+          <button className="nav-item" onClick={() => navigate("/home")}>
             <Home size={20} /> Dashboard
           </button>
 
@@ -338,7 +397,7 @@ const StopSelection = () => {
               }}
             >
               <h3 style={{ margin: 0, fontSize: "18px", color: "#111" }}>
-                {busDetails?.busName || "akka"}
+                {busDetails?.busName || "Express Bus"}
               </h3>
               <span
                 style={{
@@ -350,7 +409,7 @@ const StopSelection = () => {
                   fontWeight: "600",
                 }}
               >
-                Bus No: {busDetails?.busNumber || "mh12df3592"}
+                Bus No: {busDetails?.busNumber || "MH12DF3333"}
               </span>
             </div>
 
@@ -423,7 +482,7 @@ const StopSelection = () => {
             <div
               style={{ textAlign: "center", padding: "40px", color: "#666" }}
             >
-              Loading stops...
+              Loading database stops...
             </div>
           ) : (
             <div style={{ display: "flex", gap: "24px" }}>
@@ -455,20 +514,20 @@ const StopSelection = () => {
                     gap: "12px",
                   }}
                 >
-                  {boardingPoints.map((point) => (
+                  {stops.map((point) => (
                     <label
-                      key={point.id}
+                      key={point.id || point.stopOrder}
                       style={{
                         display: "flex",
                         alignItems: "center",
                         padding: "16px",
                         border:
-                          selectedBoarding?.id === point.id
+                          selectedBoarding?.stopOrder === point.stopOrder
                             ? "1px solid #0f766e"
                             : "1px solid #e5e7eb",
                         borderRadius: "8px",
                         backgroundColor:
-                          selectedBoarding?.id === point.id
+                          selectedBoarding?.stopOrder === point.stopOrder
                             ? "#f0fdfa"
                             : "#fff",
                         cursor: "pointer",
@@ -478,7 +537,9 @@ const StopSelection = () => {
                       <input
                         type="radio"
                         name="boarding"
-                        checked={selectedBoarding?.id === point.id}
+                        checked={
+                          selectedBoarding?.stopOrder === point.stopOrder
+                        }
                         onChange={() => setSelectedBoarding(point)}
                         style={{
                           marginRight: "16px",
@@ -488,7 +549,7 @@ const StopSelection = () => {
                         }}
                       />
                       <span style={{ fontWeight: "600", width: "60px" }}>
-                        {point.time}
+                        {point.arrivalTime || "00:00"}
                       </span>
                       <span
                         style={{
@@ -496,7 +557,7 @@ const StopSelection = () => {
                           textTransform: "capitalize",
                         }}
                       >
-                        {point.name}
+                        {point.stopName}
                       </span>
                     </label>
                   ))}
@@ -531,20 +592,20 @@ const StopSelection = () => {
                     gap: "12px",
                   }}
                 >
-                  {droppingPoints.map((point) => (
+                  {stops.map((point) => (
                     <label
-                      key={point.id}
+                      key={point.id || point.stopOrder}
                       style={{
                         display: "flex",
                         alignItems: "center",
                         padding: "16px",
                         border:
-                          selectedDropping?.id === point.id
+                          selectedDropping?.stopOrder === point.stopOrder
                             ? "1px solid #0f766e"
                             : "1px solid #e5e7eb",
                         borderRadius: "8px",
                         backgroundColor:
-                          selectedDropping?.id === point.id
+                          selectedDropping?.stopOrder === point.stopOrder
                             ? "#f0fdfa"
                             : "#fff",
                         cursor: "pointer",
@@ -554,7 +615,9 @@ const StopSelection = () => {
                       <input
                         type="radio"
                         name="dropping"
-                        checked={selectedDropping?.id === point.id}
+                        checked={
+                          selectedDropping?.stopOrder === point.stopOrder
+                        }
                         onChange={() => setSelectedDropping(point)}
                         style={{
                           marginRight: "16px",
@@ -564,7 +627,7 @@ const StopSelection = () => {
                         }}
                       />
                       <span style={{ fontWeight: "600", width: "60px" }}>
-                        {point.time}
+                        {point.arrivalTime || "00:00"}
                       </span>
                       <span
                         style={{
@@ -572,7 +635,7 @@ const StopSelection = () => {
                           textTransform: "capitalize",
                         }}
                       >
-                        {point.name}
+                        {point.stopName}
                       </span>
                     </label>
                   ))}
@@ -641,7 +704,7 @@ const StopSelection = () => {
                 }}
               >
                 {selectedBoarding
-                  ? `${selectedBoarding.name} (${selectedBoarding.time})`
+                  ? `${selectedBoarding.stopName} (${selectedBoarding.arrivalTime || ""})`
                   : "-"}
               </strong>
             </div>
@@ -655,7 +718,7 @@ const StopSelection = () => {
                   marginBottom: "4px",
                 }}
               >
-                Dropping
+                Dynamic Drop
               </span>
               <strong
                 style={{
@@ -665,7 +728,7 @@ const StopSelection = () => {
                 }}
               >
                 {selectedDropping
-                  ? `${selectedDropping.name} (${selectedDropping.time})`
+                  ? `${selectedDropping.stopName} (${selectedDropping.arrivalTime || ""})`
                   : "-"}
               </strong>
             </div>
@@ -676,17 +739,17 @@ const StopSelection = () => {
               <span
                 style={{ display: "block", fontSize: "11px", color: "#6b7280" }}
               >
-                Base Fare
+                Calculated Fare
               </span>
               <strong
                 style={{
                   fontSize: "20px",
-                  color: "#111",
+                  color: "#0f766e",
                   display: "block",
                   lineHeight: "1.2",
                 }}
               >
-                ₹{baseFare}
+                ₹{calculatedFare}
               </strong>
               <span style={{ fontSize: "11px", color: "#9ca3af" }}>
                 Per Person
@@ -695,10 +758,16 @@ const StopSelection = () => {
 
             <button
               onClick={handleContinue}
-              disabled={!selectedBoarding || !selectedDropping}
+              disabled={
+                !selectedBoarding ||
+                !selectedDropping ||
+                selectedBoarding?.stopOrder >= selectedDropping?.stopOrder
+              }
               style={{
                 backgroundColor:
-                  !selectedBoarding || !selectedDropping
+                  !selectedBoarding ||
+                  !selectedDropping ||
+                  selectedBoarding?.stopOrder >= selectedDropping?.stopOrder
                     ? "#fdba74"
                     : "#ea580c",
                 color: "#fff",
@@ -708,7 +777,9 @@ const StopSelection = () => {
                 fontWeight: "600",
                 fontSize: "15px",
                 cursor:
-                  !selectedBoarding || !selectedDropping
+                  !selectedBoarding ||
+                  !selectedDropping ||
+                  selectedBoarding?.stopOrder >= selectedDropping?.stopOrder
                     ? "not-allowed"
                     : "pointer",
                 transition: "background-color 0.2s",

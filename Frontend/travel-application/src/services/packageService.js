@@ -1,5 +1,9 @@
 import api from "../utils/axiosInstance";
 
+// ===============================
+// ADMIN PACKAGE APIs
+// ===============================
+
 export const createPackage = (formData) => {
     return api.post(
         "/admin/packages",
@@ -21,4 +25,20 @@ export const addItinerary = (packageId, itinerary) => {
         `/admin/packages/${packageId}/itineraries`,
         itinerary
     );
+};
+
+export const getAllPackages = () => {
+    return api.get("/admin/packages");
+};
+
+// ===============================
+// CUSTOMER PACKAGE APIs
+// ===============================
+
+export const getCustomerHomePackages = () => {
+    return api.get("/customer/packages");
+};
+
+export const getCustomerPackageDetails = (packageId) => {
+    return api.get(`/customer/packages/${packageId}`);
 };

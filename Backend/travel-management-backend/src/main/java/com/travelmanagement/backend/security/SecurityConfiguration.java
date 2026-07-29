@@ -80,6 +80,16 @@ public class SecurityConfiguration {
                             "/api/v1/users/signup",
                             "/api/v1/users/signin")
                     .permitAll()
+                    .requestMatchers(
+                            HttpMethod.GET,
+                            "/api/v1/customer/packages",
+                            "/api/v1/customer/packages/**"
+                    )
+                    .permitAll()
+                    .requestMatchers(
+                            "/uploads/**"
+                    )
+                    .permitAll()
 
                     // Any other public APIs
                     .requestMatchers("/auth/**").permitAll()

@@ -20,14 +20,14 @@ import {
   CreditCard,
   Users,
 } from "lucide-react";
-import api from "../../services/api"; // Ensure this points to your configured Axios instance
+import api from "../../services/api";
 import "../Provider/Dashboard.css";
 import "./MyBookings.css";
 
 const MyBookings = () => {
   const navigate = useNavigate();
   const userName = localStorage.getItem("userName") || "Customer";
-  const userId = localStorage.getItem("userId") || 1; // Fallback user ID if not stored
+  const userId = localStorage.getItem("userId") || 1;
 
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,36 +46,62 @@ const MyBookings = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        // Map backend response data to match UI layout requirements
-        const formattedBookings = response.data.map((b) => ({
-          id: b.bookingId,
-          pnrNumber: b.pnrNumber,
-          // Backend uses "CONFIRMED", "PENDING", "CANCELLED". We map CONFIRMED to Upcoming/Completed context
-          status:
-            b.bookingStatus === "CONFIRMED"
-              ? "Upcoming"
-              : b.bookingStatus === "PENDING"
+        // Map backend response data correctly matching your database entity properties
+        const formattedBookings = (response.data || []).map((b) => {
+          // Extract first booked seat details if available
+          const firstSeat = b.bookedSeats?.[0] || {};
+          const schedule = b.schedule || {};
+          const route = schedule.route || {};
+          const bus = schedule.bus || {};
+
+          return {
+            id: b.bookingId || b.id,
+            pnrNumber: b.pnrNumber || b.bookingReference,
+            status:
+              b.bookingStatus === "CONFIRMED"
                 ? "Upcoming"
-                : "Cancelled",
-          rawStatus: b.bookingStatus,
-          busName: b.busName || "Express Bus", // Fallback if DTO is extended later
-          busNumber: b.busNumber || "MH-Schedule",
-          busType: b.busType || "AC Sleeper",
-          seating: "2+1",
-          source: b.sourceCity || "Source",
-          departureTime: b.departureDatetime
-            ? new Date(b.departureDatetime).toLocaleString()
-            : "N/A",
-          destination: b.destinationCity || "Destination",
-          arrivalTime: b.arrivalDatetime
-            ? new Date(b.arrivalDatetime).toLocaleString()
-            : "N/A",
-          via: "Direct route",
-          seats: b.bookedSeats
-            ? b.bookedSeats.map((s) => s.seatNumber).join(", ")
-            : "N/A",
-          amount: b.totalAmount || 0,
-        }));
+                : b.bookingStatus === "PENDING"
+                  ? "Upcoming"
+                  : "Cancelled",
+            rawStatus: b.bookingStatus,
+            // Properly extract bus name from backend relationships or fallbacks
+            busName:
+              bus.busName || schedule.busName || b.busName || "Express Bus",
+            busNumber: bus.busNumber || schedule.busNumber || "MH-Schedule",
+            busType: bus.busType || "AC Sleeper",
+            seating: "2+1",
+            // Properly extract source and destination from booked seats or schedule route
+            source:
+              firstSeat.boardingStop?.stopName ||
+              route.source ||
+              b.sourceCity ||
+              "Source",
+            departureTime: schedule.departureDatetime
+              ? new Date(schedule.departureDatetime).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : "N/A",
+            destination:
+              firstSeat.dropOffStop?.stopName ||
+              route.destination ||
+              b.destinationCity ||
+              "Destination",
+            arrivalTime: schedule.arrivalDatetime
+              ? new Date(schedule.arrivalDatetime).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : "N/A",
+            seats: b.bookedSeats
+              ? b.bookedSeats
+                  .map((s) => s.seat?.seatNumber || s.seatNumber)
+                  .filter(Boolean)
+                  .join(", ")
+              : "N/A",
+            amount: b.totalAmount || 0,
+          };
+        });
 
         setBookings(formattedBookings);
       } catch (err) {
@@ -191,7 +217,7 @@ const MyBookings = () => {
         </div>
 
         <nav className="sidebar-nav">
-          <button className="nav-item" onClick={() => navigate("/dashboard")}>
+          <button className="nav-item" onClick={() => navigate("/home")}>
             <Home size={20} /> Dashboard
           </button>
 

@@ -207,7 +207,7 @@ const PassengerDetails = () => {
         </div>
 
         <nav className="sidebar-nav">
-          <button className="nav-item" onClick={() => navigate("/dashboard")}>
+          <button className="nav-item" onClick={() => navigate("/home")}>
             <Home size={20} /> Dashboard
           </button>
 

@@ -73,7 +73,7 @@ export default function Login() {
 
         case "PROVIDER":
         case "ROLE_PROVIDER":
-          navigate("/provider-dashboard");
+          navigate("/provider/dashboard");
           break;
 
         case "CUSTOMER":
