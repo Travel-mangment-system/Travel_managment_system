@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { 
   Search, Bell, LayoutDashboard, Bus, Users, Settings, LogOut, 
-  Eye, Filter, X, Plus, Edit, Trash2
-} from "lucide-react";// Added for navigation
+  Eye, Filter, X, Plus, Edit, Trash2, Map, MapPin 
+} from "lucide-react";
 import "./BrowsePackagesPage.css";
 
 export default function ManagePackagesPage() {
@@ -238,6 +238,8 @@ export default function ManagePackagesPage() {
           <a href="#" className="nav-item"><Bus size={20} /> Bus Providers</a>
           <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/manage-buses"); }}><Bus size={20} /> Manage Buses</a>
           <a href="#" className="nav-item active"><Bus size={20} /> Packages</a>
+          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/admin/routes"); }}><Map size={20} /> Routes</a>
+          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/admin/cities"); }}><MapPin size={20} /> Cities</a>
         </nav>
         <div className="sidebar-footer">
           <a href="#" className="nav-item"><Settings size={20} /> Settings</a>

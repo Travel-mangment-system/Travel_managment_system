@@ -1,0 +1,352 @@
+/* Container Layout */
+.booking-success-wrapper {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: "Inter", sans-serif;
+}
+
+.success-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 30px;
+  align-items: start;
+}
+
+/* Left Column Styles */
+.success-main-column {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.success-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px 20px 20px;
+}
+
+.check-circle {
+  width: 64px;
+  height: 64px;
+  background-color: #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+}
+
+.check-icon {
+  color: white;
+  font-size: 28px;
+}
+
+.success-title {
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+}
+
+.success-subtitle {
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+}
+
+.success-subtitle strong {
+  color: #0f766e;
+}
+
+.booking-id-box {
+  background-color: #ffffff;
+  border: 1.5px dashed #cbd5e1;
+  padding: 12px 30px;
+  border-radius: 12px;
+  font-size: 16px;
+  color: #475569;
+}
+
+.booking-id-box strong {
+  color: #0f766e;
+  font-size: 18px;
+  margin-left: 8px;
+}
+
+/* Cashback Banner */
+.cashback-banner {
+  background-color: #ecfdf5;
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #d1fae5;
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.tag-icon-wrapper {
+  background-color: #d1fae5;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-tag-icon {
+  color: #0f766e;
+  font-size: 20px;
+}
+
+.banner-text h4 {
+  margin: 0 0 4px 0;
+  color: #0f172a;
+  font-size: 16px;
+}
+
+.banner-text p {
+  margin: 0;
+  color: #475569;
+  font-size: 14px;
+}
+
+.book-another-btn {
+  background-color: #0f766e;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.book-another-btn:hover {
+  background-color: #0d9488;
+}
+
+/* Footer Greeting */
+.success-footer-greeting {
+  text-align: center;
+  padding: 20px;
+}
+
+.success-footer-greeting p {
+  color: #334155;
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 6px 0;
+}
+
+.success-footer-greeting span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* Right Column Styles */
+.success-sidebar-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Thank You Card */
+.thank-you-card {
+  background-color: #f0fdf4;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  height: 180px;
+  display: flex;
+  align-items: center;
+}
+
+.thank-you-text {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 2;
+}
+
+.thank-you-text p {
+  margin: 0 0 4px 0;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.thank-you-text h3 {
+  margin: 0;
+  color: #ea580c; /* Orange accent matching your logo theme */
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.thank-you-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.6;
+  mask-image: linear-gradient(
+    to left,
+    rgba(0, 0, 0, 1) 40%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to left,
+    rgba(0, 0, 0, 1) 40%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* What's Next & Help Cards */
+.whats-next-card,
+.need-help-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e2e8f0;
+}
+
+.card-title {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #0f172a;
+}
+
+.action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.action-icon-wrapper {
+  background-color: #f1f5f9;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.action-item:hover .action-icon-wrapper {
+  background-color: #e0f2fe;
+}
+
+.text-teal {
+  color: #0f766e;
+}
+
+.action-text strong {
+  display: block;
+  color: #0f172a;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.action-text p {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* Need Help Specifics */
+.need-help-card {
+  background-color: #fffbeb;
+  border: 1px solid #fef3c7;
+}
+
+.help-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.help-icon-wrapper {
+  background-color: #fde68a;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d97706;
+}
+
+.help-header strong {
+  color: #0f172a;
+  font-size: 16px;
+}
+
+.need-help-card p {
+  color: #475569;
+  font-size: 14px;
+  margin: 0 0 20px 0;
+}
+
+.contact-support-btn {
+  width: 100%;
+  background-color: transparent;
+  border: 1px solid #d97706;
+  color: #d97706;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-support-btn:before {
+  content: "🔔"; /* Simple bell icon for the button */
+  margin-right: 8px;
+}
+
+.contact-support-btn:hover {
+  background-color: #fffbeb;
+  border-color: #b45309;
+  color: #b45309;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .success-container {
+    grid-template-columns: 1fr;
+  }
+
+  .cashback-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .book-another-btn {
+    width: 100%;
+  }
+}

@@ -1,0 +1,15 @@
+/* 1. Import the 'Inter' font from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+/* 2. Apply it to the entire application */
+* {
+  font-family: "Inter", sans-serif;
+}
+
+/* 3. (Optional but recommended) Smooth out the text rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+}

@@ -20,4 +20,6 @@ public interface BookingService {
 
 	CancellationResponseDto cancelBooking(Long id);
 
+	BookingResponseDto confirmPayment(Long bookingId, String paymentMethod);
+
 }

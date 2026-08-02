@@ -1,8 +1,13 @@
 package com.travelmanagement.backend.services;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.travelmanagement.backend.dtos.RouteDto;
 import com.travelmanagement.backend.dtos.RouteDto.RouteRequest;
 import com.travelmanagement.backend.dtos.RouteDto.RouteResponse;
 import com.travelmanagement.backend.entities.City;
@@ -41,6 +46,27 @@ public class RoteServiceImpl implements RouteService {
 		routeRes.setDistanceKm(request.getDistanceKm());
 		routeRes.setId(route.getId());
 		return routeRes;
+	}
+
+	@Override
+	public List<RouteResponse> getAllRoute() {
+	    List<Route> routes = routeRepo.findAll();
+	    
+	    return routes.stream().map(route -> {
+	        RouteResponse dto = new RouteResponse();
+	        dto.setId(route.getId());
+	        dto.setBaseFare(route.getBaseFare());
+	        dto.setDistanceKm(route.getDistanceKm());
+	        
+	        // Safely map city names so Jackson doesn't crash on lazy-loading proxies
+	        if (route.getStartCity() != null) {
+	            dto.setSourceCityName(route.getStartCity().getCityName());
+	        }
+	        if (route.getEndCity() != null) {
+	            dto.setDestinationCityName(route.getEndCity().getCityName());
+	        }
+	        return dto;
+	    }).collect(Collectors.toList());
 	}
 
 }

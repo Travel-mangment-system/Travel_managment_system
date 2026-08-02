@@ -16,11 +16,11 @@ export default function Login() {
 
   const [role, setRole] = useState("CUSTOMER");
 
- const [loginData, setLoginData] = useState({
-  email: "",
-  passwordHash: "",
-  role: "CUSTOMER", // Default selected role
-});
+  const [loginData, setLoginData] = useState({
+    email: "",
+    passwordHash: "",
+    role: "CUSTOMER", // Default selected role
+  });
 
   const theme = {
     CUSTOMER: {
@@ -45,60 +45,56 @@ export default function Login() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const request = {
-      email: loginData.email,
-      passwordHash: loginData.passwordHash,
-      role: role, // Selected role (CUSTOMER / PROVIDER / ADMIN)
-    };
+    try {
+      const request = {
+        email: loginData.email,
+        passwordHash: loginData.passwordHash,
+        role: role, // Selected role (CUSTOMER / PROVIDER / ADMIN)
+      };
 
-    const response = await loginUser(request);
+      const response = await loginUser(request);
 
-    // Save login details
-    localStorage.setItem("token", response.data.token);
-    localStorage.setItem("role", response.data.role);
-    localStorage.setItem("name", response.data.fullName);
-    localStorage.setItem("userId", response.data.id);
+      // Save login details
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.role);
+      localStorage.setItem("name", response.data.fullName);
+      localStorage.setItem("userId", response.data.id);
 
-    alert("Login Successful!");
+      alert("Login Successful!");
 
-    // Navigate based on actual role returned by backend
-    switch (response.data.role) {
-      case "ADMIN":
-      case "ROLE_ADMIN":
-        navigate("/Admin-Dashboard");
-        break;
+      // Navigate based on actual role returned by backend
+      switch (response.data.role) {
+        case "ADMIN":
+        case "ROLE_ADMIN":
+          navigate("/Admin-Dashboard");
+          break;
 
-      case "PROVIDER":
-      case "ROLE_PROVIDER":
-        navigate("/provider-dashboard");
-        break;
+        case "PROVIDER":
+        case "ROLE_PROVIDER":
+          navigate("/provider/dashboard");
+          break;
 
-      case "CUSTOMER":
-      case "ROLE_CUSTOMER":
-      default:
-        navigate("/home");
-        break;
+        case "CUSTOMER":
+        case "ROLE_CUSTOMER":
+        default:
+          navigate("/home");
+          break;
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || "Invalid Email or Password");
     }
-
-  } catch (error) {
-    alert(error.response?.data?.message || "Invalid Email or Password");
-  }
-};
+  };
 
   return (
     <div className="login-page">
       <div className="container">
         <div className="row shadow-lg auth-wrapper">
-
           {/* LEFT SIDE */}
           <div className="col-lg-5 left-section">
             <div className="overlay">
-              <h2 className="logo-title">
-                TravelHub
-              </h2>
+              <h2 className="logo-title">TravelHub</h2>
 
               <p className="tag-line">
                 Explore. Book. Travel.
@@ -107,9 +103,7 @@ export default function Login() {
               </p>
 
               <div className="feature">
-                <div className="feature-icon">
-                  🚌
-                </div>
+                <div className="feature-icon">🚌</div>
                 <div>
                   <h6>Book Buses & Packages</h6>
                   <p>Quick and easy booking experience</p>
@@ -117,9 +111,7 @@ export default function Login() {
               </div>
 
               <div className="feature">
-                <div className="feature-icon">
-                  💰
-                </div>
+                <div className="feature-icon">💰</div>
                 <div>
                   <h6>Best Prices</h6>
                   <p>Get the best deals and offers</p>
@@ -127,9 +119,7 @@ export default function Login() {
               </div>
 
               <div className="feature">
-                <div className="feature-icon">
-                  🛡️
-                </div>
+                <div className="feature-icon">🛡️</div>
                 <div>
                   <h6>Secure & Reliable</h6>
                   <p>Your safety is our priority</p>
@@ -144,39 +134,57 @@ export default function Login() {
               <h2>Sign In</h2>
               <p>Welcome back! Please sign in to continue</p>
 
-              <label className="login-as">
-                Login as
-              </label>
+              <label className="login-as">Login as</label>
 
               <div className="role-selection">
+                {/* Customer Role Card */}
                 <div
                   className={`role-card ${role === "CUSTOMER" ? "active" : ""}`}
-                  style={{ borderColor: role === "CUSTOMER" ? theme.CUSTOMER.color : "#ddd" }}
+                  style={{
+                    borderColor:
+                      role === "CUSTOMER" ? theme.CUSTOMER.color : "#ddd",
+                  }}
                   onClick={() => setRole("CUSTOMER")}
                 >
-                  <div className="role-icon" style={{ background: theme.CUSTOMER.color }}>
+                  <div
+                    className="role-icon"
+                    style={{ background: theme.CUSTOMER.color }}
+                  >
                     {theme.CUSTOMER.icon}
                   </div>
                   <span>Customer</span>
                 </div>
 
+                {/* Provider Role Card */}
                 <div
                   className={`role-card ${role === "PROVIDER" ? "active" : ""}`}
-                  style={{ borderColor: role === "PROVIDER" ? theme.PROVIDER.color : "#ddd" }}
+                  style={{
+                    borderColor:
+                      role === "PROVIDER" ? theme.PROVIDER.color : "#ddd",
+                  }}
                   onClick={() => setRole("PROVIDER")}
                 >
-                  <div className="role-icon" style={{ background: theme.PROVIDER.color }}>
+                  <div
+                    className="role-icon"
+                    style={{ background: theme.PROVIDER.color }}
+                  >
                     {theme.PROVIDER.icon}
                   </div>
                   <span>Bus Provider</span>
                 </div>
 
+                {/* Admin Role Card */}
                 <div
                   className={`role-card ${role === "ADMIN" ? "active" : ""}`}
-                  style={{ borderColor: role === "ADMIN" ? theme.ADMIN.color : "#ddd" }}
+                  style={{
+                    borderColor: role === "ADMIN" ? theme.ADMIN.color : "#ddd",
+                  }}
                   onClick={() => setRole("ADMIN")}
                 >
-                  <div className="role-icon" style={{ background: theme.ADMIN.color }}>
+                  <div
+                    className="role-icon"
+                    style={{ background: theme.ADMIN.color }}
+                  >
                     {theme.ADMIN.icon}
                   </div>
                   <span>Admin</span>
@@ -200,8 +208,8 @@ export default function Login() {
                       <BsEnvelope />
                     </span>
                   </div>
-                </div>                
-                
+                </div>
+
                 <div className="mb-3">
                   <label>Password</label>
                   <div className="input-group">
@@ -225,9 +233,7 @@ export default function Login() {
                     <input type="checkbox" />
                     <span>Remember me</span>
                   </div>
-                  <Link to="/forgot-password">
-                    Forgot Password?
-                  </Link>
+                  <Link to="/forgot-password">Forgot Password?</Link>
                 </div>
 
                 <button
@@ -238,9 +244,7 @@ export default function Login() {
                   Sign In
                 </button>
 
-                <div className="divider">
-                  or continue with
-                </div>
+                <div className="divider">or continue with</div>
 
                 <div className="social-icons">
                   <div>G</div>
@@ -249,10 +253,7 @@ export default function Login() {
                 </div>
 
                 <div className="signup-link">
-                  Don't have an account?{" "}
-                  <Link to="/register">
-                    Sign Up
-                  </Link>
+                  Don't have an account? <Link to="/register">Sign Up</Link>
                 </div>
               </form>
             </div>
