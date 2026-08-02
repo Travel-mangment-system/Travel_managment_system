@@ -51,21 +51,49 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
     private final RefundService refundService;
     private final PackageItineraryRepository packageItineraryRepository;
 
-	@Override
-	public HolidayPackageResponse createPackage(
-	        HolidayPackageRequest request,
-	        MultipartFile image) {
-		
-		Bus bus = busRepository.findById(request.getBusId())
-                .orElseThrow(() -> new ResourceNotFoundException("Bus not found with id : " + request.getBusId())); 
-		
-        if ((bus.getStatus() != BusStatus.ACTIVE) || (bus.getStatus() == BusStatus.ON_TOUR)) {
-			List<BusSchedule> busSchedules = bus.getBusSchedules();
-			for(BusSchedule b : busSchedules) {
-				if(b.getStatus() == ScheduleStatus.SCHEDULED) {
-					throw new IllegalStateException("Selected bus is already assigned to another package.");
-				}
-			}
+//	@Override
+//	public HolidayPackageResponse createPackage(
+//	        HolidayPackageRequest request,
+//	        MultipartFile image) {
+//		
+//		Bus bus = busRepository.findById(request.getBusId())
+//                .orElseThrow(() -> new ResourceNotFoundException("Bus not found with id : " + request.getBusId())); 
+//		
+//        if ((bus.getStatus() != BusStatus.ACTIVE) || (bus.getStatus() == BusStatus.ON_TOUR)) {
+//			List<BusSchedule> busSchedules = bus.getBusSchedules();
+//			for(BusSchedule b : busSchedules) {
+//				if(b.getStatus() == ScheduleStatus.SCHEDULED) {
+//					throw new IllegalStateException("Selected bus is already assigned to another package.");
+//				}
+//			}
+//        }
+    @Override
+    public HolidayPackageResponse createPackage(
+            HolidayPackageRequest request,
+            MultipartFile image) {
+
+        Bus bus = busRepository.findById(request.getBusId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Bus not found with id : " + request.getBusId()));
+
+        // Bus must be ACTIVE
+        if (bus.getStatus() != BusStatus.ACTIVE) {
+            throw new IllegalStateException(
+                    "Selected bus is not available.");
+        }
+
+        // Bus should not already have any scheduled tour
+        List<BusSchedule> busSchedules = bus.getBusSchedules();
+
+        for (BusSchedule schedule : busSchedules) {
+
+            if (schedule.getStatus() == ScheduleStatus.SCHEDULED) {
+
+                throw new IllegalStateException(
+                        "Selected bus is already assigned to another package.");
+
+            }
         }
         
 		HolidayPackage holidayPackage = new HolidayPackage();
@@ -114,13 +142,12 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 		    }
 
 		}
-		
+		try {
 		bus.setStatus(BusStatus.ON_TOUR);
 		busRepository.save(bus);
 		
 		// Save Package
 		HolidayPackage savedpackage = holidayPackageRepository.save(holidayPackage);
-		
         // Prepare Response
 		HolidayPackageResponse response = new HolidayPackageResponse();
 		response.setPackageId(savedpackage.getPackageId());
@@ -130,6 +157,12 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 		response.setAvailableSpots(savedpackage.getAvailableSpots());
 		response.setImageUrl(savedpackage.getImageUrl());
 		return response;
+		}
+		catch(RuntimeException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override

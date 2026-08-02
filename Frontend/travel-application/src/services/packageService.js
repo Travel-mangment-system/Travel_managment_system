@@ -19,6 +19,9 @@ export const createPackage = (formData) => {
 export const getAllBuses = () => {
     return api.get("/buses");
 };
+export const getAllBusesForPackages = () => {
+    return api.get("/buses/available");
+};
 
 export const addItinerary = (packageId, itinerary) => {
     return api.post(

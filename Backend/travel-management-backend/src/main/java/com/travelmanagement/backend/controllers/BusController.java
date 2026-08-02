@@ -18,6 +18,14 @@ public class BusController {
 
     private final BusService busService;
 
+    @GetMapping("/available")
+    public ResponseEntity<List<BusResponseDTO>> getAllBusesForPackages() {
+
+        return ResponseEntity.ok(
+                busService.getAllBusesForPackages()
+        );
+
+    }
     @PostMapping
     public ResponseEntity<BusResponseDTO> addBus(@RequestBody BusRequestDTO request) {
         return new ResponseEntity<>(busService.addBus(request), HttpStatus.CREATED);
