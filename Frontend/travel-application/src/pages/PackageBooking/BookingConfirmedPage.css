@@ -1,0 +1,255 @@
+/* ==========================================================================
+   BookingConfirmedPage.css
+   Strictly scoped to avoid conflicts with login.css or global styles.
+   ========================================================================== */
+
+/* Main Layout Setup */
+.manage-packages-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc; /* Very light slate background */
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #334155;
+  margin: 0;
+  padding: 0;
+}
+
+/* Sidebar Styling (Scoped) */
+.manage-packages-layout .sidebar {
+  width: 250px;
+  background-color: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.manage-packages-layout .sidebar-header {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0E8A8A;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.manage-packages-layout .sidebar-title {
+  padding: 1.5rem 1.5rem 0.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.manage-packages-layout .sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 1rem;
+  flex: 1;
+}
+
+.manage-packages-layout .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #64748b;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 0.25rem;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.manage-packages-layout .nav-item:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.manage-packages-layout .nav-item.active {
+  background-color: #0E8A8A;
+  color: white;
+}
+
+.manage-packages-layout .sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.manage-packages-layout .nav-item.logout:hover {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+/* Main Content Area */
+.manage-packages-layout .main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* Top Navbar */
+.manage-packages-layout .top-navbar {
+  height: 70px;
+  background-color: white;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+.manage-packages-layout .search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #f1f5f9;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  width: 300px;
+}
+
+.manage-packages-layout .search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  margin-left: 0.5rem;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.manage-packages-layout .top-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.manage-packages-layout .profile-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.manage-packages-layout .avatar {
+  width: 36px;
+  height: 36px;
+  background-color: #0E8A8A;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* Confirmation Summary Grid & Cards */
+.manage-packages-layout .page-container {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.manage-packages-layout .summary-wrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 2.5rem;
+}
+
+.manage-packages-layout .summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.manage-packages-layout .summary-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.5rem;
+  background: #ffffff;
+}
+
+.manage-packages-layout .summary-card.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Specifically style the receipt card with a success tint */
+.manage-packages-layout .summary-card.highlight-card {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.manage-packages-layout .summary-card h3 {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  font-size: 1.1rem;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.manage-packages-layout .detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.manage-packages-layout .detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.manage-packages-layout .detail-row span {
+  color: #64748b;
+}
+
+.manage-packages-layout .detail-row strong {
+  color: #1e293b;
+}
+
+/* Buttons (Strictly Scoped) */
+.manage-packages-layout .booking-footer {
+  display: flex;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1.5rem;
+}
+
+.manage-packages-layout .btn-back {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.manage-packages-layout .btn-back:hover {
+  background-color: #e2e8f0;
+}
+
+.manage-packages-layout .btn-submit-booking {
+  background-color: #0E8A8A;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.manage-packages-layout .btn-submit-booking:hover {
+  background-color: #0b6b6b;
+}
