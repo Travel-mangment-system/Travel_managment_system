@@ -66,7 +66,7 @@ export default function PackageBookingPage() {
     // 2. Construct the payload 
     const payload = {
       userId: parseInt(storedUserId),
-      packageId: 10, 
+      packageId: 2, 
       travlers: travelers.map(t => ({
         fullName: t.fullName,
         age: parseInt(t.age),
