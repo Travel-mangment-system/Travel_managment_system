@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class BusStopServiceImpl implements BusStopService {
 	private final BusStopRepository busStopRepository;
 	private final RouteRepository routeRepository;
+	
 	@Override
 	public BusStopResponseDto addBusStop(BusStopRequestDto requestDto) {
 		Route route = routeRepository.findById(requestDto.getRouteId()).orElseThrow(()-> new RuntimeException("route id not found"));
@@ -56,7 +57,12 @@ public class BusStopServiceImpl implements BusStopService {
 				.map(this::mapToResponseDto)
 				.collect(Collectors.toList());
 	}
-	
-	
-	
+
+	@Override
+	public void deleteBusStop(Long id) {
+		if (!busStopRepository.existsById(id)) {
+			throw new RuntimeException("Bus stop not found with id: " + id);
+		}
+		busStopRepository.deleteById(id);
+	}
 }

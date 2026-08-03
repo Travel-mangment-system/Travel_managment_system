@@ -1,6 +1,7 @@
 package com.travelmanagement.backend.services;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.travelmanagement.backend.CustomException.ResourceNotFoundException;
+import com.travelmanagement.backend.dtos.CustomerHomePackageDto;
+import com.travelmanagement.backend.dtos.CustomerPackageDetailsDto;
 import com.travelmanagement.backend.dtos.HolidayPackageRequest;
 import com.travelmanagement.backend.dtos.HolidayPackageResponse;
 import com.travelmanagement.backend.entities.BookingStatus;
@@ -48,21 +51,49 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
     private final RefundService refundService;
     private final PackageItineraryRepository packageItineraryRepository;
 
-	@Override
-	public HolidayPackageResponse createPackage(
-	        HolidayPackageRequest request,
-	        MultipartFile image) {
-		
-		Bus bus = busRepository.findById(request.getBusId())
-                .orElseThrow(() -> new ResourceNotFoundException("Bus not found with id : " + request.getBusId())); 
-		
-        if ((bus.getStatus() != BusStatus.ACTIVE) || (bus.getStatus() == BusStatus.ON_TOUR)) {
-			List<BusSchedule> busSchedules = bus.getBusSchedules();
-			for(BusSchedule b : busSchedules) {
-				if(b.getStatus() == ScheduleStatus.SCHEDULED) {
-					throw new IllegalStateException("Selected bus is already assigned to another package.");
-				}
-			}
+//	@Override
+//	public HolidayPackageResponse createPackage(
+//	        HolidayPackageRequest request,
+//	        MultipartFile image) {
+//		
+//		Bus bus = busRepository.findById(request.getBusId())
+//                .orElseThrow(() -> new ResourceNotFoundException("Bus not found with id : " + request.getBusId())); 
+//		
+//        if ((bus.getStatus() != BusStatus.ACTIVE) || (bus.getStatus() == BusStatus.ON_TOUR)) {
+//			List<BusSchedule> busSchedules = bus.getBusSchedules();
+//			for(BusSchedule b : busSchedules) {
+//				if(b.getStatus() == ScheduleStatus.SCHEDULED) {
+//					throw new IllegalStateException("Selected bus is already assigned to another package.");
+//				}
+//			}
+//        }
+    @Override
+    public HolidayPackageResponse createPackage(
+            HolidayPackageRequest request,
+            MultipartFile image) {
+
+        Bus bus = busRepository.findById(request.getBusId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Bus not found with id : " + request.getBusId()));
+
+        // Bus must be ACTIVE
+        if (bus.getStatus() != BusStatus.ACTIVE) {
+            throw new IllegalStateException(
+                    "Selected bus is not available.");
+        }
+
+        // Bus should not already have any scheduled tour
+        List<BusSchedule> busSchedules = bus.getBusSchedules();
+
+        for (BusSchedule schedule : busSchedules) {
+
+            if (schedule.getStatus() == ScheduleStatus.SCHEDULED) {
+
+                throw new IllegalStateException(
+                        "Selected bus is already assigned to another package.");
+
+            }
         }
         
 		HolidayPackage holidayPackage = new HolidayPackage();
@@ -111,13 +142,12 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 		    }
 
 		}
-		
+		try {
 		bus.setStatus(BusStatus.ON_TOUR);
 		busRepository.save(bus);
 		
 		// Save Package
 		HolidayPackage savedpackage = holidayPackageRepository.save(holidayPackage);
-		
         // Prepare Response
 		HolidayPackageResponse response = new HolidayPackageResponse();
 		response.setPackageId(savedpackage.getPackageId());
@@ -127,6 +157,12 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 		response.setAvailableSpots(savedpackage.getAvailableSpots());
 		response.setImageUrl(savedpackage.getImageUrl());
 		return response;
+		}
+		catch(RuntimeException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override
@@ -243,5 +279,70 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 	public List<HolidayPackage> getAllPackages() {
 	    // Fetches all packages from the database
 	    return holidayPackageRepository.findAll();
+	}
+	// ===========================================================
+	// CUSTOMER HOME PAGE
+	// ===========================================================
+
+	@Override
+	public List<CustomerHomePackageDto> getCustomerHomePackages() {
+
+	    List<HolidayPackage> packages =
+	            holidayPackageRepository.findByStatus(PackageStatus.ACTIVE);
+
+	    List<CustomerHomePackageDto> response = new ArrayList<>();
+
+	    for (HolidayPackage pkg : packages) {
+
+	        CustomerHomePackageDto dto = new CustomerHomePackageDto();
+
+	        dto.setPackageId(pkg.getPackageId());
+	        dto.setTitle(pkg.getTitle());
+	        dto.setDestinationCity(pkg.getDestinationCity());
+	        dto.setBasePrice(pkg.getBasePrice());
+	        dto.setDurationDays(pkg.getDurationDays());
+	        dto.setDurationNights(pkg.getDurationNights());
+	        dto.setAvailableSpots(pkg.getAvailableSpots());
+	        dto.setImageUrl(pkg.getImageUrl());
+
+	        response.add(dto);
+
+	    }
+
+	    return response;
+	}
+
+
+	// ===========================================================
+	// CUSTOMER PACKAGE DETAILS
+	// ===========================================================
+
+	@Override
+	public CustomerPackageDetailsDto getCustomerPackageDetails(Long packageId) {
+
+	    HolidayPackage pkg =
+	            holidayPackageRepository.findCustomerPackageById(packageId);
+
+	    if (pkg == null) {
+
+	        throw new RuntimeException("Package not found");
+
+	    }
+
+	    CustomerPackageDetailsDto dto = new CustomerPackageDetailsDto();
+
+	    dto.setPackageId(pkg.getPackageId());
+	    dto.setTitle(pkg.getTitle());
+	    dto.setDescription(pkg.getDescription());
+	    dto.setImageUrl(pkg.getImageUrl());
+	    dto.setDestinationCity(pkg.getDestinationCity());
+	    dto.setBasePrice(pkg.getBasePrice());
+	    dto.setDurationDays(pkg.getDurationDays());
+	    dto.setDurationNights(pkg.getDurationNights());
+	    dto.setAvailableSpots(pkg.getAvailableSpots());
+	    dto.setDepartureDatetime(pkg.getDepartureDatetime());
+	    dto.setReturnDatetime(pkg.getReturnDatetime());
+
+	    return dto;
 	}
 }

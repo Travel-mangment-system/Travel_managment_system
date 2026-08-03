@@ -1,0 +1,135 @@
+/* BusStopsPage.css - Matches TravelHub Admin Theme */
+
+.bus-stops-container {
+  min-height: calc(100vh - 80px);
+  padding: 24px;
+}
+
+/* Route Selector Bar */
+.route-selector-card {
+  background: white;
+  padding: 20px 24px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.route-selector-card label {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.95rem;
+}
+
+.route-selector-card select {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+  color: #334155;
+  background-color: #fff;
+  min-width: 320px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.route-selector-card select:focus {
+  border-color: #0E8A8A;
+  box-shadow: 0 0 0 3px rgba(14, 138, 138, 0.15);
+}
+
+/* Main Grid Layout (Table on left, Form on right) */
+.stops-grid-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .stops-grid-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card Styling */
+.stops-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.stops-card-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+  background-color: #f8fafc;
+}
+
+/* Form Styles */
+.stops-form-body {
+  padding: 24px;
+}
+
+.stop-form-group {
+  margin-bottom: 18px;
+}
+
+.stop-form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.stop-form-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+  color: #1e293b;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.stop-form-group input:focus {
+  border-color: #0E8A8A;
+  box-shadow: 0 0 0 3px rgba(14, 138, 138, 0.15);
+}
+
+/* Submit Button */
+.btn-submit-stop {
+  width: 100%;
+  padding: 12px;
+  background-color: #0E8A8A;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  margin-top: 8px;
+}
+
+.btn-submit-stop:hover {
+  background-color: #0b6f6f;
+}
+
+.btn-submit-stop:active {
+  transform: scale(0.99);
+}
+
+.btn-submit-stop:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}

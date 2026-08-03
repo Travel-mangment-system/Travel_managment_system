@@ -1,6 +1,8 @@
 package com.travelmanagement.backend.services;
 
 import com.travelmanagement.backend.dtos.*;
+import com.travelmanagement.backend.dtos.ScheduleDto.ScheduleResponse;
+
 import java.util.List;
 
 public interface BusService {
@@ -9,4 +11,6 @@ public interface BusService {
     List<BusResponseDTO> getAllBuses();
     BusResponseDTO updateStatus(Long id, BusStatusRequestDTO request);
 	void deleteBus(Long id);
+	List<BusResponseDTO> getAllBusesForPackages();
+	List<ScheduleResponse> searchBuses(String source, String destination, String date);
 }

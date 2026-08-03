@@ -130,13 +130,11 @@ const ItinerarySection = ({ itineraries, setItineraries }) => {
 
                 </div>
 
-                <button
-                    type="button"
-                    className="btn btn-success"
-                    onClick={addDay}
-                >
-                    + Add Day
-                </button>
+                <div>
+                    <span className="badge bg-primary">
+                        {itineraries.length} Days
+                    </span>
+                </div>
 
             </div>
 
@@ -159,21 +157,7 @@ const ItinerarySection = ({ itineraries, setItineraries }) => {
 
                                 </h5>
 
-                                {
-
-                                    itineraries.length > 1 && (
-
-                                        <button
-                                            type="button"
-                                            className="btn btn-outline-danger btn-sm"
-                                            onClick={() => removeDay(dayIndex)}
-                                        >
-                                            Remove Day
-                                        </button>
-
-                                    )
-
-                                }
+                            
 
                             </div>
 

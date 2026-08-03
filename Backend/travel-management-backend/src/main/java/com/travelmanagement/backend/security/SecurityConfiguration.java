@@ -33,8 +33,12 @@ public class SecurityConfiguration {
         http
 
             .cors(cors -> cors.configurationSource(request -> {
-
                 CorsConfiguration configuration = new CorsConfiguration();
+
+                configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+                configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                configuration.setAllowedHeaders(List.of("*"));
+
 
                 configuration.setAllowedOrigins(
                         List.of("http://localhost:5173"));
@@ -49,8 +53,8 @@ public class SecurityConfiguration {
 
                 configuration.setAllowedHeaders(List.of("*"));
 
-                configuration.setAllowCredentials(true);
 
+                configuration.setAllowCredentials(true);
                 return configuration;
 
             }))
@@ -61,7 +65,7 @@ public class SecurityConfiguration {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             .authorizeHttpRequests(auth -> auth
-
+                  
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                     .requestMatchers(
@@ -70,18 +74,31 @@ public class SecurityConfiguration {
                             "/swagger-ui.html")
                     .permitAll()
 
+
                     .requestMatchers(
                             HttpMethod.POST,
                             "/api/v1/users/signup",
                             "/api/v1/users/signin")
                     .permitAll()
-
-                    .requestMatchers("/auth/**")
+                    .requestMatchers(
+                            HttpMethod.GET,
+                            "/api/v1/customer/packages",
+                            "/api/v1/customer/packages/**"
+                    )
+                    .permitAll()
+                    .requestMatchers(
+                            "/uploads/**"
+                    )
                     .permitAll()
 
-                    .anyRequest()
-                    .authenticated()
+                    // Any other public APIs
+                    .requestMatchers("/auth/**").permitAll()
+                    
+                    // Allow Spring to properly route and display internal server errors
+                    .requestMatchers("/error").permitAll() 
 
+                    // Everything else requires JWT
+                    .anyRequest().authenticated()
             )
 
             .addFilterBefore(
@@ -95,18 +112,13 @@ public class SecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-
         return new BCryptPasswordEncoder();
-
     }
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration configuration)
-            throws Exception {
-
+            AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
-
     }
 
 }

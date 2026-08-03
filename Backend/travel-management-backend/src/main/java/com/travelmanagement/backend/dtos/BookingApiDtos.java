@@ -46,6 +46,13 @@ public class BookingApiDtos {
 		private BigDecimal totalAmount;
 		private String bookingStatus;
 		private List<BookedSeatDto> bookedSeats;
+		private String busName;
+		private String busNumber;
+		private String busType;
+		private String sourceCity;
+		private String destinationCity;
+		private LocalDateTime departureDatetime;
+		private LocalDateTime arrivalDatetime;
 	}
 	
 	@Data

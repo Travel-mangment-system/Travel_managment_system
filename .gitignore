@@ -1,8 +1,0 @@
-# Backend build output
-Backend/travel-management-backend/target/
-
-# Uploaded images
-Backend/travel-management-backend/uploads/
-
-# macOS
-.DS_Store

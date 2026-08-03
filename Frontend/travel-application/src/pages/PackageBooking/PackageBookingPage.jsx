@@ -53,27 +53,40 @@ export default function PackageBookingPage() {
     setError(null);
 
     // 1. Get the logged-in user's ID from local storage
-    const storedUserId = localStorage.getItem("userId") || localStorage.getItem("id");
-    const token = localStorage.getItem("token");
+  const storedUserId = localStorage.getItem("userId");
+  const storedPackageId = localStorage.getItem("packageId");
+  const token = localStorage.getItem("token");
 
-    if (!storedUserId || !token) {
-      alert("Please login to book a package.");
-      navigate("/login");
-      setLoading(false);
-      return;
-    }
+  if (!storedUserId || !storedPackageId || !token) {
+
+    alert("Package information is missing. Please select a package again.");
+
+    navigate("/home");
+
+    setLoading(false);
+
+    return;
+
+}
 
     // 2. Construct the payload 
-    const payload = {
-      userId: parseInt(storedUserId),
-      packageId: 2, 
-      travlers: travelers.map(t => ({
+
+  const payload = {
+
+    userId: parseInt(storedUserId),
+
+    packageId: parseInt(storedPackageId),
+
+    travlers: travelers.map(t => ({
+
         fullName: t.fullName,
         age: parseInt(t.age),
         gender: t.gender
-      })),
-      specialRequests: specialRequests
-    };
+    })),
+
+    specialRequests: specialRequests
+
+};
 
     console.log("Sending Payload to Spring Boot:", payload);
 
