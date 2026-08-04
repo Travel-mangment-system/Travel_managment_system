@@ -1,10 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown"; // <-- Import Markdown parser
 import "./Chatbot.css";
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { sender: "ai", text: "Hi there! Where do you want to travel?" },
+    {
+      sender: "ai",
+      text: "Hi there! I'm Myra✨. Where do you want to travel?",
+    },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -49,17 +53,14 @@ const Chatbot = () => {
 
   return (
     <div className="chatbot-container">
-      {/* Floating Action Button (Shows when chat is closed) */}
       {!isOpen && (
         <button className="chatbot-toggle-btn" onClick={toggleChat}>
           💬 Chat
         </button>
       )}
 
-      {/* Main Chat Window */}
       {isOpen && (
         <div className="chatbot-window">
-          {/* New, reliable robot image URL */}
           <img
             src="https://cdn-icons-png.flaticon.com/512/4712/4712027.png"
             alt="AI Bot"
@@ -67,9 +68,7 @@ const Chatbot = () => {
           />
 
           <div className="chatbot-header">
-            <span style={{ fontWeight: "bold", color: "#666" }}>
-              AI Assistant
-            </span>
+            <span style={{ fontWeight: "bold", color: "#666" }}>Myra✨</span>
             <button className="icon-btn close-btn" onClick={toggleChat}>
               ✕
             </button>
@@ -78,7 +77,14 @@ const Chatbot = () => {
           <div className="chatbot-messages">
             {messages.map((msg, index) => (
               <div key={index} className={`message-wrapper ${msg.sender}`}>
-                <div className={`message-bubble ${msg.sender}`}>{msg.text}</div>
+                <div className={`message-bubble ${msg.sender}`}>
+                  {/* 👇 Render Markdown here instead of plain text 👇 */}
+                  {msg.sender === "ai" ? (
+                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  ) : (
+                    msg.text
+                  )}
+                </div>
               </div>
             ))}
             {isLoading && (
@@ -89,14 +95,13 @@ const Chatbot = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Gradient Bottom Area & Input */}
           <div className="chatbot-bottom-section">
             <div className="gradient-overlay"></div>
             <form onSubmit={sendMessage} className="chatbot-input-form">
               <div className="input-glow-wrapper">
                 <input
                   type="text"
-                  placeholder="Where do you want to go?"
+                  placeholder="Ask me anything"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   disabled={isLoading}
@@ -106,7 +111,7 @@ const Chatbot = () => {
                   disabled={isLoading}
                   className="submit-btn"
                 >
-                  ✨
+                  ↑
                 </button>
               </div>
             </form>
