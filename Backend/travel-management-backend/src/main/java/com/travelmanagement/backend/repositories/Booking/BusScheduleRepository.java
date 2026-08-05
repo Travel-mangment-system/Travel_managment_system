@@ -11,9 +11,11 @@ import com.travelmanagement.backend.entities.ScheduleStatus;
 public interface BusScheduleRepository extends JpaRepository<BusSchedule, Long>{
 
 	List<BusSchedule> findByBusIdAndDepartureDatetimeAfter(Long busId, LocalDateTime currentTime);
-	List<BusSchedule> findBySourceCityIgnoreCaseAndDestinationCityIgnoreCaseAndStatus(
+	List<BusSchedule> findBySourceCityIgnoreCaseAndDestinationCityIgnoreCaseAndStatusAndDepartureDatetimeBetween(
             String sourceCity, 
             String destinationCity, 
-            ScheduleStatus status
+            ScheduleStatus status,
+            LocalDateTime startOfDay,
+            LocalDateTime endOfDay
     );
 }
