@@ -154,7 +154,7 @@ public class BusServiceImpl implements BusService {
     public List<ScheduleDto.ScheduleResponse> searchBuses(String source, String destination, String date) {
         
         // 1. Define the exact format your frontend is sending (MM/dd/yyyy)
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         
         // 2. Parse the date string into a LocalDate using the formatter
         LocalDate travelDate = LocalDate.parse(date, formatter);
