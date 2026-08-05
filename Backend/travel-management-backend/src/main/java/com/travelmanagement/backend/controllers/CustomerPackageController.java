@@ -41,5 +41,14 @@ public class CustomerPackageController {
                 holidayPackageService.getCustomerPackageDetails(packageId));
 
     }
+    
+    @GetMapping("/search")
+    public ResponseEntity<List<CustomerHomePackageDto>> searchPackages(
+            @RequestParam String destination,
+            @RequestParam(required = false) Double budget) {
+        
+        return ResponseEntity.ok(
+                holidayPackageService.searchCustomerPackages(destination, budget));
+    }
 
 }

@@ -7,6 +7,7 @@ import ProtectedRoute from "./ProtectedRoutes";
 // Auth Pages
 import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
+import ProviderSetup from "../pages/Provider/ProviderSetup"; // <-- NEW: Imported ProviderSetup
 
 // Customer Home & Package Details
 import HomePage from "../pages/Home/HomePage";
@@ -41,6 +42,8 @@ import BookingSummaryPage from "../pages/PackageBooking/BookingSummaryPage";
 import BookingConfirmedPage from "../pages/PackageBooking/BookingConfirmedPage";
 import MyPackageBookingsPage from "../pages/PackageBooking/MyPackageBookingsPage";
 
+
+
 function AppRoutes() {
   return (
     <Routes>
@@ -50,6 +53,9 @@ function AppRoutes() {
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+
+      {/* 👇 NEW: Provider Setup Route added right after registration 👇 */}
+      <Route path="/provider-setup" element={<ProviderSetup />} />
 
       {/* ================================================== */}
       {/* 🏡 CUSTOMER HOME PAGE                              */}
@@ -92,7 +98,7 @@ function AppRoutes() {
       {/* ================================================== */}
       <Route path="/packages" element={<BrowsePackagesPage />} />
       <Route path="/package-details/:packageId" element={<PackageDetails />} />
-      <Route path="/package-booking" element={<PackageBookingPage />} />
+      <Route path="/package-booking/:packageId" element={<PackageBookingPage />} />
       <Route
         path="/booking-summary/:bookingId"
         element={<BookingSummaryPage />}

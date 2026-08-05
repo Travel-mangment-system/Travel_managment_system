@@ -66,4 +66,6 @@ public class BusController {
     public ResponseEntity<List<BusResponseDTO>> getAllBuses() {
         return ResponseEntity.ok(busService.getAllBuses());
     }
+    
+    
 }

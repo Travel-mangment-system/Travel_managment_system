@@ -24,56 +24,68 @@ function Register() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (formData.passwordHash !== formData.confirmPassword) {
-    alert("Passwords do not match");
-    return;
-  }
+    if (formData.passwordHash !== formData.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
 
-  try {
-    // Don't send confirmPassword to the backend
-    const userData = {
-      fullName: formData.fullName,
-      email: formData.email,
-      phone: formData.phone,
-      gender: formData.gender,
-      passwordHash: formData.passwordHash,
-      role: formData.role,
-    };
+    try {
+      // Don't send confirmPassword to the backend
+      const userData = {
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        gender: formData.gender,
+        passwordHash: formData.passwordHash,
+        role: formData.role,
+      };
 
-    const response = await registerUser(userData);
+      const response = await registerUser(userData);
 
-    console.log("Registration Response:", response.data);
+      console.log("Registration Response:", response.data);
+      alert("Registration Successful");
 
-    alert("Registration Successful");
+      // =================================================================
+      // 👇 NEW LOGIC: Redirect based on role
+      // =================================================================
+      if (formData.role === "PROVIDER") {
+        // Extract the new user's ID from the backend response.
+        // NOTE: Adjust 'response.data.id' to match exactly what your Spring Boot backend returns (e.g., response.data.userId)
+        const generatedUserId = response.data.id || response.data.userId;
 
-    navigate("/login");
-  } catch (error) {
-    console.error(error);
+        // Navigate to provider setup and pass the user ID invisibly
+        navigate("/provider-setup", { state: { userId: generatedUserId } });
+      } else {
+        // Customers and Admins go straight to login
+        navigate("/login");
+      }
+      // =================================================================
+    } catch (error) {
+      console.error(error);
+      console.error("Registration Error:", error);
 
-    console.error("Registration Error:", error);
-
-  if (error.response) {
-    alert(JSON.stringify(error.response.data));
-  } else {
-    alert("Unable to connect to the server.");
-  }
-  }
-};
+      if (error.response) {
+        alert(JSON.stringify(error.response.data));
+      } else {
+        alert("Unable to connect to the server.");
+      }
+    }
+  };
 
   return (
     <div className="register-page auth-bg">
       <div className="container auth-container">
         <div className="row auth-wrapper">
-          
           {/* LEFT PANEL */}
           <div className="col-lg-5 p-0 d-none d-lg-block">
             <div className="left-panel">
               <div className="overlay">
                 <h1>TravelHub</h1>
                 <p>
-                  Join thousands of travellers and service providers around the world.
+                  Join thousands of travellers and service providers around the
+                  world.
                 </p>
                 <div className="features-list">
                   <div className="feature">✈ Easy Booking</div>
@@ -211,7 +223,10 @@ function Register() {
                             checked={formData.gender === "MALE"}
                             onChange={handleChange}
                           />
-                          <label className="form-check-label" htmlFor="genderMale">
+                          <label
+                            className="form-check-label"
+                            htmlFor="genderMale"
+                          >
                             Male
                           </label>
                         </div>
@@ -225,7 +240,10 @@ function Register() {
                             checked={formData.gender === "FEMALE"}
                             onChange={handleChange}
                           />
-                          <label className="form-check-label" htmlFor="genderFemale">
+                          <label
+                            className="form-check-label"
+                            htmlFor="genderFemale"
+                          >
                             Female
                           </label>
                         </div>
@@ -239,13 +257,19 @@ function Register() {
                         id="terms"
                         required
                       />
-                      <label className="form-check-label fw-bold" htmlFor="terms">
+                      <label
+                        className="form-check-label fw-bold"
+                        htmlFor="terms"
+                      >
                         I agree to Terms
                       </label>
                     </div>
                   </div>
 
-                  <button type="submit" className="btn btn-success btn-register">
+                  <button
+                    type="submit"
+                    className="btn btn-success btn-register"
+                  >
                     Create Account
                   </button>
                 </form>
@@ -259,7 +283,6 @@ function Register() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

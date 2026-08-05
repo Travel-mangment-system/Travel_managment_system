@@ -53,7 +53,7 @@ public class BusProvider {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 	
-	
+
 	@OneToMany(mappedBy = "busProvider", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Bus> buses;
 	
