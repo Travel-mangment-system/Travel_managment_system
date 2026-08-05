@@ -52,6 +52,11 @@ public class PackageBookingServiceImpl implements PackageBookingService {
 		HolidayPackage holidayPackage = packageRepository.findById(request.getPackageId())
 				.orElseThrow(()->new RuntimeException("Package not found"));
 				
+		// 👇 SECURITY CHECK: Block booking if the package has already departed
+		if (holidayPackage.getDepartureDatetime() != null && holidayPackage.getDepartureDatetime().isBefore(LocalDateTime.now())) {
+			throw new RuntimeException("Booking failed: This package has already departed and cannot be booked.");
+		}
+				
 		User user = userRepository.findById(userId) 
 				.orElseThrow(()->new RuntimeException("User not found"));
 		

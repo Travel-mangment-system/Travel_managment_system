@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -292,21 +291,25 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 	            holidayPackageRepository.findByStatus(PackageStatus.ACTIVE);
 
 	    List<CustomerHomePackageDto> response = new ArrayList<>();
+	    LocalDateTime now = LocalDateTime.now();
 
 	    for (HolidayPackage pkg : packages) {
+	        
+	        // Only add to the list if the departure date is in the future
+	        if (pkg.getDepartureDatetime() != null && pkg.getDepartureDatetime().isAfter(now)) {
+	            CustomerHomePackageDto dto = new CustomerHomePackageDto();
 
-	        CustomerHomePackageDto dto = new CustomerHomePackageDto();
+	            dto.setPackageId(pkg.getPackageId());
+	            dto.setTitle(pkg.getTitle());
+	            dto.setDestinationCity(pkg.getDestinationCity());
+	            dto.setBasePrice(pkg.getBasePrice());
+	            dto.setDurationDays(pkg.getDurationDays());
+	            dto.setDurationNights(pkg.getDurationNights());
+	            dto.setAvailableSpots(pkg.getAvailableSpots());
+	            dto.setImageUrl(pkg.getImageUrl());
 
-	        dto.setPackageId(pkg.getPackageId());
-	        dto.setTitle(pkg.getTitle());
-	        dto.setDestinationCity(pkg.getDestinationCity());
-	        dto.setBasePrice(pkg.getBasePrice());
-	        dto.setDurationDays(pkg.getDurationDays());
-	        dto.setDurationNights(pkg.getDurationNights());
-	        dto.setAvailableSpots(pkg.getAvailableSpots());
-	        dto.setImageUrl(pkg.getImageUrl());
-
-	        response.add(dto);
+	            response.add(dto);
+	        }
 
 	    }
 
@@ -328,6 +331,11 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 
 	        throw new RuntimeException("Package not found");
 
+	    }
+
+	    // Throw an error if the user tries to access a package that has already departed
+	    if (pkg.getDepartureDatetime() != null && pkg.getDepartureDatetime().isBefore(LocalDateTime.now())) {
+	        throw new RuntimeException("This package has already departed and is no longer available.");
 	    }
 
 	    CustomerPackageDetailsDto dto = new CustomerPackageDetailsDto();

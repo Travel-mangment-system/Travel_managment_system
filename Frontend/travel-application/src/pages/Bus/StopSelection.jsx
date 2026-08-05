@@ -26,7 +26,10 @@ const StopSelection = () => {
 
   // State from previous page (BusSearch)
   const busDetails = location.state?.busDetails || {};
-  const routeId = busDetails?.routeId || busDetails?.id || 1;
+  
+  // 🔥 FIX: Correctly extract Route ID. We removed 'busDetails.id' because that was accidentally using Schedule ID as Route ID!
+  const routeId = busDetails?.RouteId || busDetails?.route?.id || busDetails?.route?.routeId; 
+  
   const baseFare = Number(busDetails?.fare) || 500;
 
   // Local State for Stops & Dynamic Pricing
@@ -36,14 +39,14 @@ const StopSelection = () => {
   const [calculatedFare, setCalculatedFare] = useState(baseFare);
   const [loading, setLoading] = useState(true);
 
-  // Fetch stops from database using routeId or scheduleId
+  // Fetch stops from database using routeId
   useEffect(() => {
     const fetchStops = async () => {
       setLoading(true);
       try {
         const token = localStorage.getItem("token");
 
-        // Adjust endpoint based on your backend controller (e.g., /api/v1/routes/{routeId}/stops or /api/v1/schedules/{busId}/stops)
+        // Use the safely extracted routeId
         const response = await api.get(`/api/v1/bus-stops/route/${routeId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -80,7 +83,12 @@ const StopSelection = () => {
       }
     };
 
-    fetchStops();
+    if (routeId) {
+      fetchStops();
+    } else {
+      setLoading(false);
+      console.warn("No Route ID found for this bus.");
+    }
   }, [busId, routeId]);
 
   // Dynamic Pricing Calculation whenever Boarding or Dropping changes
@@ -548,7 +556,7 @@ const StopSelection = () => {
                           height: "16px",
                         }}
                       />
-                      <span style={{ fontWeight: "600", width: "60px" }}>
+                      <span style={{ fontWeight: "600", width: "85px",flexShrink: 0 }}>
                         {point.arrivalTime || "00:00"}
                       </span>
                       <span
@@ -626,7 +634,7 @@ const StopSelection = () => {
                           height: "16px",
                         }}
                       />
-                      <span style={{ fontWeight: "600", width: "60px" }}>
+                      <span style={{ fontWeight: "600", width: "85px", flexShrink: 0 }}>
                         {point.arrivalTime || "00:00"}
                       </span>
                       <span
