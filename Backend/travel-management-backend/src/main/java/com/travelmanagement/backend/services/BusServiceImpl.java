@@ -1,7 +1,11 @@
 package com.travelmanagement.backend.services;
 
 import com.travelmanagement.backend.dtos.*;
+
 import com.travelmanagement.backend.entities.*;
+//import com.travelmanagement.backend.notification.BusAdded;
+//import com.travelmanagement.backend.notification.RabbitMQPublisher;
+//import com.travelmanagement.backend.notification.RoutingKeys;
 import com.travelmanagement.backend.repositories.BusProviderRepository;
 import com.travelmanagement.backend.repositories.BusRepository;
 import com.travelmanagement.backend.repositories.RouteRepository;
@@ -34,6 +38,8 @@ public class BusServiceImpl implements BusService {
     private final BookingRepository bookingRepository;
     private final RefundService refundService; // Use the interface, not the Impl
     private final ModelMapper modelMapper;
+    //Notification
+//    private final RabbitMQPublisher publisher;
 
     @Override
     public BusResponseDTO addBus(BusRequestDTO request) {
@@ -58,6 +64,18 @@ public class BusServiceImpl implements BusService {
         
         // Save the bus first so we have an ID for the seats to link to
         Bus savedBus = busRepository.save(bus);
+        
+        
+        ///Notification
+//        BusAdded busAdded = BusAdded.builder()
+//        		.BusName(savedBus.getBusName())
+//        		.BusNumber(savedBus.getBusNumber())
+//        		.occurredOn(LocalDateTime.now())
+//        		.createdByEmail("siddharth950090@gmail.com")
+//        		.build();
+//        
+//        publisher.publish(RoutingKeys.WORKSPACE_CREATED, busAdded);
+        
 
         // --- NEW LOGIC: AUTO-GENERATE SEATS ---
         List<Seat> seatsToSave = new ArrayList<>();
