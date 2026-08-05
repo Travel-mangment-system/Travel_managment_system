@@ -32,4 +32,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long>{
     
     @Query("SELECT COUNT(bs) FROM Booking b JOIN b.bookedSeats bs WHERE b.schedule.bus.busProvider.id = :providerId AND DATE(b.schedule.departureDatetime) = :today AND b.bookingStatus = 'CONFIRMED'")
     long countSeatsBookedToday(@Param("providerId") Long providerId, @Param("today") LocalDate today);
+
+ // Correct! Returns List<Booking>
+    List<Booking> findAllByUserIdOrderByIdDesc(Long userId);
 }

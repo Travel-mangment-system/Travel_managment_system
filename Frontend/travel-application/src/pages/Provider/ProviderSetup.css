@@ -1,0 +1,272 @@
+.provider-setup-page {
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  background-color: #fafbfc;
+
+  /* 👇 ADD THESE TWO LINES TO FORCE SCROLLING 👇 */
+  height: 100vh;
+  overflow-y: auto;
+
+  padding-bottom: 50px;
+  color: #333;
+}
+
+/* Navbar Mock */
+.provider-navbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 40px;
+  background: white;
+  border-bottom: 1px solid #eaeaea;
+  align-items: center;
+  gap: 20px;
+}
+.nav-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.avatar {
+  background: #0f4c5c;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* Success Header */
+.success-header {
+  text-align: center;
+  padding: 40px 20px;
+}
+.success-icon-wrapper {
+  background: #e6f4ea;
+  color: #1e8e3e;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+.success-header h1 {
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: #111;
+}
+.success-header p {
+  color: #555;
+  margin: 0;
+  font-size: 15px;
+}
+
+/* Main Layout Grid */
+.setup-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 24px;
+  padding: 0 20px;
+}
+
+/* Card Styles */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+/* Form Styles */
+.card h2 {
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+.card > p {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.asterisk {
+  color: #d93025;
+}
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #ff5722;
+  box-shadow: 0 0 0 2px rgba(255, 87, 34, 0.1);
+}
+.form-input:disabled {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+.helper-text {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Buttons */
+.form-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+}
+.btn {
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+}
+.btn-outline {
+  background: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+.btn-outline:hover {
+  background: #f9fafb;
+}
+.btn-primary {
+  background: #ff5722;
+  border: 1px solid #ff5722;
+  color: white;
+}
+.btn-primary:hover {
+  background: #e64a19;
+}
+
+/* Right Sidebar (Info Card) */
+.info-card {
+  padding: 24px;
+}
+.bus-image {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+.info-card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+.info-card p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+.feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 12px;
+}
+.check-icon {
+  color: #1e8e3e;
+}
+
+/* Support Box */
+.support-box {
+  background: #f8faff;
+  border: 1px solid #e1e8f5;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.support-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+.support-box p {
+  font-size: 13px;
+  margin: 0;
+  color: #4b5563;
+}
+.btn-support {
+  background: white;
+  border: 1px solid #d1d5db;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 8px;
+  cursor: pointer;
+  width: max-content;
+}
+
+/* Security Banner */
+.security-banner {
+  max-width: 1000px;
+  margin: 24px auto 0;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.lock-icon-wrapper {
+  color: #166534;
+}
+.security-text h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #166534;
+}
+.security-text p {
+  margin: 0;
+  font-size: 13px;
+  color: #15803d;
+}

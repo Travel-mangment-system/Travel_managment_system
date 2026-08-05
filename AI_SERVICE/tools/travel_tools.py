@@ -1,0 +1,88 @@
+import os
+import requests
+import json
+from langchain_core.tools import tool
+from typing import Optional
+
+# Matches the environment variable base URL used across your project
+SPRING_BOOT_URL = os.getenv("SPRING_BOOT_URL", "http://localhost:8080/api/v1")
+
+@tool
+def search_packages(destination: str, budget: Optional[float] = None) -> str:
+    """
+    Search for travel holiday packages based ONLY on destination and an optional budget.
+    
+    CRITICAL INSTRUCTIONS FOR AI:
+    1. NEVER ask the user for the number of travelers, passengers, or group size.
+    2. If the user provides a destination, trigger this tool immediately.
+    3. If budget is missing, run the search without it. Do not ask for it.
+    4. Format the raw JSON output beautifully for the user.
+    """
+    params = {"destination": destination}
+    if budget:
+        params["budget"] = budget
+        
+    try:
+        # Hitting the specific CustomerPackageController endpoint
+        response = requests.get(f"{SPRING_BOOT_URL}/customer/packages/search", params=params)
+        response.raise_for_status()
+        data = response.json()
+        
+        # Inside search_packages tool
+        if not data:
+            return json.dumps({
+        "status": "empty",
+        "message": f"Sorry, we couldn't find any holiday packages for {destination} at the moment. Please check back later or try another destination."
+        })
+        
+        # 👇 ADDED THIS LINE TO ACTUALLY RETURN THE DATA 👇
+        return json.dumps(data)
+        
+    except Exception as e:
+        return f"Error connecting to backend: {str(e)}"
+
+
+@tool
+def search_buses(source: str, destination: str, date: str) -> str:
+    """
+    Searches for available buses between two cities on a specific date.
+    Use this tool whenever the user wants to book or find a bus.
+    """
+    try:
+        # Uses the correct SPRING_BOOT_URL and matches your Java @RequestParam names
+        response = requests.get(
+            f"{SPRING_BOOT_URL}/buses/search",
+            params={
+                "source": source,
+                "destination": destination,
+                "date": date
+            }
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            
+            if not data:
+                return json.dumps({
+                "status": "empty",
+                "message": f"Sorry, we couldn't find any buses from {source} to {destination} on {date}. Please try a different date or route."
+                })
+            
+            # 👇 ADDED THIS LINE TO ACTUALLY RETURN THE DATA 👇
+            return json.dumps(data)
+            
+        else:
+            return f"Failed to fetch bus data. Server returned status {response.status_code}."
+            
+    except Exception as e:
+        return f"Error connecting to backend: {str(e)}"
+
+
+@tool
+def get_destination_info(location: str) -> str:
+    """
+    Get tourist information, famous places, and tips for a specific destination.
+    CRITICAL: ONLY use this tool if the user explicitly asks for details about ONE specific location. 
+    DO NOT use this tool if you are just suggesting a list of places.
+    """
+    return f"Here is some information about {location}: You should visit the local markets, museums, and historical landmarks."

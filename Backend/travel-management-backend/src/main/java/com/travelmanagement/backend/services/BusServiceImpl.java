@@ -16,7 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -150,15 +153,27 @@ public class BusServiceImpl implements BusService {
     @Override
     public List<ScheduleDto.ScheduleResponse> searchBuses(String source, String destination, String date) {
         
-        // Fetch schedules from the database
+        // 1. Define the exact format your frontend is sending (MM/dd/yyyy)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        
+        // 2. Parse the date string into a LocalDate using the formatter
+        LocalDate travelDate = LocalDate.parse(date, formatter);
+        
+        // 3. Calculate the boundaries (Start of day to End of day)
+        LocalDateTime startOfDay = travelDate.atStartOfDay(); 
+        LocalDateTime endOfDay = travelDate.atTime(LocalTime.MAX); 
+
+        // 4. Fetch schedules from the database using the full repository method
         List<BusSchedule> schedules = busScheduleRepository
-                .findBySourceCityIgnoreCaseAndDestinationCityIgnoreCaseAndStatus(
+                .findBySourceCityIgnoreCaseAndDestinationCityIgnoreCaseAndStatusAndDepartureDatetimeBetween(
                 source, 
                 destination, 
-                ScheduleStatus.SCHEDULED // Ensure this matches your enum
+                ScheduleStatus.SCHEDULED,
+                startOfDay,  // Passed the start boundary
+                endOfDay     // Passed the end boundary
         );
 
-        // Map the BusSchedule entity into your ScheduleResponse DTO
+        // 5. Map the BusSchedule entity into your ScheduleResponse DTO
         return schedules.stream().map(schedule -> {
             ScheduleDto.ScheduleResponse dto = new ScheduleDto.ScheduleResponse();
             
@@ -179,8 +194,10 @@ public class BusServiceImpl implements BusService {
             
             return dto;
         }).collect(Collectors.toList());
-		
-	}
+    }
+    
+    
+    
 	@Override
     public List<BusResponseDTO> getAllBuses() {
         List<Bus> buses = busRepository.findAll();

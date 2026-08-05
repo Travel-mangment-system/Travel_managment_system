@@ -31,7 +31,6 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-
             .cors(cors -> cors.configurationSource(request -> {
                 CorsConfiguration configuration = new CorsConfiguration();
 
@@ -39,10 +38,9 @@ public class SecurityConfiguration {
                 configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(List.of("*"));
 
-
                 configuration.setAllowCredentials(true);
+                
                 return configuration;
-
             }))
 
             .csrf(csrf -> csrf.disable())
@@ -60,18 +58,23 @@ public class SecurityConfiguration {
                             "/swagger-ui.html")
                     .permitAll()
 
-
                     .requestMatchers(
                             HttpMethod.POST,
                             "/api/v1/users/signup",
-                            "/api/v1/users/signin")
+                            "/api/v1/users/signin",
+                            "/api/v1/providers")
                     .permitAll()
+                    
                     .requestMatchers(
                             HttpMethod.GET,
                             "/api/v1/customer/packages",
-                            "/api/v1/customer/packages/**"
+                            "/api/v1/customer/packages/**",
+                            // 👇 ADDED THESE TWO LINES FOR THE PYTHON AI AGENT 👇
+                            "/api/v1/buses/search", 
+                            "/api/v1/packages/search"
                     )
                     .permitAll()
+                    
                     .requestMatchers(
                             "/uploads/**"
                     )
