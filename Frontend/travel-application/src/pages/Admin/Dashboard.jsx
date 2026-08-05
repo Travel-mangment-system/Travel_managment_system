@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
-  Search, Bell, LayoutDashboard, Bus, Users, Settings, LogOut 
+  Search, Bell, LayoutDashboard, Bus, Users, Settings, LogOut, Map, MapPin 
 } from "lucide-react";
 import { BsBusFront, BsBoxSeam } from "react-icons/bs";
 import "./BrowsePackagesPage.css"; 
@@ -72,8 +72,12 @@ export default function Dashboard() {
           <a href="#" className="nav-item"><Users size={20} /> Users</a>
           <a href="#" className="nav-item"><Bus size={20} /> Bus Providers</a>
           <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/manage-buses"); }}><Bus size={20} /> Manage Buses</a>
-          {/* UPDATED: Navigates to /packages */}
           <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/packages"); }}><Bus size={20} /> Packages</a>
+          
+          {/* PERMANENT ROUTES LINK */}
+          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/admin/routes"); }}><Map size={20} /> Routes</a>
+          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/admin/cities"); }}><MapPin size={20} /> Cities</a>
+          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/admin/stops"); }}><MapPin size={20} /> Bus Stops</a>
         </nav>
         <div className="sidebar-footer">
           <a href="#" className="nav-item"><Settings size={20} /> Settings</a>
@@ -87,7 +91,6 @@ export default function Dashboard() {
       <main className="main-content">
         <header className="top-navbar">
           <div style={{ display: 'flex', gap: '8px' }}>
-            {/* Keeping the search bar hidden on the dashboard to maintain flex alignment with other pages */}
             <div className="search-bar" style={{ visibility: 'hidden' }}>
               <Search className="search-icon" size={20} />
               <input type="text" className="search-input" />
@@ -96,14 +99,11 @@ export default function Dashboard() {
           <div className="top-actions">
             <button className="btn-icon"><Bell size={24} /></button>
             <div className="profile-section">
-              {/* Dynamic Avatar Initials */}
               <div className="avatar">{userInfo.initials}</div>
               <div>
-                {/* Dynamic Username */}
                 <div style={{fontWeight: 600, fontSize: '0.875rem', color: '#334155'}}>
                   {userInfo.name}
                 </div>
-                {/* Dynamic Role */}
                 <div style={{fontSize: '0.75rem', color: '#64748b'}}>
                   {userInfo.role}
                 </div>
@@ -137,7 +137,6 @@ export default function Dashboard() {
               <p style={{ color: "#64748b", fontSize: "0.95rem", lineHeight: "1.5" }}>View, edit, or delete registered buses across the platform.</p>
             </div>
 
-            {/* UPDATED: Navigates to /packages */}
             <div 
               onClick={() => navigate("/packages")}
               style={{

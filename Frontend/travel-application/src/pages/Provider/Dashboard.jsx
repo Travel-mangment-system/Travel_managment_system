@@ -66,7 +66,7 @@ const Dashboard = () => {
           if (actualName) {
             setProviderName(actualName);
             // Optionally update localStorage so other pages have the actual name instantly
-            localStorage.setItem("userName", actualName);
+            localStorage.setItem("name", actualName);
           }
         }
       } catch (error) {

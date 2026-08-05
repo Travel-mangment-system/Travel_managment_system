@@ -1,12 +1,18 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Helper to check if a link is active
   const isActive = (path) => (location.pathname.includes(path) ? "active" : "");
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
 
   return (
     <aside className="app-sidebar">
@@ -22,18 +28,29 @@ const Sidebar = () => {
 
       <nav className="sidebar-nav">
         <Link
-          to="/"
-          className={`nav-item ${location.pathname === "/" ? "active" : ""}`}
+          to="/Admin-Dashboard"
+          className={`nav-item ${location.pathname === "/Admin-Dashboard" ? "active" : ""}`}
         >
           <span className="nav-icon">🏠</span>
           Dashboard
         </Link>
+        
         <Link to="/users" className={`nav-item ${isActive("/users")}`}>
           <span className="nav-icon">👥</span>
           Users
         </Link>
 
-        {/* Packages Menu (Expanded as shown in image) */}
+        <Link to="/buses" className={`nav-item ${isActive("/buses")}`}>
+          <span className="nav-icon">🚍</span>
+          Bus Providers
+        </Link>
+
+        <Link to="/manage-buses" className={`nav-item ${isActive("/manage-buses")}`}>
+          <span className="nav-icon">🚌</span>
+          Manage Buses
+        </Link>
+
+        {/* Packages Menu */}
         <div className="nav-group">
           <div className="nav-item">
             <span className="nav-icon">📦</span>
@@ -41,35 +58,24 @@ const Sidebar = () => {
             <span className="chevron">▼</span>
           </div>
           <div className="nav-sub-menu">
-            <Link to="/packages/all" className="sub-item">
+            <Link to="/packages" className="sub-item">
               All Packages
-            </Link>
-            <Link to="/packages/add" className="sub-item">
-              Add Package
             </Link>
           </div>
         </div>
 
-        <Link to="/buses" className={`nav-item ${isActive("/buses")}`}>
-          <span className="nav-icon">🚍</span>
-          Buses
+        {/* PERMANENT ROUTES LINK IN SIDEBAR */}
+        <Link to="/admin/routes" className={`nav-item ${isActive("/admin/routes")}`}>
+          <span className="nav-icon">🗺️</span>
+          Routes
         </Link>
-        <Link to="/bookings" className={`nav-item ${isActive("/bookings")}`}>
-          <span className="nav-icon">📅</span>
-          Bookings
+
+        {/* 👇 ADDED CITIES LINK HERE 👇 */}
+        <Link to="/admin/cities" className={`nav-item ${isActive("/admin/cities")}`}>
+          <span className="nav-icon">📍</span>
+          Cities
         </Link>
-        <Link to="/enquiries" className={`nav-item ${isActive("/enquiries")}`}>
-          <span className="nav-icon">❓</span>
-          Enquiries
-        </Link>
-        <Link to="/payments" className={`nav-item ${isActive("/payments")}`}>
-          <span className="nav-icon">💳</span>
-          Payments
-        </Link>
-        <Link to="/reports" className={`nav-item ${isActive("/reports")}`}>
-          <span className="nav-icon">📊</span>
-          Reports
-        </Link>
+
         <Link to="/settings" className={`nav-item ${isActive("/settings")}`}>
           <span className="nav-icon">⚙️</span>
           Settings
@@ -82,7 +88,7 @@ const Sidebar = () => {
           <p>We are here to help you.</p>
           <button className="btn-support">🎧 Contact Support</button>
         </div>
-        <button className="btn-logout">
+        <button className="btn-logout" onClick={handleLogout}>
           <span className="nav-icon">🚪</span>
           Logout
         </button>

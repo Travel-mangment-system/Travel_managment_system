@@ -6,6 +6,7 @@ import java.util.List;
 
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,21 +52,49 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
     private final RefundService refundService;
     private final PackageItineraryRepository packageItineraryRepository;
 
-	@Override
-	public HolidayPackageResponse createPackage(
-	        HolidayPackageRequest request,
-	        MultipartFile image) {
-		
-		Bus bus = busRepository.findById(request.getBusId())
-                .orElseThrow(() -> new ResourceNotFoundException("Bus not found with id : " + request.getBusId())); 
-		
-        if ((bus.getStatus() != BusStatus.ACTIVE) || (bus.getStatus() == BusStatus.ON_TOUR)) {
-			List<BusSchedule> busSchedules = bus.getBusSchedules();
-			for(BusSchedule b : busSchedules) {
-				if(b.getStatus() == ScheduleStatus.SCHEDULED) {
-					throw new IllegalStateException("Selected bus is already assigned to another package.");
-				}
-			}
+//	@Override
+//	public HolidayPackageResponse createPackage(
+//	        HolidayPackageRequest request,
+//	        MultipartFile image) {
+//		
+//		Bus bus = busRepository.findById(request.getBusId())
+//                .orElseThrow(() -> new ResourceNotFoundException("Bus not found with id : " + request.getBusId())); 
+//		
+//        if ((bus.getStatus() != BusStatus.ACTIVE) || (bus.getStatus() == BusStatus.ON_TOUR)) {
+//			List<BusSchedule> busSchedules = bus.getBusSchedules();
+//			for(BusSchedule b : busSchedules) {
+//				if(b.getStatus() == ScheduleStatus.SCHEDULED) {
+//					throw new IllegalStateException("Selected bus is already assigned to another package.");
+//				}
+//			}
+//        }
+    @Override
+    public HolidayPackageResponse createPackage(
+            HolidayPackageRequest request,
+            MultipartFile image) {
+
+        Bus bus = busRepository.findById(request.getBusId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Bus not found with id : " + request.getBusId()));
+
+        // Bus must be ACTIVE
+        if (bus.getStatus() != BusStatus.ACTIVE) {
+            throw new IllegalStateException(
+                    "Selected bus is not available.");
+        }
+
+        // Bus should not already have any scheduled tour
+        List<BusSchedule> busSchedules = bus.getBusSchedules();
+
+        for (BusSchedule schedule : busSchedules) {
+
+            if (schedule.getStatus() == ScheduleStatus.SCHEDULED) {
+
+                throw new IllegalStateException(
+                        "Selected bus is already assigned to another package.");
+
+            }
         }
         
 		HolidayPackage holidayPackage = new HolidayPackage();
@@ -114,13 +143,12 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 		    }
 
 		}
-		
+		try {
 		bus.setStatus(BusStatus.ON_TOUR);
 		busRepository.save(bus);
 		
 		// Save Package
 		HolidayPackage savedpackage = holidayPackageRepository.save(holidayPackage);
-		
         // Prepare Response
 		HolidayPackageResponse response = new HolidayPackageResponse();
 		response.setPackageId(savedpackage.getPackageId());
@@ -130,6 +158,12 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 		response.setAvailableSpots(savedpackage.getAvailableSpots());
 		response.setImageUrl(savedpackage.getImageUrl());
 		return response;
+		}
+		catch(RuntimeException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override
@@ -311,5 +345,52 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 	    dto.setReturnDatetime(pkg.getReturnDatetime());
 
 	    return dto;
+	}
+	
+	@Override
+	public List<CustomerHomePackageDto> searchCustomerPackages(String destination, Double budget) {
+	    
+	    // Fetch packages matching the destination that are ACTIVE AND haven't departed yet
+	    List<HolidayPackage> packages = holidayPackageRepository
+	            .findByDestinationCityContainingIgnoreCaseAndStatusAndDepartureDatetimeAfter(
+	                    destination, 
+	                    PackageStatus.ACTIVE, 
+	                    LocalDateTime.now() // Only get packages leaving in the future
+	            );
+
+	 // Apply +/- 20% budget filter if a budget is provided
+	    if (budget != null) {
+	        // Convert the Double budget to BigDecimal
+	        BigDecimal targetBudget = BigDecimal.valueOf(budget);
+	        
+	        // Calculate min and max using BigDecimal math
+	        BigDecimal minBudget = targetBudget.multiply(BigDecimal.valueOf(0.80));
+	        BigDecimal maxBudget = targetBudget.multiply(BigDecimal.valueOf(1.20));
+	        
+	        packages = packages.stream()
+	                .filter(pkg -> 
+	                        pkg.getBasePrice().compareTo(minBudget) >= 0 && 
+	                        pkg.getBasePrice().compareTo(maxBudget) <= 0
+	                )
+	                .toList();
+	    }
+
+	    // Map to DTOs
+	    List<CustomerHomePackageDto> response = new ArrayList<>();
+	    for (HolidayPackage pkg : packages) {
+	        CustomerHomePackageDto dto = new CustomerHomePackageDto();
+	        dto.setPackageId(pkg.getPackageId());
+	        dto.setTitle(pkg.getTitle());
+	        dto.setDestinationCity(pkg.getDestinationCity());
+	        dto.setBasePrice(pkg.getBasePrice());
+	        dto.setDurationDays(pkg.getDurationDays());
+	        dto.setDurationNights(pkg.getDurationNights());
+	        dto.setAvailableSpots(pkg.getAvailableSpots());
+	        dto.setImageUrl(pkg.getImageUrl());
+	        
+	        response.add(dto);
+	    }
+	    
+	    return response;
 	}
 }

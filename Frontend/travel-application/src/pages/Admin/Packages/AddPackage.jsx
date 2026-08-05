@@ -5,13 +5,12 @@ import PackageInformation from "../../../components/Packages/PackageInformation"
 import ItinerarySection from "../../../components/Packages/ItinerarySection";
 import ImageUpload from "../../../components/Packages/ImageUpload";
 import PackageSummary from "../../../components/Packages/PackageSummary";
-
+import { addItinerary } from "../../../services/packageService";
 import "./AddPackage.css";
 
 import {
     createPackage,
-    getAllBuses,
-    addItinerary
+    getAllBusesForPackages
 } from "../../../services/packageService";
 
 const AddPackage = () => {
@@ -40,7 +39,7 @@ const AddPackage = () => {
 
         try {
 
-            const response = await getAllBuses();
+            const response = await getAllBusesForPackages();
             setBuses(response.data);
 
         } catch (error) {
@@ -53,58 +52,127 @@ const AddPackage = () => {
 
     const handleChange = (e) => {
 
-        const { name, value } = e.target;
+    const { name, value } = e.target;
 
-        let updatedValue = value;
+    let updatedValue = value;
+
+    if (
+        name === "basePrice" ||
+        name === "totalCapacity" ||
+        name === "busId"
+    ) {
+        updatedValue = value === "" ? "" : Number(value);
+    }
+
+    setPackageData(prev => {
+
+        const updated = {
+            ...prev,
+            [name]: updatedValue
+        };
+
+        // ============================
+        // Validate Capacity
+        // ============================
 
         if (
-            name === "basePrice" ||
             name === "totalCapacity" ||
             name === "busId"
         ) {
-            updatedValue = value === "" ? "" : Number(value);
-        }
 
-        setPackageData(prev => {
-
-            const updated = {
-                ...prev,
-                [name]: updatedValue
-            };
+            const selectedBus = buses.find(
+                bus => bus.id === Number(updated.busId)
+            );
 
             if (
-                updated.departureDatetime &&
-                updated.returnDatetime
+                selectedBus &&
+                Number(updated.totalCapacity) > selectedBus.totalSeats
             ) {
 
-                const departure =
-                    new Date(updated.departureDatetime);
+                alert(
+                    `Maximum capacity allowed is ${selectedBus.totalSeats} seats`
+                );
 
-                const ret =
-                    new Date(updated.returnDatetime);
-
-                if (ret > departure) {
-
-                    const diff =
-                        ret.getTime() - departure.getTime();
-
-                    const days = Math.ceil(
-                        diff / (1000 * 60 * 60 * 24)
-                    );
-
-                    updated.durationDays = days;
-                    updated.durationNights =
-                        Math.max(days - 1, 0);
-
-                }
+                updated.totalCapacity =
+                    selectedBus.totalSeats;
 
             }
 
-            return updated;
+        }
 
-        });
+        // ============================
+        // Calculate Duration
+        // ============================
 
-    };
+        if (
+            updated.departureDatetime &&
+            updated.returnDatetime
+        ) {
+
+            const departure =
+                new Date(updated.departureDatetime);
+
+            const ret =
+                new Date(updated.returnDatetime);
+
+            if (ret > departure) {
+
+                const diff =
+                    ret.getTime() - departure.getTime();
+
+                const days = Math.ceil(
+                    diff / (1000 * 60 * 60 * 24)
+                );
+
+                updated.durationDays = days;
+                updated.durationNights =
+                    Math.max(days - 1, 0);
+
+                // ============================
+                // Auto Generate Itinerary Days
+                // ============================
+
+                const generatedDays = [];
+
+                for (let i = 1; i <= days; i++) {
+
+                    generatedDays.push({
+
+                        dayNumber: i,
+
+                        dayTitle: "",
+
+                        hotelName: "",
+
+                        mealsIncluded: "",
+
+                        activities: [
+
+                            {
+
+                                timeOfDay: "",
+
+                                description: ""
+
+                            }
+
+                        ]
+
+                    });
+
+                }
+
+                setItineraries(generatedDays);
+
+            }
+
+        }
+
+        return updated;
+
+    });
+
+};
 
     const handleSubmit = async (e) => {
 

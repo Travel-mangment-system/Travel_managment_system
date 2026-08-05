@@ -100,7 +100,7 @@ const PackageDetails = () => {
                                         pkg.packageId
                                     );
 
-                                    navigate("/package-booking", {
+                                    navigate(`/package-booking/${pkg.packageId}`, {
                                         state: {
                                             holidayPackage: pkg
                                         }

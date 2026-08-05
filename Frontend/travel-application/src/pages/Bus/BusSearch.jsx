@@ -24,7 +24,7 @@ const BusSearch = () => {
   const navigate = useNavigate();
 
   // Customer info for Topbar
-  const userName = localStorage.getItem("userName") || "Customer";
+  const userName = localStorage.getItem("name") || "Customer";
 
   // Grab parameters dynamically from route state (passed from HomePage) or URL search params as fallback
   const searchState = location.state || {};

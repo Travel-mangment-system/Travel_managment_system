@@ -35,5 +35,7 @@ public interface HolidayPackageService {
 	List<CustomerHomePackageDto> getCustomerHomePackages();
 
 	CustomerPackageDetailsDto getCustomerPackageDetails(Long packageId);
+
+	List<CustomerHomePackageDto> searchCustomerPackages(String destination, Double budget);
 }
 

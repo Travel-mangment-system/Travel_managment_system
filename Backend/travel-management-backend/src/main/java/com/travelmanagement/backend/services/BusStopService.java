@@ -11,4 +11,7 @@ public interface BusStopService {
 
 	List<BusStopResponseDto> getStopsByRoute(Long routeId);
 
+	// 👇 ADD THIS LINE FOR DELETING A BUS STOP
+	void deleteBusStop(Long id);
+
 }

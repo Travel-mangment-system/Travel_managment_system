@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown"; // <-- Import Markdown parser
+import { useNavigate } from "react-router-dom";
 import "./Chatbot.css";
 
 const Chatbot = () => {
@@ -13,6 +14,8 @@ const Chatbot = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
+
   // Auto-scroll to bottom of chat
   const messagesEndRef = useRef(null);
   useEffect(() => {
@@ -20,6 +23,29 @@ const Chatbot = () => {
   }, [messages]);
 
   const toggleChat = () => setIsOpen(!isOpen);
+
+  // 👇 ADD THIS ENTIRE BLOCK 👇
+  const MarkdownComponents = {
+    a: (props) => {
+      const { href, children } = props;
+      if (href && href.startsWith('/package-details/')) {
+        return (
+          <button 
+            className="view-more-btn"
+            onClick={() => navigate(href)}
+          >
+            {children}
+          </button>
+        );
+      }
+      return (
+        <a href={href} target="_blank" rel="noopener noreferrer">
+          {children}
+        </a>
+      );
+    }
+  };
+  // 👆 END OF NEW BLOCK 👆
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -78,9 +104,11 @@ const Chatbot = () => {
             {messages.map((msg, index) => (
               <div key={index} className={`message-wrapper ${msg.sender}`}>
                 <div className={`message-bubble ${msg.sender}`}>
-                  {/* 👇 Render Markdown here instead of plain text 👇 */}
+                  {/* 👇 Pass the components prop here 👇 */}
                   {msg.sender === "ai" ? (
-                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                    <ReactMarkdown components={MarkdownComponents}>
+                      {msg.text}
+                    </ReactMarkdown>
                   ) : (
                     msg.text
                   )}

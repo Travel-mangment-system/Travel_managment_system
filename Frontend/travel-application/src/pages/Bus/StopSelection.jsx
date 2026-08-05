@@ -44,7 +44,7 @@ const StopSelection = () => {
         const token = localStorage.getItem("token");
 
         // Adjust endpoint based on your backend controller (e.g., /api/v1/routes/{routeId}/stops or /api/v1/schedules/{busId}/stops)
-        const response = await api.get(`/api/v1/routes/${routeId}/stops`, {
+        const response = await api.get(`/api/v1/bus-stops/route/${routeId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

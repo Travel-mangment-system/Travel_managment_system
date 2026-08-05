@@ -33,10 +33,16 @@ import BrowsePackagesPage from "../pages/Admin/BrowsePackagesPage";
 import ManageBusesPage from "../pages/Admin/ManageBusesPage";
 import AddPackage from "../pages/Admin/Packages/AddPackage";
 import AdminDashboard from "../pages/Admin/Dashboard";
+import RoutePage from "../pages/Admin/Routes/RoutePage";
+import CitiesPage from "../pages/Admin/Cities/CitiesPage";
+import BusStops from "../pages/Admin/BusStops/BusStops";
+
 import PackageBookingPage from "../pages/PackageBooking/PackageBookingPage";
 import BookingSummaryPage from "../pages/PackageBooking/BookingSummaryPage";
 import BookingConfirmedPage from "../pages/PackageBooking/BookingConfirmedPage";
 import MyPackageBookingsPage from "../pages/PackageBooking/MyPackageBookingsPage";
+
+
 
 function AppRoutes() {
   return (
@@ -92,7 +98,7 @@ function AppRoutes() {
       {/* ================================================== */}
       <Route path="/packages" element={<BrowsePackagesPage />} />
       <Route path="/package-details/:packageId" element={<PackageDetails />} />
-      <Route path="/package-booking" element={<PackageBookingPage />} />
+      <Route path="/package-booking/:packageId" element={<PackageBookingPage />} />
       <Route
         path="/booking-summary/:bookingId"
         element={<BookingSummaryPage />}
@@ -103,9 +109,14 @@ function AppRoutes() {
       {/* ================================================== */}
       {/* ⚙️ ADMIN & MANAGEMENT ROUTES                       */}
       {/* ================================================== */}
-      <Route path="/admin/add-package" element={<AddPackage />} />
-      <Route path="/manage-buses" element={<ManageBusesPage />} />
-      <Route path="/Admin-Dashboard" element={<AdminDashboard />} />
+      <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+        <Route path="/admin/add-package" element={<AddPackage />} />
+        <Route path="/manage-buses" element={<ManageBusesPage />} />
+        <Route path="/Admin-Dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/routes" element={<RoutePage />} />
+        <Route path="/admin/cities" element={<CitiesPage />} />
+        <Route path="/admin/stops" element={<BusStops />} />
+      </Route>
     </Routes>
   );
 }

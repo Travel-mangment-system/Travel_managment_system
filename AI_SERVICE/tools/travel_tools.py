@@ -1,23 +1,40 @@
 import os
 import requests
+import json
 from langchain_core.tools import tool
+from typing import Optional
 
 # Matches the environment variable base URL used across your project
 SPRING_BOOT_URL = os.getenv("SPRING_BOOT_URL", "http://localhost:8080/api/v1")
 
 @tool
-def search_packages(destination: str, budget: float = None) -> str:
+def search_packages(destination: str, budget: Optional[float] = None) -> str:
     """
-    Search for travel holiday packages based on destination and budget.
+    Search for travel holiday packages based ONLY on destination and an optional budget.
+    
+    CRITICAL INSTRUCTIONS FOR AI:
+    1. NEVER ask the user for the number of travelers, passengers, or group size.
+    2. If the user provides a destination, trigger this tool immediately.
+    3. If budget is missing, run the search without it. Do not ask for it.
+    4. Format the raw JSON output beautifully for the user.
     """
     params = {"destination": destination}
     if budget:
         params["budget"] = budget
         
     try:
-        response = requests.get(f"{SPRING_BOOT_URL}/packages/search", params=params)
+        # Hitting the specific CustomerPackageController endpoint
+        response = requests.get(f"{SPRING_BOOT_URL}/customer/packages/search", params=params)
         response.raise_for_status()
-        return str(response.json())
+        data = response.json()
+        
+        # Inside search_packages tool
+        if not data or len(data) == 0:
+            return f"EMPTY_RESULT: No travel packages found for {destination}. Tell the user exactly: 'I'm sorry, but there are no holiday packages available for {destination} right now.'"
+        
+        # 👇 ADDED THIS LINE TO ACTUALLY RETURN THE DATA 👇
+        return json.dumps(data)
+        
     except Exception as e:
         return f"Error connecting to backend: {str(e)}"
 
@@ -43,11 +60,10 @@ def search_buses(source: str, destination: str, date: str) -> str:
             data = response.json()
             
             if not data or len(data) == 0:
-                return f"No buses found from {source} to {destination} on {date}."
+                return f"EMPTY_RESULT: No buses found from {source} to {destination}. Tell the user exactly: 'I'm sorry, but there are no buses available for this route on your selected date.'"
             
-            # FIX: We return the raw JSON list directly to the AI.
-            # We explicitly tell the AI NOT to loop and to format it using its system prompt.
-            return f"Success! Found {len(data)} buses. Raw data: {str(data)}. Format this data for the user as instructed. DO NOT invoke this tool again."
+            # 👇 ADDED THIS LINE TO ACTUALLY RETURN THE DATA 👇
+            return json.dumps(data)
             
         else:
             return f"Failed to fetch bus data. Server returned status {response.status_code}."
@@ -60,5 +76,7 @@ def search_buses(source: str, destination: str, date: str) -> str:
 def get_destination_info(location: str) -> str:
     """
     Get tourist information, famous places, and tips for a specific destination.
+    CRITICAL: ONLY use this tool if the user explicitly asks for details about ONE specific location. 
+    DO NOT use this tool if you are just suggesting a list of places.
     """
     return f"Here is some information about {location}: You should visit the local markets, museums, and historical landmarks."

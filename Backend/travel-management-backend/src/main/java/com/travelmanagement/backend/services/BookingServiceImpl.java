@@ -193,7 +193,8 @@ public class BookingServiceImpl implements BookingService {
     
     @Override
     public List<BookingResponseDto> getBookingsByUserId(Long userId) {
-        return bookingRepository.findAllByUserId(userId).stream()
+        // Make sure your BookingRepository interface has: List<Booking> findAllByUserIdOrderByIdDesc(Long userId);
+        return bookingRepository.findAllByUserIdOrderByIdDesc(userId).stream()
                 .map(this::mapToBookingResponse)
                 .collect(Collectors.toList());
     }
@@ -232,6 +233,32 @@ public class BookingServiceImpl implements BookingService {
         dto.setTotalAmount(booking.getTotalAmount());
         dto.setBookingStatus(booking.getBookingStatus().name());
 
+        // --- NEW: Map Schedule and Bus Details ---
+     // --- NEW: Map Schedule and Bus Details ---
+        if (booking.getSchedule() != null) {
+            dto.setDepartureDatetime(booking.getSchedule().getDepartureDatetime());
+            dto.setArrivalDatetime(booking.getSchedule().getArrivalDatetime());
+            
+            if (booking.getSchedule().getBus() != null) {
+                dto.setBusName(booking.getSchedule().getBus().getBusName());
+                dto.setBusNumber(booking.getSchedule().getBus().getBusNumber());
+                
+                // Added .name() here to convert the Enum to a String!
+                dto.setBusType(booking.getSchedule().getBus().getBusType().name());
+            }
+        }
+
+        // --- NEW: Map Source and Destination from the first seat ---
+        if (booking.getBookedSeats() != null && !booking.getBookedSeats().isEmpty()) {
+            BookedSeat firstSeat = booking.getBookedSeats().get(0);
+            if (firstSeat.getBoardingStop() != null) {
+                dto.setSourceCity(firstSeat.getBoardingStop().getStopName());
+            }
+            if (firstSeat.getDropOffStop() != null) {
+                dto.setDestinationCity(firstSeat.getDropOffStop().getStopName());
+            }
+        }
+
         List<BookedSeatDto> seats = booking.getBookedSeats().stream().map(bs -> {
             BookedSeatDto sDto = new BookedSeatDto();
             sDto.setPassengerName(bs.getPassengerName());
@@ -240,6 +267,7 @@ public class BookingServiceImpl implements BookingService {
             return sDto;
         }).collect(Collectors.toList());
         dto.setBookedSeats(seats);
+        
         return dto;
     }
     

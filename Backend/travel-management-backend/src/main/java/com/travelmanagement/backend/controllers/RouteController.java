@@ -2,6 +2,7 @@ package com.travelmanagement.backend.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +13,7 @@ import com.travelmanagement.backend.dtos.RouteDto.RouteRequest;
 import com.travelmanagement.backend.services.RouteService;
 
 import lombok.RequiredArgsConstructor;
-
+//@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/routes")
 @RequiredArgsConstructor
