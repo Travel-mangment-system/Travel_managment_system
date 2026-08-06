@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { 
-  BsGrid1X2, 
-  BsSuitcase, 
-  BsJournalCheck, 
-  BsBoxArrowRight, 
-  BsSearch, 
+import {
+  BsGrid1X2,
+  BsSuitcase,
+  BsJournalCheck,
+  BsBoxArrowRight,
+  BsSearch,
   BsBell,
   BsCheckCircle,
   BsPerson,
-  BsCashCoin
+  BsCashCoin,
 } from "react-icons/bs";
-import "./PackageBookingPage.css"; 
-import "./BookingSummaryPage.css"; 
+import "./PackageBookingPage.css";
+import "./BookingSummaryPage.css";
 
 // Helper function to dynamically load the Razorpay SDK script
 const loadRazorpaySDK = () => {
@@ -29,19 +29,36 @@ export default function BookingSummaryPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { bookingId } = useParams();
-  
+
   const [isPaying, setIsPaying] = useState(false); // New loading state for the payment button
-  
+
   const summaryData = location.state;
   const userName = localStorage.getItem("name") || "User";
 
   if (!summaryData) {
     return (
       <div className="manage-packages-layout">
-        <div className="main-content" style={{ justifyContent: 'center', alignItems: 'center', display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
+        <div
+          className="main-content"
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            display: "flex",
+            minHeight: "100vh",
+            flexDirection: "column",
+          }}
+        >
           <h2>No booking data found.</h2>
-          <p style={{ marginBottom: '20px', color: '#64748b' }}>Please start your booking from the packages page.</p>
-          <button onClick={() => navigate("/home")} className="btn-submit-booking" style={{ width: 'auto', padding: '10px 20px' }}>Go Home</button>
+          <p style={{ marginBottom: "20px", color: "#64748b" }}>
+            Please start your booking from the packages page.
+          </p>
+          <button
+            onClick={() => navigate("/home")}
+            className="btn-submit-booking"
+            style={{ width: "auto", padding: "10px 20px" }}
+          >
+            Go Home
+          </button>
         </div>
       </div>
     );
@@ -62,7 +79,9 @@ export default function BookingSummaryPage() {
     // 1. Load the SDK
     const isSdkLoaded = await loadRazorpaySDK();
     if (!isSdkLoaded) {
-      alert("Razorpay SDK failed to load. Please check your internet connection.");
+      alert(
+        "Razorpay SDK failed to load. Please check your internet connection.",
+      );
       setIsPaying(false);
       return;
     }
@@ -71,17 +90,20 @@ export default function BookingSummaryPage() {
       // 2. Request Order ID from Spring Boot Backend
       const orderPayload = {
         bookingId: summaryData.bookingId,
-        bookingType: "PACKAGE" // Specify PACKAGE as defined in your backend logic
+        bookingType: "PACKAGE", // Specify PACKAGE as defined in your backend logic
       };
 
-      const orderResponse = await fetch("http://localhost:8080/api/v1/payments/create-order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+      const orderResponse = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"}/api/v1/payments/create-order`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(orderPayload),
         },
-        body: JSON.stringify(orderPayload)
-      });
+      );
 
       if (!orderResponse.ok) {
         throw new Error("Failed to initialize payment on the server.");
@@ -104,25 +126,28 @@ export default function BookingSummaryPage() {
             const verifyPayload = {
               razorpayOrderId: response.razorpay_order_id,
               razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature
+              razorpaySignature: response.razorpay_signature,
             };
 
-            const verifyResponse = await fetch("http://localhost:8080/api/v1/payments/verify", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+            const verifyResponse = await fetch(
+              `${import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"}/api/v1/payments/verify`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(verifyPayload),
               },
-              body: JSON.stringify(verifyPayload)
-            });
+            );
 
             if (verifyResponse.ok) {
               // Change the navigate function to go to the new page and pass the data!
               navigate("/booking-confirmed", {
                 state: {
                   ...summaryData, // Passes along package name, travelers, bookingId, etc.
-                  paymentId: response.razorpay_payment_id // Adds the new payment ID
-                }
+                  paymentId: response.razorpay_payment_id, // Adds the new payment ID
+                },
               });
             } else {
               alert("Payment verification failed at the server.");
@@ -137,17 +162,16 @@ export default function BookingSummaryPage() {
           email: summaryData.userEmail || "",
         },
         theme: {
-          color: "#0E8A8A" // Matches your TravelHub CSS branding
-        }
+          color: "#0E8A8A", // Matches your TravelHub CSS branding
+        },
       };
 
       // 5. Open Razorpay Checkout Window
       const paymentObject = new window.Razorpay(options);
-      paymentObject.on('payment.failed', function (response) {
+      paymentObject.on("payment.failed", function (response) {
         alert(`Payment Failed: ${response.error.description}`);
       });
       paymentObject.open();
-
     } catch (error) {
       console.error("Payment initiation failed:", error);
       alert(error.message);
@@ -160,7 +184,6 @@ export default function BookingSummaryPage() {
 
   return (
     <div className="manage-packages-layout">
-      
       {/* SIDEBAR */}
       <aside className="sidebar">
         <div className="sidebar-header">
@@ -168,16 +191,37 @@ export default function BookingSummaryPage() {
           <span className="brand-text">TravelHub</span>
         </div>
         <div className="sidebar-title">Menu</div>
-       <nav className="sidebar-nav">
-          <a href="#home" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/home"); }}>
+        <nav className="sidebar-nav">
+          <a
+            href="#home"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/home");
+            }}
+          >
             <BsGrid1X2 size={20} /> Home
           </a>
-          <a href="#bookings" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/my-package-bookings"); }}>
+          <a
+            href="#bookings"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/my-package-bookings");
+            }}
+          >
             <BsJournalCheck size={20} /> My Package Bookings
           </a>
         </nav>
         <div className="sidebar-footer">
-          <a href="#logout" className="nav-item logout" onClick={(e) => { e.preventDefault(); handleLogout(); }}>
+          <a
+            href="#logout"
+            className="nav-item logout"
+            onClick={(e) => {
+              e.preventDefault();
+              handleLogout();
+            }}
+          >
             <BsBoxArrowRight size={20} /> Logout
           </a>
         </div>
@@ -185,22 +229,29 @@ export default function BookingSummaryPage() {
 
       {/* MAIN CONTENT */}
       <div className="main-content">
-        
         {/* TOP NAVBAR */}
         <header className="top-navbar">
           <div className="search-bar">
             <BsSearch size={18} color="#64748b" />
-            <input type="text" placeholder="Search..." className="search-input" />
+            <input
+              type="text"
+              placeholder="Search..."
+              className="search-input"
+            />
           </div>
           <div className="top-actions">
-            <BsBell size={20} color="#64748b" style={{ cursor: 'pointer' }} />
+            <BsBell size={20} color="#64748b" style={{ cursor: "pointer" }} />
             <div className="profile-section">
-              <span style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>
+              <span
+                style={{
+                  fontSize: "0.875rem",
+                  fontWeight: "500",
+                  color: "#334155",
+                }}
+              >
                 {userName}
               </span>
-              <div className="avatar">
-                {userName.charAt(0).toUpperCase()}
-              </div>
+              <div className="avatar">{userName.charAt(0).toUpperCase()}</div>
             </div>
           </div>
         </header>
@@ -208,7 +259,6 @@ export default function BookingSummaryPage() {
         {/* SUMMARY CONTENT */}
         <main className="page-container">
           <div className="summary-wrapper">
-            
             <div className="summary-header">
               <BsCheckCircle size={40} color="#0E8A8A" />
               <h2>Booking Draft Saved!</h2>
@@ -216,16 +266,19 @@ export default function BookingSummaryPage() {
             </div>
 
             <div className="summary-grid">
-              
               <div className="summary-card">
-                <h3><BsSuitcase className="icon-align" /> Booking Details</h3>
+                <h3>
+                  <BsSuitcase className="icon-align" /> Booking Details
+                </h3>
                 <div className="detail-row">
                   <span>Booking Reference:</span>
-                  <strong>#{summaryData.bookingId || bookingId || 'N/A'}</strong>
+                  <strong>
+                    #{summaryData.bookingId || bookingId || "N/A"}
+                  </strong>
                 </div>
                 <div className="detail-row">
                   <span>Package ID:</span>
-                  <strong>{summaryData.packageId || 'N/A'}</strong>
+                  <strong>{summaryData.packageId || "N/A"}</strong>
                 </div>
                 <div className="detail-row">
                   <span>Booked By:</span>
@@ -234,16 +287,25 @@ export default function BookingSummaryPage() {
               </div>
 
               <div className="summary-card">
-                <h3><BsPerson className="icon-align" /> Travelers ({travelersList.length})</h3>
+                <h3>
+                  <BsPerson className="icon-align" /> Travelers (
+                  {travelersList.length})
+                </h3>
                 <div className="traveler-list">
                   {travelersList.map((t, index) => (
                     <div key={index} className="traveler-item">
-                      <div className="traveler-name">{t.fullName || 'Unknown Name'}</div>
-                      <div className="traveler-meta">{t.age || '?'} yrs • {t.gender || 'N/A'}</div>
+                      <div className="traveler-name">
+                        {t.fullName || "Unknown Name"}
+                      </div>
+                      <div className="traveler-meta">
+                        {t.age || "?"} yrs • {t.gender || "N/A"}
+                      </div>
                     </div>
                   ))}
                   {travelersList.length === 0 && (
-                    <div style={{color: '#64748b', fontSize: '0.9rem'}}>No traveler details provided.</div>
+                    <div style={{ color: "#64748b", fontSize: "0.9rem" }}>
+                      No traveler details provided.
+                    </div>
                   )}
                 </div>
               </div>
@@ -251,43 +313,51 @@ export default function BookingSummaryPage() {
               {summaryData.specialRequests && (
                 <div className="summary-card full-width">
                   <h3>Special Requests</h3>
-                  <p className="special-req-text">{summaryData.specialRequests}</p>
+                  <p className="special-req-text">
+                    {summaryData.specialRequests}
+                  </p>
                 </div>
               )}
 
               <div className="summary-card highlight-card full-width">
-                <h3><BsCashCoin className="icon-align" /> Payment Summary</h3>
+                <h3>
+                  <BsCashCoin className="icon-align" /> Payment Summary
+                </h3>
                 <div className="detail-row total-row">
                   <span>Total Amount Due:</span>
-                  <strong className="amount">₹ {summaryData.totalAmount || 0}</strong>
+                  <strong className="amount">
+                    ₹ {summaryData.totalAmount || 0}
+                  </strong>
                 </div>
               </div>
-
             </div>
 
-            <div className="booking-footer" style={{ marginTop: '2rem' }}>
-              <button 
-                type="button" 
-                className="btn-back" 
+            <div className="booking-footer" style={{ marginTop: "2rem" }}>
+              <button
+                type="button"
+                className="btn-back"
                 onClick={() => navigate(-1)}
                 disabled={isPaying}
               >
                 Back to Edit
               </button>
-              
+
               {/* Payment Button with Loading State */}
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="btn-submit-booking"
                 onClick={handleProceedToPayment}
                 disabled={isPaying}
               >
-                {isPaying ? "Processing..." : (
-                  <><BsCheckCircle size={18} /> Pay Now</>
+                {isPaying ? (
+                  "Processing..."
+                ) : (
+                  <>
+                    <BsCheckCircle size={18} /> Pay Now
+                  </>
                 )}
               </button>
             </div>
-
           </div>
         </main>
       </div>

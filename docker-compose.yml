@@ -1,79 +1,68 @@
+version: "3.8"
+
 services:
-
-  mysql:
-    image: mysql:8.4
-    container_name: travel-mysql
+  # ==========================================
+  # 1. DATABASE TIER
+  # ==========================================
+  db:
+    image: mysql:8.0
+    container_name: travel_db_container
     restart: always
-
     environment:
       MYSQL_ROOT_PASSWORD: manager
       MYSQL_DATABASE: travel_db
-
     ports:
       - "3307:3306"
-
     volumes:
-      - mysql-data:/var/lib/mysql
+      - db_data:/var/lib/mysql
 
+  # ==========================================
+  # 2. BACKEND TIER (Spring Boot)
+  # ==========================================
   backend:
-    build:
-      context: ./Backend/travel-management-backend
-      dockerfile: Dockerfile
-
-    image: travel-backend:latest
-    container_name: travel-backend
-
-    depends_on:
-      - mysql
-
+    image: vaishnavnakate123/travel-backend:v1 # Make sure the tag matches what you pushed!
+    container_name: travel_backend_container
+    restart: always
     ports:
       - "8080:8080"
-
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/travel_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kolkata
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: manager
+      - DB_HOST=db # This tells Spring Boot to look for the 'db' service above
+      - DB_USER=root
+      - DB_PASSWORD=manager
+      # - FRONTEND_URL=http://YOUR_AWS_EC2_IP # Replace this with your AWS Public IP!
+      - FRONTEND_URL=http://localhost
+    depends_on:
+      - db
 
-    volumes:
-      - ./Backend/travel-management-backend/uploads:/app/uploads
-
-    restart: unless-stopped
-
-  ai-service:
-    build:
-      context: ./AI_SERVICE
-      dockerfile: Dockerfile
-
-    image: travel-ai:latest
-    container_name: travel-ai
-
+  # ==========================================
+  # 3. AI MICROSERVICE TIER (Python)
+  # ==========================================
+  chatbot:
+    image: vaishnavnakate123/travel-chatbot:v1 # Make sure the tag matches!
+    container_name: travel_chatbot_container
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - SPRING_BOOT_URL=http://backend:8080/api/v1 # Connects to the 'backend' service above
+      - GROQ_API_KEY=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 # PLEASE use a newly generated key!
+      - FRONTEND_URL=http://YOUR_AWS_EC2_IP # If your Python code requires CORS
     depends_on:
       - backend
 
-    ports:
-      - "8000:8000"
-
-    env_file:
-      - ./AI_SERVICE/.env
-
-    restart: unless-stopped
-
+  # ==========================================
+  # 4. FRONTEND TIER (React / Vite)
+  # ==========================================
   frontend:
-    build:
-      context: ./Frontend/travel-application
-      dockerfile: Dockerfile
-
-    image: travel-frontend:latest
-    container_name: travel-frontend
-
+    image: vaishnavnakate123/travel-frontend:v2 # Make sure the tag matches!
+    container_name: travel_frontend_container
+    restart: always
+    ports:
+      - "80:80" # Maps standard web traffic directly to your React app
     depends_on:
       - backend
-      - ai-service
+      - chatbot
 
-    ports:
-      - "3000:80"
-
-    restart: unless-stopped
-
+# This ensures your database isn't deleted if you restart the containers
 volumes:
-  mysql-data:
+  db_data:

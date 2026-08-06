@@ -126,7 +126,7 @@ export default function ManagePackagesPage() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:8080/api/v1/admin/packages",
+        `${import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"}/api/v1/admin/packages`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

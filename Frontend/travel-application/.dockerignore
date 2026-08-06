@@ -1,6 +1,28 @@
-node_modules
-dist
-.git
+# Dependency directories
+node_modules/
+
+# Build outputs (Docker will build its own)
+dist/
+build/
+
+# Environment variables (Prevents local secrets from leaking into the image)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Git
+.git/
 .gitignore
-Dockerfile
-README.md
+
+# Logs
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+*.log
+
+# OS and Editor files
+.DS_Store
+.vscode/
+.idea/

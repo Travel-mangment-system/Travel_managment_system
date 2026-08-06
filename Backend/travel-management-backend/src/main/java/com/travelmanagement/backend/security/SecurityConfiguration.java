@@ -2,6 +2,7 @@ package com.travelmanagement.backend.security;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value; // 👇 ADDED THIS IMPORT
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,6 +28,10 @@ public class SecurityConfiguration {
 
     private final JwtVerificationFilter jwtFilter;
 
+    // 👇 ADDED THIS: Injects the frontend URL from environment variables, defaults to localhost
+    @Value("${FRONTEND_URL:http://localhost:5173}")
+    private String frontendUrl;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -34,7 +39,13 @@ public class SecurityConfiguration {
             .cors(cors -> cors.configurationSource(request -> {
                 CorsConfiguration configuration = new CorsConfiguration();
 
-                configuration.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:3000"));
+                // 👇 MODIFIED THIS: Added the dynamic frontendUrl to the list of allowed origins
+                configuration.setAllowedOrigins(List.of(
+                        "http://localhost:5173", 
+                        "http://localhost:3000", 
+                        frontendUrl
+                ));
+                
                 configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(List.of("*"));
 
@@ -69,7 +80,6 @@ public class SecurityConfiguration {
                             HttpMethod.GET,
                             "/api/v1/customer/packages",
                             "/api/v1/customer/packages/**",
-                            // 👇 ADDED THESE TWO LINES FOR THE PYTHON AI AGENT 👇
                             "/api/v1/buses/search", 
                             "/api/v1/packages/search"
                     )

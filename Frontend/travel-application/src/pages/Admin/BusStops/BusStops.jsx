@@ -3,18 +3,30 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { 
-  Search, Bell, LayoutDashboard, Bus, Users, Settings, LogOut, Map, MapPin 
+import {
+  Search,
+  Bell,
+  LayoutDashboard,
+  Bus,
+  Users,
+  Settings,
+  LogOut,
+  Map,
+  MapPin,
 } from "lucide-react";
 
-import "../BrowsePackagesPage.css"; 
+import "../BrowsePackagesPage.css";
 import "./BusStops.css";
 
 export default function BusStops() {
   const navigate = useNavigate();
-  
+
   // Layout State
-  const [userInfo, setUserInfo] = useState({ name: "Loading...", role: "", initials: ".." });
+  const [userInfo, setUserInfo] = useState({
+    name: "Loading...",
+    role: "",
+    initials: "..",
+  });
 
   // Data States
   const [routes, setRoutes] = useState([]);
@@ -30,8 +42,8 @@ export default function BusStops() {
     departureTime: "",
   });
 
-  const ROUTES_API_URL = "http://localhost:8080/routes";
-  const STOPS_API_URL = "http://localhost:8080/api/v1/bus-stops";
+  const ROUTES_API_URL = `${import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"}/routes`;
+  const STOPS_API_URL = `${import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"}/api/v1/bus-stops`;
 
   // 1. Fetch User Info for Header & Token Validation
   useEffect(() => {
@@ -41,16 +53,24 @@ export default function BusStops() {
       return;
     }
     try {
-      const payloadBase64 = token.split('.')[1];
+      const payloadBase64 = token.split(".")[1];
       const decodedPayload = JSON.parse(atob(payloadBase64));
       const userRole = decodedPayload.user_role || "USER";
       const rawName = decodedPayload.sub || "User";
-      const displayName = rawName.includes('@') ? rawName.split('@')[0] : rawName;
+      const displayName = rawName.includes("@")
+        ? rawName.split("@")[0]
+        : rawName;
       const displayRole = userRole.replace("ROLE_", "");
-      const formattedRole = displayRole.charAt(0).toUpperCase() + displayRole.slice(1).toLowerCase();
+      const formattedRole =
+        displayRole.charAt(0).toUpperCase() +
+        displayRole.slice(1).toLowerCase();
       const initials = displayName.substring(0, 2).toUpperCase();
-      
-      setUserInfo({ name: displayName, role: formattedRole, initials: initials });
+
+      setUserInfo({
+        name: displayName,
+        role: formattedRole,
+        initials: initials,
+      });
     } catch (err) {
       console.error("Invalid token format:", err);
       localStorage.clear();
@@ -130,8 +150,13 @@ export default function BusStops() {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Bus stop added successfully!");
-      setFormData({ stopName: "", stopOrder: "", arrivalTime: "", departureTime: "" });
-      fetchStopsForRoute(selectedRouteId); 
+      setFormData({
+        stopName: "",
+        stopOrder: "",
+        arrivalTime: "",
+        departureTime: "",
+      });
+      fetchStopsForRoute(selectedRouteId);
     } catch (error) {
       console.error("Error creating bus stop:", error);
       toast.error("Failed to create bus stop.");
@@ -174,18 +199,102 @@ export default function BusStops() {
         </div>
         <div className="sidebar-title">Admin Panel</div>
         <nav className="sidebar-nav">
-          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/Admin-Dashboard"); }}><LayoutDashboard size={20} /> Dashboard</a>
-          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/users"); }}><Users size={20} /> Users</a>
-          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/buses"); }}><Bus size={20} /> Bus Providers</a>
-          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/manage-buses"); }}><Bus size={20} /> Manage Buses</a>
-          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/packages"); }}><Bus size={20} /> Packages</a>
-          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/admin/routes"); }}><Map size={20} /> Routes</a>
-          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/admin/cities"); }}><MapPin size={20} /> Cities</a>
-          <a href="#" className="nav-item active" onClick={(e) => { e.preventDefault(); navigate("/admin/stops"); }}><MapPin size={20} /> Bus Stops</a>
+          <a
+            href="#"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/Admin-Dashboard");
+            }}
+          >
+            <LayoutDashboard size={20} /> Dashboard
+          </a>
+          <a
+            href="#"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/users");
+            }}
+          >
+            <Users size={20} /> Users
+          </a>
+          <a
+            href="#"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/buses");
+            }}
+          >
+            <Bus size={20} /> Bus Providers
+          </a>
+          <a
+            href="#"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/manage-buses");
+            }}
+          >
+            <Bus size={20} /> Manage Buses
+          </a>
+          <a
+            href="#"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/packages");
+            }}
+          >
+            <Bus size={20} /> Packages
+          </a>
+          <a
+            href="#"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/admin/routes");
+            }}
+          >
+            <Map size={20} /> Routes
+          </a>
+          <a
+            href="#"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/admin/cities");
+            }}
+          >
+            <MapPin size={20} /> Cities
+          </a>
+          <a
+            href="#"
+            className="nav-item active"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/admin/stops");
+            }}
+          >
+            <MapPin size={20} /> Bus Stops
+          </a>
         </nav>
         <div className="sidebar-footer">
-          <a href="#" className="nav-item"><Settings size={20} /> Settings</a>
-          <button className="nav-item logout" onClick={handleLogout} style={{background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer'}}>
+          <a href="#" className="nav-item">
+            <Settings size={20} /> Settings
+          </a>
+          <button
+            className="nav-item logout"
+            onClick={handleLogout}
+            style={{
+              background: "none",
+              border: "none",
+              width: "100%",
+              textAlign: "left",
+              cursor: "pointer",
+            }}
+          >
             <LogOut size={20} /> Logout
           </button>
         </div>
@@ -194,19 +303,31 @@ export default function BusStops() {
       {/* MAIN CONTENT */}
       <main className="main-content">
         <header className="top-navbar">
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <div className="search-bar" style={{ visibility: 'hidden' }}>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <div className="search-bar" style={{ visibility: "hidden" }}>
               <Search className="search-icon" size={20} />
               <input type="text" className="search-input" />
             </div>
           </div>
           <div className="top-actions">
-            <button className="btn-icon"><Bell size={24} /></button>
+            <button className="btn-icon">
+              <Bell size={24} />
+            </button>
             <div className="profile-section">
               <div className="avatar">{userInfo.initials}</div>
               <div>
-                <div style={{fontWeight: 600, fontSize: '0.875rem', color: '#334155'}}>{userInfo.name}</div>
-                <div style={{fontSize: '0.75rem', color: '#64748b'}}>{userInfo.role}</div>
+                <div
+                  style={{
+                    fontWeight: 600,
+                    fontSize: "0.875rem",
+                    color: "#334155",
+                  }}
+                >
+                  {userInfo.name}
+                </div>
+                <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
+                  {userInfo.role}
+                </div>
               </div>
             </div>
           </div>
@@ -216,21 +337,24 @@ export default function BusStops() {
           <div className="page-header">
             <div>
               <h1 className="page-title">Manage Bus Stops</h1>
-              <p className="page-subtitle">Select a route to view and add intermediate stops.</p>
+              <p className="page-subtitle">
+                Select a route to view and add intermediate stops.
+              </p>
             </div>
           </div>
 
           {/* ROUTE SELECTOR BAR */}
           <div className="route-selector-card">
             <label>Select Target Route:</label>
-            <select 
-              value={selectedRouteId} 
+            <select
+              value={selectedRouteId}
               onChange={(e) => setSelectedRouteId(e.target.value)}
             >
               <option value="">-- Choose a Route --</option>
               {routes.map((route) => (
                 <option key={route.id} value={route.id}>
-                  RTE{route.id}: {route.sourceCityName} ➔ {route.destinationCityName}
+                  RTE{route.id}: {route.sourceCityName} ➔{" "}
+                  {route.destinationCityName}
                 </option>
               ))}
             </select>
@@ -240,7 +364,9 @@ export default function BusStops() {
             <div className="stops-grid-layout">
               {/* Left: Stops Table */}
               <div className="stops-card">
-                <div className="stops-card-header">Stops for Selected Route</div>
+                <div className="stops-card-header">
+                  Stops for Selected Route
+                </div>
                 <div className="table-container">
                   <table className="data-table">
                     <thead>
@@ -255,17 +381,21 @@ export default function BusStops() {
                     <tbody>
                       {stops.length === 0 ? (
                         <tr>
-                          <td colSpan="5" className="empty-state">No stops added for this route yet.</td>
+                          <td colSpan="5" className="empty-state">
+                            No stops added for this route yet.
+                          </td>
                         </tr>
                       ) : (
                         stops.map((stop) => (
                           <tr key={stop.id || stop.stopOrder}>
                             <td>#{stop.stopOrder}</td>
-                            <td style={{ fontWeight: 600, color: '#334155' }}>{stop.stopName}</td>
+                            <td style={{ fontWeight: 600, color: "#334155" }}>
+                              {stop.stopName}
+                            </td>
                             <td>{stop.arrivalTime || "N/A"}</td>
                             <td>{stop.departureTime || "N/A"}</td>
                             <td>
-                              <button 
+                              <button
                                 onClick={() => handleDelete(stop.id)}
                                 style={{
                                   backgroundColor: "#ef4444",
@@ -275,7 +405,7 @@ export default function BusStops() {
                                   borderRadius: "6px",
                                   cursor: "pointer",
                                   fontSize: "0.85rem",
-                                  fontWeight: 500
+                                  fontWeight: 500,
                                 }}
                               >
                                 Delete
@@ -295,24 +425,24 @@ export default function BusStops() {
                 <form onSubmit={handleSubmit} className="stops-form-body">
                   <div className="stop-form-group">
                     <label>Stop Name *</label>
-                    <input 
-                      type="text" 
-                      name="stopName" 
-                      value={formData.stopName} 
-                      onChange={handleInputChange} 
-                      required 
+                    <input
+                      type="text"
+                      name="stopName"
+                      value={formData.stopName}
+                      onChange={handleInputChange}
+                      required
                       placeholder="e.g. Lonavala Toll Plaza"
                     />
                   </div>
 
                   <div className="stop-form-group">
                     <label>Stop Sequence Order *</label>
-                    <input 
-                      type="number" 
-                      name="stopOrder" 
-                      value={formData.stopOrder} 
-                      onChange={handleInputChange} 
-                      required 
+                    <input
+                      type="number"
+                      name="stopOrder"
+                      value={formData.stopOrder}
+                      onChange={handleInputChange}
+                      required
                       min="1"
                       placeholder="e.g. 1"
                     />
@@ -320,26 +450,26 @@ export default function BusStops() {
 
                   <div className="stop-form-group">
                     <label>Arrival Time</label>
-                    <input 
-                      type="time" 
-                      name="arrivalTime" 
-                      value={formData.arrivalTime} 
-                      onChange={handleInputChange} 
+                    <input
+                      type="time"
+                      name="arrivalTime"
+                      value={formData.arrivalTime}
+                      onChange={handleInputChange}
                     />
                   </div>
 
                   <div className="stop-form-group">
                     <label>Departure Time</label>
-                    <input 
-                      type="time" 
-                      name="departureTime" 
-                      value={formData.departureTime} 
-                      onChange={handleInputChange} 
+                    <input
+                      type="time"
+                      name="departureTime"
+                      value={formData.departureTime}
+                      onChange={handleInputChange}
                     />
                   </div>
 
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="btn-submit-stop"
                     disabled={loading}
                   >

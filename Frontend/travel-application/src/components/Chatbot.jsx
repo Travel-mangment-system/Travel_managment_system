@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import ReactMarkdown from "react-markdown"; // <-- Import Markdown parser
+import ReactMarkdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import "./Chatbot.css";
 
@@ -8,7 +8,7 @@ const Chatbot = () => {
   const [messages, setMessages] = useState([
     {
       sender: "ai",
-      text: "Hi there! I'm Myra✨. Where do you want to travel?",
+      text: "Hi there! I'm Sarthi✨. Where do you want to travel?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -24,16 +24,12 @@ const Chatbot = () => {
 
   const toggleChat = () => setIsOpen(!isOpen);
 
-  // 👇 ADD THIS ENTIRE BLOCK 👇
   const MarkdownComponents = {
     a: (props) => {
       const { href, children } = props;
-      if (href && href.startsWith('/package-details/')) {
+      if (href && href.startsWith("/package-details/")) {
         return (
-          <button 
-            className="view-more-btn"
-            onClick={() => navigate(href)}
-          >
+          <button className="view-more-btn" onClick={() => navigate(href)}>
             {children}
           </button>
         );
@@ -43,9 +39,8 @@ const Chatbot = () => {
           {children}
         </a>
       );
-    }
+    },
   };
-  // 👆 END OF NEW BLOCK 👆
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -57,7 +52,12 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/chat", {
+      // 👇 THIS IS THE MAGIC AWS-READY LINE 👇
+      // It dynamically reads the URL from Docker, falling back to localhost for testing
+      const chatBaseUrl =
+        import.meta.env.VITE_CHATBOT_URL || "http://localhost:5000";
+
+      const response = await fetch(`${chatBaseUrl}/api/v1/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -94,7 +94,7 @@ const Chatbot = () => {
           />
 
           <div className="chatbot-header">
-            <span style={{ fontWeight: "bold", color: "#666" }}>Myra✨</span>
+            <span style={{ fontWeight: "bold", color: "#666" }}>Sarthi✨</span>
             <button className="icon-btn close-btn" onClick={toggleChat}>
               ✕
             </button>
@@ -104,7 +104,6 @@ const Chatbot = () => {
             {messages.map((msg, index) => (
               <div key={index} className={`message-wrapper ${msg.sender}`}>
                 <div className={`message-bubble ${msg.sender}`}>
-                  {/* 👇 Pass the components prop here 👇 */}
                   {msg.sender === "ai" ? (
                     <ReactMarkdown components={MarkdownComponents}>
                       {msg.text}

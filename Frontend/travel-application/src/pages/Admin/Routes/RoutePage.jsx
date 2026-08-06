@@ -3,18 +3,30 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { 
-  Search, Bell, LayoutDashboard, Bus, Users, Settings, LogOut, Map, MapPin
+import {
+  Search,
+  Bell,
+  LayoutDashboard,
+  Bus,
+  Users,
+  Settings,
+  LogOut,
+  Map,
+  MapPin,
 } from "lucide-react";
 
-import "../BrowsePackagesPage.css"; 
-import "./RoutePage.css"; 
+import "../BrowsePackagesPage.css";
+import "./RoutePage.css";
 
 export default function RoutePage() {
   const navigate = useNavigate();
-  
+
   // Layout State for Top Navbar
-  const [userInfo, setUserInfo] = useState({ name: "Loading...", role: "", initials: ".." });
+  const [userInfo, setUserInfo] = useState({
+    name: "Loading...",
+    role: "",
+    initials: "..",
+  });
 
   // Route & City States
   const [routes, setRoutes] = useState([]);
@@ -27,8 +39,8 @@ export default function RoutePage() {
     baseFare: "",
   });
 
-  const API_URL = "http://localhost:8080/routes";
-  const CITIES_API_URL = "http://localhost:8080/api/v1/cities";
+  const API_URL = `${import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"}/routes`;
+  const CITIES_API_URL = `${import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"}/api/v1/cities`;
 
   // 1. Fetch User Info for Header
   useEffect(() => {
@@ -38,16 +50,24 @@ export default function RoutePage() {
       return;
     }
     try {
-      const payloadBase64 = token.split('.')[1];
+      const payloadBase64 = token.split(".")[1];
       const decodedPayload = JSON.parse(atob(payloadBase64));
       const userRole = decodedPayload.user_role || "USER";
       const rawName = decodedPayload.sub || "User";
-      const displayName = rawName.includes('@') ? rawName.split('@')[0] : rawName;
+      const displayName = rawName.includes("@")
+        ? rawName.split("@")[0]
+        : rawName;
       const displayRole = userRole.replace("ROLE_", "");
-      const formattedRole = displayRole.charAt(0).toUpperCase() + displayRole.slice(1).toLowerCase();
+      const formattedRole =
+        displayRole.charAt(0).toUpperCase() +
+        displayRole.slice(1).toLowerCase();
       const initials = displayName.substring(0, 2).toUpperCase();
-      
-      setUserInfo({ name: displayName, role: formattedRole, initials: initials });
+
+      setUserInfo({
+        name: displayName,
+        role: formattedRole,
+        initials: initials,
+      });
     } catch (err) {
       console.error("Invalid token format:", err);
       localStorage.clear();
@@ -117,8 +137,13 @@ export default function RoutePage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Route created successfully!");
-      setFormData({ sourceCityId: "", destinationCityId: "", distanceKm: "", baseFare: "" });
-      fetchRoutes(); 
+      setFormData({
+        sourceCityId: "",
+        destinationCityId: "",
+        distanceKm: "",
+        baseFare: "",
+      });
+      fetchRoutes();
     } catch (error) {
       console.error("Error creating route:", error);
       toast.error("Failed to create route.");
@@ -139,18 +164,79 @@ export default function RoutePage() {
         </div>
         <div className="sidebar-title">Admin Panel</div>
         <nav className="sidebar-nav">
-          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/Admin-Dashboard"); }}><LayoutDashboard size={20} /> Dashboard</a>
-          <a href="#" className="nav-item"><Users size={20} /> Users</a>
-          <a href="#" className="nav-item"><Bus size={20} /> Bus Providers</a>
-          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/manage-buses"); }}><Bus size={20} /> Manage Buses</a>
-          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/packages"); }}><Bus size={20} /> Packages</a>
+          <a
+            href="#"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/Admin-Dashboard");
+            }}
+          >
+            <LayoutDashboard size={20} /> Dashboard
+          </a>
+          <a href="#" className="nav-item">
+            <Users size={20} /> Users
+          </a>
+          <a href="#" className="nav-item">
+            <Bus size={20} /> Bus Providers
+          </a>
+          <a
+            href="#"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/manage-buses");
+            }}
+          >
+            <Bus size={20} /> Manage Buses
+          </a>
+          <a
+            href="#"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/packages");
+            }}
+          >
+            <Bus size={20} /> Packages
+          </a>
           {/* Active Routes Tab */}
-          <a href="#" className="nav-item active" onClick={(e) => { e.preventDefault(); navigate("/admin/routes"); }}><Map size={20} /> Routes</a>
-          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate("/admin/cities"); }}><MapPin size={20} /> Cities</a>
+          <a
+            href="#"
+            className="nav-item active"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/admin/routes");
+            }}
+          >
+            <Map size={20} /> Routes
+          </a>
+          <a
+            href="#"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/admin/cities");
+            }}
+          >
+            <MapPin size={20} /> Cities
+          </a>
         </nav>
         <div className="sidebar-footer">
-          <a href="#" className="nav-item"><Settings size={20} /> Settings</a>
-          <button className="nav-item logout" onClick={handleLogout} style={{background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer'}}>
+          <a href="#" className="nav-item">
+            <Settings size={20} /> Settings
+          </a>
+          <button
+            className="nav-item logout"
+            onClick={handleLogout}
+            style={{
+              background: "none",
+              border: "none",
+              width: "100%",
+              textAlign: "left",
+              cursor: "pointer",
+            }}
+          >
             <LogOut size={20} /> Logout
           </button>
         </div>
@@ -158,29 +244,43 @@ export default function RoutePage() {
 
       {/* ===================== MAIN CONTENT ===================== */}
       <main className="main-content">
-        
         {/* TOP NAVBAR */}
         <header className="top-navbar">
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <div className="search-bar" style={{ visibility: 'hidden' }}>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <div className="search-bar" style={{ visibility: "hidden" }}>
               <Search className="search-icon" size={20} />
               <input type="text" className="search-input" />
             </div>
           </div>
           <div className="top-actions">
-            <button className="btn-icon"><Bell size={24} /></button>
+            <button className="btn-icon">
+              <Bell size={24} />
+            </button>
             <div className="profile-section">
               <div className="avatar">{userInfo.initials}</div>
               <div>
-                <div style={{fontWeight: 600, fontSize: '0.875rem', color: '#334155'}}>{userInfo.name}</div>
-                <div style={{fontSize: '0.75rem', color: '#64748b'}}>{userInfo.role}</div>
+                <div
+                  style={{
+                    fontWeight: 600,
+                    fontSize: "0.875rem",
+                    color: "#334155",
+                  }}
+                >
+                  {userInfo.name}
+                </div>
+                <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
+                  {userInfo.role}
+                </div>
               </div>
             </div>
           </div>
         </header>
 
         {/* ACTUAL ROUTES PAGE CONTENT */}
-        <div className="page-container route-page-container" style={{ minHeight: 'calc(100vh - 80px)' }}>
+        <div
+          className="page-container route-page-container"
+          style={{ minHeight: "calc(100vh - 80px)" }}
+        >
           <header className="route-header">
             <div>
               <h2>Manage Routes</h2>
@@ -205,7 +305,9 @@ export default function RoutePage() {
                   <tbody>
                     {routes.length === 0 ? (
                       <tr>
-                        <td colSpan="5" className="empty-state">No routes found. Create one to get started.</td>
+                        <td colSpan="5" className="empty-state">
+                          No routes found. Create one to get started.
+                        </td>
                       </tr>
                     ) : (
                       routes.map((route) => (
@@ -229,38 +331,97 @@ export default function RoutePage() {
                 <h3>Add New Route</h3>
                 <form onSubmit={handleSubmit}>
                   <div className="form-group">
-                    <label>Source City <span>*</span></label>
-                    <select name="sourceCityId" value={formData.sourceCityId} onChange={handleInputChange} required>
+                    <label>
+                      Source City <span>*</span>
+                    </label>
+                    <select
+                      name="sourceCityId"
+                      value={formData.sourceCityId}
+                      onChange={handleInputChange}
+                      required
+                    >
                       <option value="">Select source city</option>
                       {cities.map((city) => (
-                        <option key={`src-${city.id}`} value={city.id}>{city.cityName}</option>
+                        <option key={`src-${city.id}`} value={city.id}>
+                          {city.cityName}
+                        </option>
                       ))}
                     </select>
                   </div>
 
                   <div className="form-group">
-                    <label>Destination City <span>*</span></label>
-                    <select name="destinationCityId" value={formData.destinationCityId} onChange={handleInputChange} required>
+                    <label>
+                      Destination City <span>*</span>
+                    </label>
+                    <select
+                      name="destinationCityId"
+                      value={formData.destinationCityId}
+                      onChange={handleInputChange}
+                      required
+                    >
                       <option value="">Select destination city</option>
                       {cities.map((city) => (
-                        <option key={`dest-${city.id}`} value={city.id}>{city.cityName}</option>
+                        <option key={`dest-${city.id}`} value={city.id}>
+                          {city.cityName}
+                        </option>
                       ))}
                     </select>
                   </div>
 
                   <div className="form-group">
-                    <label>Distance (km) <span>*</span></label>
-                    <input type="number" name="distanceKm" value={formData.distanceKm} onChange={handleInputChange} required min="1" step="0.1" placeholder="e.g. 150" />
+                    <label>
+                      Distance (km) <span>*</span>
+                    </label>
+                    <input
+                      type="number"
+                      name="distanceKm"
+                      value={formData.distanceKm}
+                      onChange={handleInputChange}
+                      required
+                      min="1"
+                      step="0.1"
+                      placeholder="e.g. 150"
+                    />
                   </div>
 
                   <div className="form-group">
-                    <label>Base Fare (₹) <span>*</span></label>
-                    <input type="number" name="baseFare" value={formData.baseFare} onChange={handleInputChange} required min="0" step="0.01" placeholder="e.g. 500.00" />
+                    <label>
+                      Base Fare (₹) <span>*</span>
+                    </label>
+                    <input
+                      type="number"
+                      name="baseFare"
+                      value={formData.baseFare}
+                      onChange={handleInputChange}
+                      required
+                      min="0"
+                      step="0.01"
+                      placeholder="e.g. 500.00"
+                    />
                   </div>
 
                   <div className="form-actions">
-                    <button type="button" className="btn-cancel" onClick={() => setFormData({ sourceCityId: "", destinationCityId: "", distanceKm: "", baseFare: "" })}>Clear</button>
-                    <button type="submit" className="btn-save" disabled={loading}>{loading ? "Saving..." : "Save Route"}</button>
+                    <button
+                      type="button"
+                      className="btn-cancel"
+                      onClick={() =>
+                        setFormData({
+                          sourceCityId: "",
+                          destinationCityId: "",
+                          distanceKm: "",
+                          baseFare: "",
+                        })
+                      }
+                    >
+                      Clear
+                    </button>
+                    <button
+                      type="submit"
+                      className="btn-save"
+                      disabled={loading}
+                    >
+                      {loading ? "Saving..." : "Save Route"}
+                    </button>
                   </div>
                 </form>
               </div>
