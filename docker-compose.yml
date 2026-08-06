@@ -16,6 +16,10 @@ services:
       - mysql-data:/var/lib/mysql
 
   backend:
+    build:
+      context: ./Backend/travel-management-backend
+      dockerfile: Dockerfile
+
     image: travel-backend:latest
     container_name: travel-backend
 
@@ -30,7 +34,16 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: manager
 
+    volumes:
+      - ./Backend/travel-management-backend/uploads:/app/uploads
+
+    restart: unless-stopped
+
   ai-service:
+    build:
+      context: ./AI_SERVICE
+      dockerfile: Dockerfile
+
     image: travel-ai:latest
     container_name: travel-ai
 
@@ -46,6 +59,10 @@ services:
     restart: unless-stopped
 
   frontend:
+    build:
+      context: ./Frontend/travel-application
+      dockerfile: Dockerfile
+
     image: travel-frontend:latest
     container_name: travel-frontend
 
@@ -55,6 +72,8 @@ services:
 
     ports:
       - "3000:80"
+
+    restart: unless-stopped
 
 volumes:
   mysql-data:

@@ -29,11 +29,8 @@ def search_packages(destination: str, budget: Optional[float] = None) -> str:
         data = response.json()
         
         # Inside search_packages tool
-        if not data:
-            return json.dumps({
-        "status": "empty",
-        "message": f"Sorry, we couldn't find any holiday packages for {destination} at the moment. Please check back later or try another destination."
-        })
+        if not data or len(data) == 0:
+            return f"EMPTY_RESULT: No travel packages found for {destination}. Tell the user exactly: 'I'm sorry, but there are no holiday packages available for {destination} right now.'"
         
         # 👇 ADDED THIS LINE TO ACTUALLY RETURN THE DATA 👇
         return json.dumps(data)
@@ -62,11 +59,8 @@ def search_buses(source: str, destination: str, date: str) -> str:
         if response.status_code == 200:
             data = response.json()
             
-            if not data:
-                return json.dumps({
-                "status": "empty",
-                "message": f"Sorry, we couldn't find any buses from {source} to {destination} on {date}. Please try a different date or route."
-                })
+            if not data or len(data) == 0:
+                return f"EMPTY_RESULT: No buses found from {source} to {destination}. Tell the user exactly: 'I'm sorry, but there are no buses available for this route on your selected date.'"
             
             # 👇 ADDED THIS LINE TO ACTUALLY RETURN THE DATA 👇
             return json.dumps(data)
