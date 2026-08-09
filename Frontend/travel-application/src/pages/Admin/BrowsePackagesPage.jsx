@@ -19,6 +19,10 @@ import {
 } from "lucide-react";
 import "./BrowsePackagesPage.css";
 
+// Dynamic API Base URL
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
 // --- NEW HELPER FUNCTION ---
 // Compares the package return date to today's date
 const getDynamicStatus = (endDateString, currentStatus) => {
@@ -125,15 +129,12 @@ export default function ManagePackagesPage() {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"}/api/v1/admin/packages`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+      const response = await fetch(`${API_BASE_URL}/api/v1/admin/packages`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-      );
+      });
 
       if (!response.ok) {
         if (response.status === 401 || response.status === 403) {
@@ -167,7 +168,7 @@ export default function ManagePackagesPage() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8080/api/v1/admin/packages/${packageId}`,
+        `${API_BASE_URL}/api/v1/admin/packages/${packageId}`,
         {
           method: "DELETE",
           headers: {
