@@ -3,15 +3,8 @@ package com.travelmanagement.backend.services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.UUID;
-
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,11 +24,10 @@ import com.travelmanagement.backend.entities.PackageBooking;
 import com.travelmanagement.backend.entities.PackageStatus;
 import com.travelmanagement.backend.entities.ScheduleStatus;
 import com.travelmanagement.backend.repositories.BusRepository;
-import com.travelmanagement.backend.repositories.BusStopRepository;
 import com.travelmanagement.backend.repositories.HolidayPackageRepository;
 import com.travelmanagement.backend.repositories.PackageBookingRepository;
 import com.travelmanagement.backend.repositories.PackageItineraryRepository;
-import com.travelmanagement.backend.repositories.RouteRepository;
+import com.travelmanagement.backend.services.FileUploadService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -50,23 +42,10 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 	private final PackageBookingRepository packageBookingRepository;
     private final RefundService refundService;
     private final PackageItineraryRepository packageItineraryRepository;
+    
+    // Inject the new Cloudinary file upload service
+    private final FileUploadService fileUploadService;
 
-//	@Override
-//	public HolidayPackageResponse createPackage(
-//	        HolidayPackageRequest request,
-//	        MultipartFile image) {
-//		
-//		Bus bus = busRepository.findById(request.getBusId())
-//                .orElseThrow(() -> new ResourceNotFoundException("Bus not found with id : " + request.getBusId())); 
-//		
-//        if ((bus.getStatus() != BusStatus.ACTIVE) || (bus.getStatus() == BusStatus.ON_TOUR)) {
-//			List<BusSchedule> busSchedules = bus.getBusSchedules();
-//			for(BusSchedule b : busSchedules) {
-//				if(b.getStatus() == ScheduleStatus.SCHEDULED) {
-//					throw new IllegalStateException("Selected bus is already assigned to another package.");
-//				}
-//			}
-//        }
     @Override
     public HolidayPackageResponse createPackage(
             HolidayPackageRequest request,
@@ -87,12 +66,9 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
         List<BusSchedule> busSchedules = bus.getBusSchedules();
 
         for (BusSchedule schedule : busSchedules) {
-
             if (schedule.getStatus() == ScheduleStatus.SCHEDULED) {
-
                 throw new IllegalStateException(
                         "Selected bus is already assigned to another package.");
-
             }
         }
         
@@ -113,50 +89,33 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 		holidayPackage.setAssignedBus(bus);
 		
 		if (image != null && !image.isEmpty()) {
-
 		    try {
-
-		        String uploadDir = "uploads/packages/";
-
-		        Files.createDirectories(Paths.get(uploadDir));
-
-		        String fileName =
-		                UUID.randomUUID()
-		                + "_"
-		                + image.getOriginalFilename();
-
-		        Path filePath =
-		                Paths.get(uploadDir, fileName);
-
-		        Files.copy(
-		                image.getInputStream(),
-		                filePath,
-		                StandardCopyOption.REPLACE_EXISTING);
-
-		        holidayPackage.setImageUrl(fileName);
-
+		        // Upload to Cloudinary and get the live URL
+		        String imageUrl = fileUploadService.uploadImage(image);
+		        
+		        // Save the URL to the database
+		        holidayPackage.setImageUrl(imageUrl);
 		    } catch (IOException e) {
-
-		        throw new RuntimeException("Image upload failed", e);
-
+		        throw new RuntimeException("Image upload to Cloudinary failed", e);
 		    }
-
 		}
-		try {
-		bus.setStatus(BusStatus.ON_TOUR);
-		busRepository.save(bus);
 		
-		// Save Package
-		HolidayPackage savedpackage = holidayPackageRepository.save(holidayPackage);
-        // Prepare Response
-		HolidayPackageResponse response = new HolidayPackageResponse();
-		response.setPackageId(savedpackage.getPackageId());
-		response.setTitle(savedpackage.getTitle());
-		response.setBasePrice(savedpackage.getBasePrice());
-		response.setStatus(savedpackage.getStatus());
-		response.setAvailableSpots(savedpackage.getAvailableSpots());
-		response.setImageUrl(savedpackage.getImageUrl());
-		return response;
+		try {
+		    bus.setStatus(BusStatus.ON_TOUR);
+		    busRepository.save(bus);
+		
+		    // Save Package
+		    HolidayPackage savedpackage = holidayPackageRepository.save(holidayPackage);
+            
+            // Prepare Response
+		    HolidayPackageResponse response = new HolidayPackageResponse();
+		    response.setPackageId(savedpackage.getPackageId());
+		    response.setTitle(savedpackage.getTitle());
+		    response.setBasePrice(savedpackage.getBasePrice());
+		    response.setStatus(savedpackage.getStatus());
+		    response.setAvailableSpots(savedpackage.getAvailableSpots());
+		    response.setImageUrl(savedpackage.getImageUrl());
+		    return response;
 		}
 		catch(RuntimeException e)
 		{
@@ -209,6 +168,7 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 		}
 		holidayPackageRepository.save(holidayPackage);
 	}
+	
 	@Override
 	@Transactional
 	public void deletePackage(Long packageId) {
@@ -242,44 +202,38 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 
 	    // 5. Cancel bookings and process refund
 	    for (PackageBooking booking : activeBookings) {
-
 	        booking.setBookingStatus(BookingStatus.CANCELLED);
-
 	        try {
-
 	            refundService.cancelAndRefund(
 	                    booking.getPackageBookingId(),
 	                    "PACKAGE",
 	                    "ADMIN"
 	            );
-
 	        } catch (Exception e) {
-
 	            System.err.println(
 	                    "Failed to refund booking "
 	                            + booking.getPackageBookingId()
 	                            + " : "
 	                            + e.getMessage()
 	            );
-
 	        }
-
 	        packageBookingRepository.save(booking);
 	    }
 
 	    // 6. Delete the package permanently
-	 // Delete all itinerary records first
+	    // Delete all itinerary records first
 	    packageItineraryRepository.deleteByHolidayPackage_PackageId(packageId);
 
 	    // Now delete the package
 	    holidayPackageRepository.delete(holidayPackage);
 	}
-	// Add this method inside HolidayPackageServiceImpl
+	
 	@Override
 	public List<HolidayPackage> getAllPackages() {
 	    // Fetches all packages from the database
 	    return holidayPackageRepository.findAll();
 	}
+	
 	// ===========================================================
 	// CUSTOMER HOME PAGE
 	// ===========================================================
@@ -294,7 +248,6 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 	    LocalDateTime now = LocalDateTime.now();
 
 	    for (HolidayPackage pkg : packages) {
-	        
 	        // Only add to the list if the departure date is in the future
 	        if (pkg.getDepartureDatetime() != null && pkg.getDepartureDatetime().isAfter(now)) {
 	            CustomerHomePackageDto dto = new CustomerHomePackageDto();
@@ -310,7 +263,6 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 
 	            response.add(dto);
 	        }
-
 	    }
 
 	    return response;
@@ -328,9 +280,7 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 	            holidayPackageRepository.findCustomerPackageById(packageId);
 
 	    if (pkg == null) {
-
 	        throw new RuntimeException("Package not found");
-
 	    }
 
 	    // Throw an error if the user tries to access a package that has already departed
@@ -366,7 +316,7 @@ public class HolidayPackageServiceImpl implements HolidayPackageService {
 	                    LocalDateTime.now() // Only get packages leaving in the future
 	            );
 
-	 // Apply +/- 20% budget filter if a budget is provided
+	    // Apply +/- 20% budget filter if a budget is provided
 	    if (budget != null) {
 	        // Convert the Double budget to BigDecimal
 	        BigDecimal targetBudget = BigDecimal.valueOf(budget);

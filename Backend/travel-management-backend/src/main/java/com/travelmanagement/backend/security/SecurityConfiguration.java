@@ -28,7 +28,7 @@ public class SecurityConfiguration {
 
     private final JwtVerificationFilter jwtFilter;
 
-    // 👇 ADDED THIS: Injects the frontend URL from environment variables, defaults to localhost
+    //  ADDED THIS: Injects the frontend URL from environment variables, defaults to localhost
     @Value("${FRONTEND_URL:http://localhost:5173}")
     private String frontendUrl;
 
@@ -39,7 +39,7 @@ public class SecurityConfiguration {
             .cors(cors -> cors.configurationSource(request -> {
                 CorsConfiguration configuration = new CorsConfiguration();
 
-                // 👇 MODIFIED THIS: Added the dynamic frontendUrl to the list of allowed origins
+                //  MODIFIED THIS: Added the dynamic frontendUrl to the list of allowed origins
                 configuration.setAllowedOrigins(List.of(
                         "http://localhost:5173", 
                         "http://localhost:3000", 

@@ -2,7 +2,6 @@ package com.travelmanagement.backend.services;
 
 import java.util.List;
 
-import org.jspecify.annotations.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.travelmanagement.backend.dtos.CustomerHomePackageDto;
@@ -16,26 +15,23 @@ import jakarta.validation.Valid;
 
 public interface HolidayPackageService {
 
-	HolidayPackageResponse createPackage(
-	        HolidayPackageRequest request,
-	        MultipartFile image);
+    HolidayPackageResponse createPackage(
+            HolidayPackageRequest request,
+            MultipartFile image);
 
-//	HolidayPackageResponse updatePackage(Long packageId, @Valid HolidayPackageRequest request);
+    void updatePackage(
+            Long packageId,
+            PackageStatus status);
 
-	void updatePackage(
-	        Long packageId,
-	        PackageStatus status);
+    void deletePackage(Long packageId);
+    
+    List<HolidayPackage> getAllPackages();
 
-	void deletePackage(Long packageId);
-	List<HolidayPackage> getAllPackages();
+    HolidayPackageResponse updatePackage(Long packageId, @Valid HolidayPackageRequest request);
 
+    List<CustomerHomePackageDto> getCustomerHomePackages();
 
-	HolidayPackageResponse updatePackage(Long packageId, @Valid HolidayPackageRequest request);
+    CustomerPackageDetailsDto getCustomerPackageDetails(Long packageId);
 
-	List<CustomerHomePackageDto> getCustomerHomePackages();
-
-	CustomerPackageDetailsDto getCustomerPackageDetails(Long packageId);
-
-	List<CustomerHomePackageDto> searchCustomerPackages(String destination, Double budget);
+    List<CustomerHomePackageDto> searchCustomerPackages(String destination, Double budget);
 }
-
