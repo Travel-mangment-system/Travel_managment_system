@@ -22,7 +22,7 @@ today_date = datetime.now().strftime("%B %d, %Y")
 
 # 4. Initialize the Groq LLM (Temperature 0 keeps it strict)
 llm = ChatGroq(
-    model="llama-3.1-8b-instant",
+    model="openai/gpt-oss-20b",
     temperature=0,
     groq_api_key=os.getenv("GROQ_API_KEY")
 )
