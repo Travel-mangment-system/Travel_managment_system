@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import api from "../../services/api";
 import "./ScheduleBus.css";
-import "./Dashboard.css"; // Added to inherit exact sidebar & layout styles
+import "./Dashboard.css";
 
 const ScheduleBus = () => {
   const navigate = useNavigate();
@@ -53,6 +53,22 @@ const ScheduleBus = () => {
   const [selectedBus, setSelectedBus] = useState(null);
   const [selectedRoute, setSelectedRoute] = useState(null);
 
+  // --- FETCH SCHEDULES FUNCTION ---
+  const fetchSchedules = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.get(
+        `/api/v1/providers/${userId}/schedules/upcoming`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      setSchedules(response.data || []);
+    } catch (error) {
+      console.error("Error fetching schedules:", error);
+    }
+  };
+
   // 1. Fetch Buses, Routes, and Existing Schedules on Load
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +90,9 @@ const ScheduleBus = () => {
         // Fetch all routes
         const routeRes = await api.get(`/routes`, { headers });
         setRoutes(Array.isArray(routeRes.data) ? routeRes.data : []);
+
+        // Fetch the upcoming schedules for the table
+        await fetchSchedules();
       } catch (error) {
         console.error("Error fetching form dependencies:", error);
         setMessage({
@@ -159,6 +178,9 @@ const ScheduleBus = () => {
       });
 
       setMessage({ text: "Schedule successfully created!", type: "success" });
+
+      // Instantly refresh the table with the newly created schedule!
+      fetchSchedules();
 
       // Reset form
       setFormData({
@@ -927,27 +949,33 @@ const ScheduleBus = () => {
                   {schedules && schedules.length > 0 ? (
                     schedules.map((sch) => (
                       <tr
-                        key={sch.scheduleId}
+                        key={sch.id}
                         style={{ borderBottom: "1px solid #f3f4f6" }}
                       >
                         <td style={{ padding: "14px 12px" }}>
                           <strong style={{ display: "block", color: "#111" }}>
-                            {sch.busName}
+                            {sch.busNumber}
                           </strong>
                           <span style={{ fontSize: "12px", color: "#6b7280" }}>
-                            {sch.busNumber}
+                            {sch.totalSeats} Seats
                           </span>
                         </td>
                         <td style={{ padding: "14px 12px" }}>
-                          <span style={{ display: "block", color: "#111" }}>
-                            {sch.sourceCity} to {sch.destinationCity}
+                          <span
+                            style={{
+                              display: "block",
+                              color: "#111",
+                              fontWeight: "500",
+                            }}
+                          >
+                            {sch.route}
                           </span>
                         </td>
                         <td style={{ padding: "14px 12px", color: "#374151" }}>
-                          {sch.departureDatetime}
+                          {sch.departureTime}
                         </td>
                         <td style={{ padding: "14px 12px", color: "#374151" }}>
-                          {sch.arrivalDatetime}
+                          {sch.arrivalTime}
                         </td>
                         <td style={{ padding: "14px 12px" }}>
                           <span
@@ -960,7 +988,7 @@ const ScheduleBus = () => {
                               fontWeight: "500",
                             }}
                           >
-                            Scheduled
+                            {sch.status}
                           </span>
                         </td>
                         <td style={{ padding: "14px 12px" }}>
@@ -975,17 +1003,6 @@ const ScheduleBus = () => {
                               }}
                             >
                               <Eye size={16} />
-                            </button>
-                            <button
-                              title="Edit Schedule"
-                              style={{
-                                background: "none",
-                                border: "none",
-                                cursor: "pointer",
-                                color: "#2563eb",
-                              }}
-                            >
-                              <Edit size={16} />
                             </button>
                             <button
                               title="Cancel Schedule"
